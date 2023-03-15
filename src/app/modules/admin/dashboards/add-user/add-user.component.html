@@ -1,0 +1,51 @@
+<div class="text-center">
+    <button mat-icon-button mat-dialog-close class="close-icon" style="margin-left: 93%; margin-top: 0.3%;">
+      <mat-icon>close</mat-icon>
+    </button>
+    <blockquote class="blockquote" >
+      <p class="lead">New User</p>
+    </blockquote>
+    <div >
+      <div mat-dialog-content>
+        <label matLabel for="name">Name:</label><br>
+        <mat-form-field style="width: 60%;">
+          <input matInput placeholder="Name" [(ngModel)]="name" id="name" />
+        </mat-form-field><br>
+  
+        <label matLabel for="email">Email:</label><br>
+        <mat-form-field style="width: 60%;">
+          <input matInput placeholder="Email" [(ngModel)]="email" id="email" />
+        </mat-form-field><br>
+  
+        <label matLabel for="phoneNumber">Phone Number:</label><br>
+        <mat-form-field style="width: 60%;">
+          <input matInput placeholder="Phone Number" [(ngModel)]="phoneNumber" id="phoneNumber" />
+        </mat-form-field><br>
+        <label matLabel for="roles">Role:</label><br>
+        <mat-form-field style="width: 60%;">
+            <mat-select [(ngModel)]="role" >
+                <mat-option *ngFor="let role of tabRoleNames" [value]="role">{{role}}
+                </mat-option>
+              </mat-select>
+        </mat-form-field><br>
+  
+        <label matLabel for="authorization">Authorization:</label><br>
+        <mat-form-field style="width: 60%;">
+          <mat-select [(ngModel)]="authorization" id="authorization" >
+          <mat-option [value]="true">Authorized </mat-option>
+          <mat-option [value]="false">Not authorized </mat-option>
+
+      </mat-select>
+        </mat-form-field><br>
+  
+      </div>
+  
+      <div mat-dialog-actions class="text-center">
+        <button mat-button (click)="close()">Cancel</button>
+        <button class="btn btn-primary" (click)="submit()" [disabled]="!isValid()">Submit</button>
+      </div>
+  
+    </div>
+  
+  </div>
+  

@@ -1,0 +1,63 @@
+<div class="text-center">
+    <button mat-icon-button mat-dialog-close class="close-icon" style="margin-left: 93%; margin-top: 0.3%;">
+        <mat-icon>close</mat-icon>
+      </button>
+      <blockquote class="blockquote" *ngIf="data!='None' ">
+        <p class="lead">New Role</p>
+      </blockquote>
+      <div *ngIf="data!='None' ; else BlocElse">
+        <div mat-dialog-content>
+          
+    
+    
+          <label matLabel for="name" > Name : </label> <br>
+          <mat-form-field style="width: 60%;">
+            <input matInput placeholder="name" [(ngModel)]="name"   id="name"/>
+          </mat-form-field>
+    <br>
+    
+          <label matLabel for="claims" > Claims : </label> <br>
+          <mat-form-field style="width: 60%;">
+            
+          
+            <mat-select 
+            placeholder="claims"  multiple placeholder="Claims" [(ngModel)]="ValidatedClaims" > 
+            <!-- Loop through each group via the groups array -->
+            <ng-container *ngFor="let group of claims" >
+              <mat-optgroup  [label]="group.name"  >
+                <strong *ngFor="let item of group.items">
+                  <mat-option 
+                   
+                  [value]="item.value"
+                  
+                  selected="true"
+                >
+                  {{item.label}}
+                </mat-option>
+    
+                </strong>  
+              </mat-optgroup>
+            </ng-container>
+            
+          </mat-select>
+          </mat-form-field>
+          <br>
+    
+     
+         </div>
+        
+         
+        
+        <div mat-dialog-actions class="text-center">
+          <button mat-button (click)="close()">Cancel</button>
+          <button  class="btn btn-primary"  (click)="submit()">Submit</button>
+        </div>
+    
+      </div>
+      <ng-template #BlocElse style="text-align: center;">
+        <blockquote class="blockquote">
+          <p class="lead">No phone affected yet</p>
+        </blockquote>
+        
+        </ng-template>
+    </div>

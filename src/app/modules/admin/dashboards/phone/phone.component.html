@@ -1,0 +1,51 @@
+<button mat-icon-button mat-dialog-close class="close-icon" style="margin-left: 93%; margin-top: 0.3%;">
+    <mat-icon>close</mat-icon>
+  </button>
+  <blockquote class="blockquote" *ngIf="data!='None' ">
+    <p class="lead">Phone Information</p>
+  </blockquote>
+  <div *ngIf="data!='None' ; else BlocElse">
+    <div mat-dialog-content>
+      
+
+      <label matLabel for="id" > ID : </label> <br>
+      <mat-form-field>
+        <input id="id" matInput placeholder="ID" [(ngModel)]="id" readonly />
+      </mat-form-field>
+      
+      <br>
+
+      <label matLabel for="uid" > UID : </label> <br>
+      <mat-form-field>
+        <input matInput placeholder="Uid" [(ngModel)]="uid"  readonly id="uid"/>
+      </mat-form-field>
+<br>
+
+      <label matLabel for="model" > Model : </label> <br>
+      <mat-form-field>
+        
+        <input matInput placeholder="Model" [(ngModel)]="model" id="model" readonly/>
+      </mat-form-field>
+      <br>
+
+      <label matLabel for="OS Version" > OS Version : </label> 
+      
+      <mat-form-field>
+        <input matInput  id="OS Version" placeholder="OS Version" [(ngModel)]="osVersion"  readonly/>
+      </mat-form-field>
+     </div>
+    
+     
+    
+    <div mat-dialog-actions>
+      <button mat-button (click)="close()">Cancel</button>
+      <button  class="btn btn-danger" [disabled]="!isValid()" (click)="delete()">Delete</button>
+    </div>
+
+  </div>
+  <ng-template #BlocElse style="text-align: center;">
+    <blockquote class="blockquote">
+      <p class="lead">No phone affected yet</p>
+    </blockquote>
+    
+    </ng-template>
