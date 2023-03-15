@@ -1,5 +1,6 @@
 /* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
+    
     "compileOnSave": false,
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
@@ -20,6 +21,12 @@
         ]
     },
     "angularCompilerOptions": {
-        "enableI18nLegacyMessageIdFormat": false
-    }
+        "enableI18nLegacyMessageIdFormat": false,
+        "paths":{
+            "crypto":["node_modules/crypto-js"]
+          }
+    },
+    "resolve.fallback": { "https": "require.resolve('https-browserify')" }
+      
 }
+ 

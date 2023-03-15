@@ -101,6 +101,7 @@ const routerConfig: ExtraOptions = {
      
     ],
     imports     : [
+        FormsModule,
         BrowserModule,
         MatButtonModule,
         MatFormFieldModule,

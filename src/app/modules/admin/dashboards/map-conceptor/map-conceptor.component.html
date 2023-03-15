@@ -1,1 +1,133 @@
-<p>map-conceptor works!</p>
+<div>
+    <hr>
+    <div class="row">
+          <div class="col-xl-6">
+          </div>
+          <div class="col-xl-3">
+              <button class="btn btn-outline-success btn-md" title="save workspace" type="button" [disabled]="canvas.workspaceName == ''" (click)="submit()">
+                  <i class="fa fa-regular fa-floppy-disk"></i>
+              </button>
+              <button class="btn btn-outline-info btn-md" title="add workspace" type="button" (click)="addWorkSpace()">
+                  <i class="fa-sharp fa-regular fa-square-plus"></i>
+              </button>
+          </div>
+          <div>
+              <mat-form-field appearance="fill" style="float:right;width: 10%;">
+              <mat-label>Workspaces</mat-label>
+                   <mat-select (opened)="getWorkspaces()">
+               <mat-option *ngFor="let w of workspaces" [value]="w.name" #matOption (click)="loadCanvas(matOption.value)">
+                  {{w.name}}
+                  </mat-option>
+              </mat-select>
+  </mat-form-field>
+          </div>
+    </div>
+  
+    <p id = "p">helooo</p>
+    <div class="row">
+        <div class="col-xl-3">
+              <div class="card">
+                  <div class="card-header"> workspace's name </div>
+                  <div class="card-body">
+                      <input type="text"  class="form-control" [(ngModel)]="canvas.workspaceName">
+                  </div>
+                  <span *ngIf="canvas.workspaceName == ''" class="error text-danger">enter a workspace name </span>
+  
+              </div>
+            <div class="card">
+                <div class="card-header">Size</div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control" [(ngModel)]="canvas.size.width" (keyup)="changeSize()">
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    Width
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" [(ngModel)]="canvas.size.height" (keyup)="changeSize()">
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    Height
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="card">
+            </div>
+            <br/> 
+            <div class="card">
+                <div class="card-header">Add images</div>
+                <div class="card-body max-height">
+                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/objects/desk.svg">
+                    <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/objects/door.svg">
+  
+                </div>
+            </div>
+            <br/>
+            <div class="card">
+                <div class="card-header">Upload image</div>
+                <div class="card-body text-center">
+                    <img id="testImage" *ngIf="canvas.url" class="images-item-upload" [src]="canvas.url" (click)="addImageOnCanvas(canvas.url);">
+                    <input type="file" (change)="readUrl($event);">
+                    <br/>
+                    <br/>
+                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(canvas.url);">
+                                <i class="fa fa-times" aria-hidden="true"></i> Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="card">
+              <div class="card-header">Options</div>
+              <div class="card-body text-center">
+                  <div class="btn-group" role="group" aria-label="...">
+                      <button data-toggle="tooltip" data-placement="bottom" title="Delete element" type="button" class="btn btn-outline-danger" [disabled]="!canvas.selected"
+                          (click)="removeSelected();">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                      </button>
+                      <button data-toggle="tooltip" data-placement="bottom" title="Clone" type="button" class="btn btn-outline-primary" [disabled]="!canvas.selected"
+                          (click)="clone();">
+                          <i class="fa fa-clone" aria-hidden="true"></i>
+                      </button>
+                      <button data-toggle="tooltip" data-placement="bottom" title="Unselect" type="button" class="btn btn-outline-primary" [disabled]="!canvas.selected"
+                          (click)="cleanSelect()">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                  </div>
+              </div>
+          </div>
+            <br/>
+        </div>
+        <div class="col-xl-9">
+            <app-map #canvas></app-map>
+        </div>
+            <br/>
+    </div>
+    <!-- <div class="row">
+        <div class="col-xl-12">
+            <br/>
+            <div class="card">
+                <div class="card-header">
+                    <button type="button" class="btn btn-primary btn-sm" (click)="rasterizeJSON()">
+                        <i class="fa fa-refresh" aria-hidden="true"></i> Render to json</button>
+                </div>
+                <div class="card-body">
+                    <pre>{{canvas.json}}</pre>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <br>
+    <br>
+  </div>

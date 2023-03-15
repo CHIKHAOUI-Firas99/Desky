@@ -23,6 +23,7 @@
                         "polyfills": [
                             "zone.js"
                         ],
+                       
                         "tsConfig": "tsconfig.app.json",
                         "inlineStyleLanguage": "scss",
                         "allowedCommonJsDependencies": [
@@ -32,7 +33,8 @@
                             "crypto-js/hmac-sha256",
                             "crypto-js/enc-base64",
                             "flat",
-                            "quill"
+                            "quill",
+                            "crypto"
                         ],
                         "assets": [
                             "src/favicon-16x16.png",

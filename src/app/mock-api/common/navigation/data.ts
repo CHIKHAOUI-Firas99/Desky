@@ -154,9 +154,9 @@ export const defaultNavigation: FuseNavigationItem[] = [
                     },
                     {
                         id   : 'adminMap',
-                        title: 'Build',
+                        title: 'Build ',
                         type : 'basic',
-                        link : '/ui/forms/wizards'
+                        link : '/dashboards/mapConceptor'
                     }
                 ]
             },
