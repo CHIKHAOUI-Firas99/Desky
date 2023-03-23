@@ -9,17 +9,22 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
+import { DeleteConfirmationComponent } from './delete-confirmation.component';
+import { UsersComponent } from '../users/users.component';
 
 library.add(faIcons, faFontAwesome);
 
 @NgModule({
-  declarations: [],
+  declarations: [DeleteConfirmationComponent],
   imports: [
     ReactiveFormsModule,
     MatTableModule,
     MatIconModule,
     CommonModule,
-    MatDialogModule
-  ]
+    MatDialogModule,
+    MatButtonModule
+  ],
+  bootstrap:[DeleteConfirmationComponent],
 })
 export class DeleteConfirmationModule { }

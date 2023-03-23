@@ -1,14 +1,11 @@
-#canvas {
-	border: 2px dashed #cccccc;
-}
+
 .main-title {
 	margin-top: 10px;
 }
 .images-item {
 	width: 48%;
 	cursor: pointer;
-	-webkit-transition: .5s ease;
-	-webkit-transition: .5s ease;
+
 	padding: 3px;
 	max-width: 120px;
 	&:hover {
@@ -19,8 +16,7 @@
 	width: 80%;
 	cursor: pointer;
 	padding-bottom: 10px;
-	-webkit-transition: .5s ease;
-	-webkit-transition: .5s ease;
+
 	&:hover {
 		opacity: 0.7;
 	}

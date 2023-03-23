@@ -1,19 +1,22 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import {CUSTOM_ELEMENTS_SCHEMA, NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+
+import { CommonModule } from '@angular/common';
+
+import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { SharedModule } from 'app/shared/shared.module';
 
 // import { financeRoutes } from 'app/modules/admin/dashboards/finance/finance.routing';
-import {MatPaginatorModule} from '@angular/material/paginator';
-
+import {MatPaginator,MatPaginatorModule} from '@angular/material/paginator';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faIcons } from '@fortawesome/free-solid-svg-icons';
+import { faFontAwesome, faIcons } from '@fortawesome/free-solid-svg-icons';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { MatInputModule } from '@angular/material/input';
@@ -57,24 +60,27 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { CommonModule } from '@angular/common';
-
-
+import { RolesComponent } from './roles.component';
+import { rolesRoutes } from './roles.routing';
+import { AddRoleComponent } from '../add-role/add-role.component';
+import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirmation.module';
 
 
 @NgModule({
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  declarations: [],
+  declarations: [RolesComponent,
+    AddRoleComponent,
+  
+  ],
   imports: [
-MatTableModule,
-    ReactiveFormsModule,
+    RouterModule.forChild(rolesRoutes),
+    DeleteConfirmationModule,
     CommonModule,
     MatButtonModule,
     MatDividerModule,
     MatIconModule,
     ReactiveFormsModule,
     MatMenuModule,
-  
     MatProgressBarModule,
     MatSortModule,
     MatTableModule,
@@ -133,7 +139,6 @@ MatTableModule,
     PortalModule,
     ScrollingModule,
 
-   
   ]
 })
 export class RolesModule { }

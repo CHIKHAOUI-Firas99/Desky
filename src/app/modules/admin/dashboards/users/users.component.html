@@ -3,7 +3,20 @@
   text-align: center;
 }
   
-  
+.responsive-button {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+@media only screen and (min-width: 768px) {
+  .responsive-button {
+    width: auto;
+    max-width: none;
+  }
+}
+
   
   
   
@@ -25,7 +38,7 @@
                 </div>
   
   
-                <div class="card" style="margin-left: 2%;margin-right: 2%;margin-top: 5%; margin-top: 2%;" >
+                <div class="card" style="margin-left: 2%;margin-right: 2%;margin-top: 5%;" >
                 
                 <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
                
@@ -130,7 +143,7 @@
   
   
   
-                            <button  [ngClass]="VOForm.get('VORows').value[i].roles=='admin' ?'btn btn-danger':'btn btn-warning'" style="text-align: center;border-radius: 50px;" matInput type="text" *ngIf="VOForm.get('VORows').value[i].isEditable" [readonly]="VOForm.get('VORows').value[i].isEditable" >
+                            <button  [ngClass]="VOForm.get('VORows').value[i].roles=='admin' ?'btn btn-danger':'btn btn-warning'" style="text-align: center;border-radius: 50px; width: 100%;" matInput type="text" *ngIf="VOForm.get('VORows').value[i].isEditable" [readonly]="VOForm.get('VORows').value[i].isEditable" >
   {{VOForm.get('VORows').value[i].roles}}
                             </button>
                           </td>
@@ -153,8 +166,8 @@
   
   
          <!-- Button trigger modal -->
-         <div *ngIf="VOForm.get('VORows').value[i].isEditable" >
-          <button class="btn btn-outline-primary btn-md c1" style="border-radius: 25px;" (click)="openDialog(VOForm,i)" >show phone details</button>
+         <div *ngIf="VOForm.get('VORows').value[i].isEditable" class="responsive-button" >
+          <button class="btn btn-outline-primary btn-md c1 responsive-button" style="border-radius: 25px;" (click)="openDialog(VOForm,i)" >show phone details</button>
         </div>
           </td>
         </ng-container>

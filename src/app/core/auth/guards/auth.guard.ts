@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CanMatch, Route, Router, UrlSegment, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, CanMatch, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from '@angular/router';
 import { Observable, of, switchMap } from 'rxjs';
 import { AuthService } from 'app/core/auth/auth.service';
+import { RoleService } from 'app/core/role/role.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,8 @@ export class AuthGuard implements CanMatch
      */
     constructor(
         private _authService: AuthService,
-        private _router: Router
+        private _router: Router,
+        private _roleService: RoleService,
     )
     {
     }
@@ -28,7 +30,10 @@ export class AuthGuard implements CanMatch
      * @param route
      * @param segments
      */
-    canMatch(route: Route, segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
+    canMatch(
+        
+       
+        route: Route, segments: UrlSegment[]): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree
     {
         return this._check(segments);
     }
@@ -52,6 +57,8 @@ export class AuthGuard implements CanMatch
                 // If the user is not authenticated...
                 if ( !authenticated )
                 {
+                    console.log('ba33333333333');
+                    
                     // Redirect to the sign-in page with a redirectUrl param
                     const redirectURL = `/${segments.join('/')}`;
                     const urlTree = this._router.parseUrl(`sign-in?redirectURL=${redirectURL}`);
@@ -64,4 +71,6 @@ export class AuthGuard implements CanMatch
             })
         );
     }
-}
+
+
+    }

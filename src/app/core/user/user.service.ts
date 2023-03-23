@@ -62,6 +62,7 @@ deletePhone(id:number){
 }
 
     getAllUsers(): Observable<User[]>
+    
     {
         // const url = `${Url+'/getAllUsers/'}?limit=${limit}&page=${page}`;
         const url = `${Url+'/getAll/'}`;

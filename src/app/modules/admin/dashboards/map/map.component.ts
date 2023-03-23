@@ -440,7 +440,8 @@ export class MapComponent {
    return this._httpClient.post<any>('http://localhost:5000/map',w)
 }
 
-  addWorkSpace(){    
+  addWorkSpace()
+  {    
     this.objectsInCanvas.clear()
     this.canvas.clear()
     this.workspaceName = ""

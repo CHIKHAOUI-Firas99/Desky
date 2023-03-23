@@ -4,9 +4,11 @@ import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
 import {Url} from 'app/core/config/app.config'
+import { User } from '../user/user.types';
 @Injectable()
 export class AuthService
 {
+    private _currentUser:User
     private _authenticated: boolean = false;
 tokenValid:boolean=false
 
@@ -48,7 +50,7 @@ tokenValid:boolean=false
      */
     forgotPassword(email: string): Observable<any>
     {
-        return this._httpClient.post('api/auth/forgot-password', email);
+        return this._httpClient.post(Url+'/forget_password', email);
     }
 
     dispalyAdminDashboard()
@@ -93,6 +95,7 @@ tokenValid:boolean=false
 
                 // Store the user on the user service
                 this._userService.user = response.user;
+                this._currentUser=response.user
                 console.log('response sign in',response);
 
                 // Return a new observable with the response
@@ -136,6 +139,7 @@ if(!response){
                 // {
                 //     this.accessToken = response.accessToken;
                 // }
+                this._currentUser=response.user
                 console.log(response.user.name);
                 
               
@@ -160,6 +164,9 @@ if(!response){
     /**
      * Sign out
      */
+    getCurrentUser():User{
+        return this._currentUser
+    }
     signOut(): Observable<any>
     {
         
@@ -167,11 +174,12 @@ if(!response){
         // Remove the access token from the local storage
         this._httpClient.post(Url+"/user_sign_out",{},{headers}).subscribe(()=>{
             localStorage.removeItem('accessToken');
+
         })
         
+        this._authenticated = false;
 
         // Set the authenticated flag to false
-        this._authenticated = false;
 
         // Return the observable
         return of(true);

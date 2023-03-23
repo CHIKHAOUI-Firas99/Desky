@@ -6,13 +6,26 @@
     table{
         border-radius: 50px;
     }
+    .responsive-button {
+  border-radius: 25px;
+  width: 48%;
+  word-wrap: break-word; /* add this line */
+}
+
+@media only screen and (max-width: 2000px) {
+  .responsive-button {
+    width: 100%;
+  }
+}
+
+
   
 </style>
 <div class="xl:col-span-2 flex flex-col flex-auto bg-card  rounded-2xl overflow-hidden" >
    <strong> <h2  style="color: rgb(102, 125, 148); text-decoration:underline ;text-align: center; font-size: 30px; margin-top: 2%;" >
         Roles and Permissions</h2>
     </strong>
-        <div class="card" style="margin-left: 15%;margin-right: 15%;margin-top: 5%; margin-top: 5%; height: 50%;" >
+        <div class="card" style="margin-left: 15%;margin-right: 15%;margin-top: 5%; margin-top: 5%;" >
             <div>
                 <!-- <h2 class="text-3xl font-semibold tracking-tight leading-8" style="color: rgb(64, 50, 50);margin-top: 1%; text-decoration:underline ;display: inline;" >
                     Manage roles</h2> -->
@@ -20,10 +33,12 @@
                     <input  matInput (keyup)="applyFilter($event)" placeholder="Search" #input matColumnDef="10">
                     <mat-icon >search</mat-icon>
                   </div>
-                    <button class="btn btn-primary" style="float:right ;display: inline; margin-right: 1%;margin-top: 1%;" [disabled]="!canAdd" (click)="openDialog()" >New Role</button>
+                    <button class="btn btn-primary " style="float:right ;display: inline; margin-right: 1%;margin-top: 1%;" [disabled]="!canAdd" (click)="openDialog()" >New Role</button>
             </div>
+            <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
+            
             <form [formGroup]="VOForm"  >
-            <br>
+            
             <!-- <button  color="primary"  style="display: inline;"><mat-icon (click)="AddNewRow()" class="add-button">add_box</mat-icon></button> -->
            <ng-container formArrayName="VORows" >
                 <table #table mat-table [dataSource]="roles" >
@@ -45,11 +60,12 @@
                         <input matInput type="text" formControlName="name"  [readonly]="VOForm.get('VORows').value[i].isEditable" >
                      
                         </mat-form-field>
-                      <button matInput type="text" style="border-radius: 25px;" 
-                      [ngClass]="this.VOForm.get('VORows').value[i].name==='admin' ?'btn btn-danger':'btn btn-warning'" [readonly]="VOForm.get('VORows').value[i].isEditable" *ngIf="VOForm.get('VORows').value[i].isEditable">
-                      <!-- </span> -->
-                      {{VOForm.get('VORows').value[i].name}}
-                     </button>
+                        <button matInput type="text" class="responsive-button"
+                        [ngClass]="VOForm.get('VORows').value[i].name === 'admin' ? 'btn btn-danger' : 'btn btn-warning'"
+                        [readonly]="VOForm.get('VORows').value[i].isEditable" *ngIf="VOForm.get('VORows').value[i].isEditable">
+                        {{ VOForm.get('VORows').value[i].name }}
+                      </button>
+                      
                     </td>
                   </ng-container>
           
@@ -101,21 +117,8 @@
                                 </strong>  
                               </mat-optgroup>
                             </ng-container>
-                            
                           </mat-select>
                         </mat-form-field>
-                      <!-- <input matInput type="text" formControlName="claims" [readonly]="VOForm.get('VORows').value[i].isEditable"  *ngIf="VOForm.get('VORows').value[i].isEditable"> -->  
-                            <!-- <mat-form-field appearance="outline" class="full-width" *ngIf="VOForm.get('VORows').value[i].isEditable">
-                           
-                                <mat-label>Claims</mat-label>
-                                <mat-select [formControlName]="'claims'" [multiple]="true">
-                                  <mat-option *ngFor="let claim of claims; let i = index" [value]="i">
-                                    {{claim.name}}
-                                  </mat-option>
-                                </mat-select> 
-                            </mat-form-field> -->
-                        
-                      <!-- </span> -->
                     </td>
                   </ng-container>
         
@@ -170,10 +173,11 @@
               
           
                   <mat-paginator  [pageSizeOptions]="[2, roles.data.length>8? roles.data.length:''  ]" 
-                    style="margin-top: 5%;" 
+                    style="margin-top: 9%;" 
                    showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
                   
             </form>
+            </div>
           </div>
     </div>
    

@@ -7,44 +7,109 @@
     </blockquote>
     <div >
       <div mat-dialog-content>
+        <form  #f="ngForm"  (ngSubmit)="submit(f);onReset(f)">
         <label matLabel for="name">Name:</label><br>
         <mat-form-field style="width: 60%;">
-          <input matInput placeholder="Name" [(ngModel)]="name" id="name" />
-        </mat-form-field><br>
+          <input name="name" matInput placeholder="Name" [(ngModel)]="name"
+          #identifname="ngModel"
+          required
+          
+          />
+        </mat-form-field>
+        <div style="width:60%;text-align: center;display: inline-block;" 
+        *ngIf="identifname.errors?.required && identifname.touched"
+class="alert alert-danger">
+Name is a required field
+</div>
+        <br>
   
         <label matLabel for="email">Email:</label><br>
         <mat-form-field style="width: 60%;">
-          <input matInput placeholder="Email" [(ngModel)]="email" id="email" />
-        </mat-form-field><br>
+          <input matInput placeholder="Email" [(ngModel)]="email" id="email"
+          name="email"
+          #identifemail="ngModel"
+          required
+          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+          
+          />
+        </mat-form-field>
+        <div style="width:60%;text-align: center;display: inline-block;"
+        *ngIf="identifemail.errors?.required && identifemail.touched"
+        class="alert alert-danger">
+     Email is a required field
+   </div>
+   <div style="width:60%;text-align: center;display: inline-block;"
+       *ngIf="identifemail.errors?.pattern && identifemail.dirty"
+        class="alert alert-warning">
+     Incorrect Email Format
+   </div>
+   
+        <br>
   
         <label matLabel for="phoneNumber">Phone Number:</label><br>
         <mat-form-field style="width: 60%;">
-          <input matInput placeholder="Phone Number" [(ngModel)]="phoneNumber" id="phoneNumber" />
-        </mat-form-field><br>
+          <input matInput placeholder="Phone Number"
+          name="phoneNumber"
+          #identifphoneNumber="ngModel"
+          required
+          pattern="^\+\d{3}\d{6,14}$"
+          [(ngModel)]="phoneNumber" id="phoneNumber" />
+        </mat-form-field>
+        <div style="width:60%;text-align: center;display: inline-block;"
+        *ngIf="identifphoneNumber.errors?.pattern && identifphoneNumber.dirty"
+         class="alert alert-warning">
+      Incorrect Phone number format Format 
+    </div>
+        <div style="width:60%;text-align: center;display: inline-block;"
+        *ngIf="identifphoneNumber.errors?.required && identifphoneNumber.touched"
+        class="alert alert-danger">
+     Phone number is a required field
+   </div>
+        <br>
         <label matLabel for="roles">Role:</label><br>
         <mat-form-field style="width: 60%;">
-            <mat-select [(ngModel)]="role" >
+            <mat-select [(ngModel)]="role" 
+            
+            #identifrole="ngModel"
+            required
+            name="role"
+            >
                 <mat-option *ngFor="let role of tabRoleNames" [value]="role">{{role}}
                 </mat-option>
               </mat-select>
-        </mat-form-field><br>
+        </mat-form-field>
+        
+        
+        <br>
   
         <label matLabel for="authorization">Authorization:</label><br>
         <mat-form-field style="width: 60%;">
-          <mat-select [(ngModel)]="authorization" id="authorization" >
+          <mat-select [(ngModel)]="authorization" id="authorization"
+          #identifauthorization="ngModel"
+          
+          required
+          name="authorization"
+          >
           <mat-option [value]="true">Authorized </mat-option>
           <mat-option [value]="false">Not authorized </mat-option>
 
       </mat-select>
-        </mat-form-field><br>
-  
+        </mat-form-field>
+        
+        <div style="width:60%;text-align: center;display: inline-block;"
+        *ngIf="errMessage"
+         class="alert alert-danger">
+      {{errMessage}}
+    </div>
+        <br>
+        <div mat-dialog-actions class="text-center">
+          <button mat-button (click)="close()">Cancel</button>
+          <button  class="btn btn-primary"  [disabled]="f.invalid">Submit</button>
+        </div>
+      </form>
       </div>
   
-      <div mat-dialog-actions class="text-center">
-        <button mat-button (click)="close()">Cancel</button>
-        <button class="btn btn-primary" (click)="submit()" [disabled]="!isValid()">Submit</button>
-      </div>
-  
+    
     </div>
   
   </div>

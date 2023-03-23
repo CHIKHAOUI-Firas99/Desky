@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouteReuseStrategy } from '@angular/router';
 import { RoleService } from 'app/core/role/role.service';
 import { UserService } from 'app/core/user/user.service';
 import { PhoneComponent } from '../phone/phone.component';
@@ -19,11 +19,13 @@ export class DeleteConfirmationComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,private _UserService:UserService,
     private phonedialogRef: MatDialogRef<PhoneComponent>,
-    private _financeService:UsersService, 
+    private _userService:UsersService, 
     private router:Router,private matdialog:MatDialog,
     private dialogRef: MatDialogRef<DeleteConfirmationComponent>
     
     ,private _roleService: RoleService
+    , private route: ActivatedRoute,
+    private routeReuseStrategy: RouteReuseStrategy
     ) {
       if(data){
     this.message = data.message || this.message;
@@ -33,14 +35,22 @@ export class DeleteConfirmationComponent {
     }
       }
   }
-
+  refreshRoute() {
+    this.route.data.subscribe(() => {
+      const currentUrl = this.router.url;
+      this.routeReuseStrategy.shouldReuseRoute = () => false;
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate([currentUrl]);
+      });
+    });
+  }
   onConfirmClick(): void {
     
     if (this.data.iduser) {
-      this._financeService.deleteUser(this.data.iduser).subscribe((data) => {
-   
-        this.matdialog.closeAll();
-        
+      this._userService.deleteUser(this.data.iduser).subscribe((data) => {
+        this.matdialog.closeAll()
+       
+        this.refreshRoute()
       });
     } 
     if (this.data.idrole) {
@@ -70,7 +80,7 @@ export class DeleteConfirmationComponent {
         dialogRefClosedPromise.then((result) => {
           console.log('The confirmation dialog was closed', result);
           this.router.navigateByUrl('/',{skipLocationChange:true} ).then(() => {
-            this.router.navigate(['/dashboards/finance']);
+            this.router.navigate(['/dashboards/users']);
           });
         });
       });

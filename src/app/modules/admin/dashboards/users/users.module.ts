@@ -61,19 +61,28 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { usersRoutes } from './users.routing';
+import { PhoneComponent } from '../phone/phone.component';
+import { AddUserComponent } from '../add-user/add-user.component';
+import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirmation.module';
 
 
 @NgModule({
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  declarations: [],
+  declarations: [UsersComponent,
+    PhoneComponent,
+    AddUserComponent
+  
+  ],
   imports: [
+    DeleteConfirmationModule,
+    RouterModule.forChild(usersRoutes),
     CommonModule,
     MatButtonModule,
     MatDividerModule,
     MatIconModule,
     ReactiveFormsModule,
     MatMenuModule,
-
     MatProgressBarModule,
     MatSortModule,
     MatTableModule,
