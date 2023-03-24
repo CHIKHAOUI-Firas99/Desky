@@ -105,7 +105,13 @@ export class AddRoleComponent {
 
     this._roleService.addRole(role).subscribe(() =>
     {this.dialogRef.close()},
-    (err)=>{this.errMessage=err["error"]["detail"];console.log(this.errMessage);
+    (err)=>{this.errMessage=err["error"]["detail"];
+    
+    if (this.errMessage==undefined) {
+      this.errMessage=err.name+" : "+err.statusText
+     }
+    
+    console.log(this.errMessage);
    });
   }
 

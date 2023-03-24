@@ -30,10 +30,10 @@
                 <!-- <h2 class="text-3xl font-semibold tracking-tight leading-8" style="color: rgb(64, 50, 50);margin-top: 1%; text-decoration:underline ;display: inline;" >
                     Manage roles</h2> -->
                   <div style="text-align: left;float:right ;display: inline;margin-top: 2%;margin-right: 1%;">
-                    <input  matInput (keyup)="applyFilter($event)" placeholder="Search" #input matColumnDef="10">
+                    <input  matInput  (keyup)="applyFilter($event)" placeholder="Search" #input matColumnDef="10">
                     <mat-icon >search</mat-icon>
                   </div>
-                  <button  [disabled]="!canAdd" mat-raised-button color="primary" style="float:left ;display: inline; margin-left: 1%;margin-top: 1%;"  (click)="openDialog()">
+                  <button  [disabled]="!canAdd" mat-raised-button color="primary" style="float:left ;display: inline; margin-left: 2%;margin-top: 1%;"  (click)="openDialog()">
                     <span style="display: inline-block;">New Role</span>
                   </button>
             </div>

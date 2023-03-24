@@ -52,7 +52,13 @@ export class AddUserComponent implements OnInit {
     };
     this._authService.signUp(user).subscribe(() =>
      {this.matdialog.closeAll();this.refreshRoute()},
-     (err)=>{this.errMessage=err["error"]["detail"];console.log(this.errMessage);
+     (err)=>{console.log(err);
+     ;this.errMessage=err["error"]["detail"];
+     if (this.errMessage==undefined) {
+      this.errMessage=err.name+" : "+err.statusText
+     }
+     
+     console.log(this.errMessage);
     })
     
     

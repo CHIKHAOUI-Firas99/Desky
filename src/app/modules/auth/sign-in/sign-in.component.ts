@@ -21,6 +21,7 @@ export class AuthSignInComponent implements OnInit
     };
     signInForm: UntypedFormGroup;
     showAlert: boolean = false;
+    errMessage: any;
 
     /**
      * Constructor
@@ -94,11 +95,18 @@ export class AuthSignInComponent implements OnInit
 
                     // Reset the form
                     this.signInNgForm.resetForm();
-
+                   
+                        this.errMessage=response['error']['detail']
+                      
+                       if (this.errMessage==undefined) {
+                        this.errMessage="Error has been occured"
+                       
+                        
+                       }
                     // Set the alert
                     this.alert = {
                         type   : 'error',
-                        message: 'Wrong email or password'
+                        message: this.errMessage
                     };
 
                     // Show the alert
