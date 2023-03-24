@@ -42,12 +42,16 @@
                 
                 <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
                
-               <div >
-               <input matInput (keyup)="applyFilter($event)" placeholder="Search" #input matColumnDef="10">
-                    <mat-icon >search</mat-icon>
-                <button  [disabled]="!canAdd" class="btn btn-primary" style=" display: inline; float: right;"  (click)="AddNewRow()">New User</button>
+              <div style="float: right;">
+                <input matInput (keyup)="applyFilter($event)"  placeholder="Search" #input matColumnDef="10">
+                      <mat-icon >search</mat-icon>
+                  </div>
+                  <button  [disabled]="!canAdd" mat-raised-button color="primary" (click)="AddNewRow()">
+                    <span style="display: inline-block;">New User</span>
+                  </button>
+                  
   
-            </div>
+         
                    
                    
                  

@@ -220,12 +220,12 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.users.filter.length > 0) {
       let u = this.Tabusers.filter(
         (n) =>
-          n.id.toString().includes(this.users.filter) ||
-          n.email.includes(this.users.filter) ||
-          n.phoneNumber.includes(this.users.filter) ||
-          n.name.includes(this.users.filter) ||
-          n.role.includes(this.users.filter) ||
-          n.authorization.toString().includes(this.users.filter)
+          n.id.toString().toLowerCase().includes(this.users.filter) ||
+          n.email.toLowerCase().includes(this.users.filter) ||
+          n.phoneNumber.toLowerCase().includes(this.users.filter) ||
+          n.name.toLowerCase().includes(this.users.filter) ||
+          n.role.toLowerCase().includes(this.users.filter) ||
+          n.authorization.toString().toLowerCase().includes(this.users.filter)
       );
       this.fillFormTab(u);
     } else this.fillFormTab(this.Tabusers);

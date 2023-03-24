@@ -94,12 +94,15 @@ export class RolesComponent implements ControlValueAccessor {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.roles.filter = filterValue.trim().toLowerCase();
+    console.log(this.roles.filter);
+    
     if (this.roles.filter.length > 0) {
       let u = this.TabRoles.filter(
         (n) =>
-          n.id.toString().includes(this.roles.filter) ||
-          n.id.toString().includes(this.roles.filter) ||
-          n.name.includes(this.roles.filter)
+          n.id.toString().toLowerCase().includes(this.roles.filter) ||
+          
+          n.name.toLowerCase().includes(this.roles.filter)||
+          n.claims.toString().toLowerCase().includes(this.roles.filter)
       );
       this.fillFormTab(u);
     } else this.fillFormTab(this.TabRoles);
