@@ -5,7 +5,7 @@ pipeline {
       
 stage('Build new image') {
 	steps{
-	sh "docker build -t firaschikhaoui/test-front:latest ."    	              
+	sh "docker build -t firaschikhaoui/test-frontv3:latest ."    	              
          }
          }
 
