@@ -1,0 +1,43 @@
+apiVersion: apps/v1 # Kubernetes API version
+kind: Deployment  # Kubernetes resource kind we are creating
+metadata:
+  name: front
+spec:
+  selector:
+    matchLabels:
+      app: front
+  replicas: 1 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+      - name: front
+        image: firaschikhaoui/test-frontv3:latest # Image that will be used to containers in the cluster
+        ports:
+        - containerPort: 80 # The port that the container is running on in the cluster
+        volumeMounts:
+          - name: front-configmap
+            mountPath: /etc/nginx/conf.d/default.conf
+            subPath: default.conf
+      volumes:
+        - name: front-configmap
+          configMap:
+            name: front-configmap
+
+
+---
+
+kind: Service  # Kubernetes API version
+apiVersion: v1 # Kubernetes resource kind we are creating
+metadata:
+  name: front
+spec:
+  selector:
+    app: front
+  ports:
+  - protocol: TCP
+    port: 80   # The port that the service is running on in the cluster
+    targetPort: 80   # The port exposed by the service
+  type: NodePort     # type of the service.
