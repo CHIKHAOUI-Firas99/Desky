@@ -69,4 +69,4 @@ export const appConfig: AppConfig = {
         }
     ]
 };
-export const Url="http://localhost:8000"
+export const Url="http://192.168.162.104:30711"
