@@ -18,7 +18,7 @@ stage('Push new image') {
 	}
 stage('Deployment') {
 	steps{  
-        sh 'k apply -f deployment-service.yml' 
+        sh 'kubectl apply -f deployment-service.yml' 
     }
 }
   }
