@@ -12,7 +12,7 @@ stage('Build new image') {
 stage('Push new image') {
 	steps{
 	withDockerRegistry([credentialsId: "docker-credentials", url: ""]) {
-  	sh "docker push firaschikhaoui/test-front:latest"
+  	sh "docker push firaschikhaoui/test-frontv3:latest"
 	}
 	}
 	}
