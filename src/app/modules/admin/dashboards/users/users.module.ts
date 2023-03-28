@@ -65,6 +65,8 @@ import { usersRoutes } from './users.routing';
 import { PhoneComponent } from '../phone/phone.component';
 import { AddUserComponent } from '../add-user/add-user.component';
 import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirmation.module';
+import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService  } from 'ngx-toastr';
+
 
 
 @NgModule({
@@ -76,6 +78,7 @@ import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirma
   ],
   imports: [
     DeleteConfirmationModule,
+
     RouterModule.forChild(usersRoutes),
     CommonModule,
     MatButtonModule,
@@ -140,7 +143,13 @@ import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirma
     OverlayModule,
     PortalModule,
     ScrollingModule,
-
+    ToastrModule.forRoot(),
+    ToastNoAnimationModule,
+  ],
+  providers: [
+    ToastrService,
+    ToastNoAnimation
+   
   ]
 })
 export class UsersModule { }

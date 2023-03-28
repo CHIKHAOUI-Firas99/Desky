@@ -1,0 +1,45 @@
+/* @media only screen and (min-width: 768px) {
+  .responsive-button {
+    width: auto;
+    max-width: none;
+  }
+} */
+
+.c1 {
+	text-align: center;
+	font-size: small;
+}
+th {
+	text-align: center;
+	font-size: small;
+}
+td {
+	text-align: center;
+	font-size: small;
+}
+h2 {
+	text-align: center;
+	font-size: small;
+}
+.addButton {
+	text-align: center;
+	font-size: small;
+	zoom: 0.7;
+	border-radius: 100px;
+	color: white;
+	background-color: aqua;
+}
+.c2 {
+	zoom: 0.7;
+}
+.responsive-button {
+	font-size: 1rem;
+	padding: 0.5rem 1rem;
+	width: 100%;
+	max-width: 300px;
+}
+
+
+  .error.mat-snack-bar-container {
+	background-color: red;
+  }

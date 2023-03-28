@@ -7,6 +7,7 @@ import {
 } from "@angular/material/dialog";
 import { ActivatedRoute, Router, RouteReuseStrategy } from "@angular/router";
 import { AuthService } from "app/core/auth/auth.service";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-add-user",
@@ -31,12 +32,17 @@ export class AddUserComponent implements OnInit {
     private _authService: AuthService,
     private router: Router,
     private route: ActivatedRoute,
-    private routeReuseStrategy: RouteReuseStrategy
+    private routeReuseStrategy: RouteReuseStrategy,
+    private toastr:ToastrService
   ) {}
 
   ngOnInit() {
     this.tabRoleNames = this.data.roles;
   }
+
+  showToast(message:string,title:string): void {
+    this.toastr.success(message, title);
+   }
 
   onReset(f: NgForm) {
     f.resetForm();
@@ -51,7 +57,9 @@ export class AddUserComponent implements OnInit {
       authorization: form.value["authorization"],
     };
     this._authService.signUp(user).subscribe(() =>
-     {this.matdialog.closeAll();this.refreshRoute()},
+     {
+      this.showToast('user added','success')
+      this.matdialog.closeAll();this.refreshRoute()},
      (err)=>{console.log(err);
      ;this.errMessage=err["error"]["detail"];
      if (this.errMessage==undefined) {

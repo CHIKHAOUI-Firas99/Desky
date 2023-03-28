@@ -64,6 +64,7 @@ import { RolesComponent } from './roles.component';
 import { rolesRoutes } from './roles.routing';
 import { AddRoleComponent } from '../add-role/add-role.component';
 import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirmation.module';
+import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService } from 'ngx-toastr';
 
 
 @NgModule({
@@ -138,7 +139,13 @@ import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirma
     OverlayModule,
     PortalModule,
     ScrollingModule,
-
+    ToastrModule.forRoot(),
+    ToastNoAnimationModule,
+  ],
+  providers: [
+    ToastrService,
+    ToastNoAnimation
+   
   ]
 })
 export class RolesModule { }

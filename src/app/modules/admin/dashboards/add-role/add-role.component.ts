@@ -8,6 +8,7 @@ import {
 import { ActivatedRoute, Router, RouteReuseStrategy } from "@angular/router";
 import { RoleService } from "app/core/role/role.service";
 import { UserService } from "app/core/user/user.service";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-add-role",
@@ -19,9 +20,12 @@ export class AddRoleComponent {
   claims: any = [];
   ValidatedClaims: any = [];
   errMessage: any;
-
+  showToast(message:string,title:string): void {
+    this.toastr.success(message, title);
+   }
   constructor(
     private dialogRef: MatDialogRef<AddRoleComponent>,
+    private toastr: ToastrService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     private _router: Router,
     private _roleService: RoleService,
@@ -104,7 +108,12 @@ export class AddRoleComponent {
     };
 
     this._roleService.addRole(role).subscribe(() =>
-    {this.dialogRef.close()},
+   
+    { this.showToast('role added','success');
+    this._router.navigateByUrl('/',{skipLocationChange:true} ).then(() => {
+      this._router.navigate(['/dashboards/roles']);
+    });
+      this.dialogRef.close()},
     (err)=>{this.errMessage=err["error"]["detail"];
     
     if (this.errMessage==undefined) {

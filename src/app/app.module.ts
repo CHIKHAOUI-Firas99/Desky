@@ -78,6 +78,7 @@ import { KeyValuePipe } from '@angular/common';
 import { UsersComponent } from './modules/admin/dashboards/users/users.component';
 import { MapConceptorComponent } from './modules/admin/dashboards/map-conceptor/map-conceptor.component';
 import { MapComponent } from './modules/admin/dashboards/map/map.component';
+import { ToastNoAnimation, ToastrModule, ToastrService } from 'ngx-toastr';
 
 
 library.add(faIcons, faFontAwesome);
@@ -106,12 +107,15 @@ const routerConfig: ExtraOptions = {
         CoreModule,
 
         // Layout module of your application
-        LayoutModule
+        LayoutModule,
+       
+
     ],
     bootstrap   : [
         AppComponent
     ],
-    schemas: [ CUSTOM_ELEMENTS_SCHEMA , NO_ERRORS_SCHEMA]
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA , NO_ERRORS_SCHEMA],
+  
 })
 export class AppModule
 {

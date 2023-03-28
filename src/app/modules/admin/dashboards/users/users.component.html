@@ -1,28 +1,4 @@
-<style>
-.c1,th,td,h2{
-  text-align: center;
-}
-  
-.responsive-button {
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  width: 100%;
-  max-width: 300px;
-}
 
-@media only screen and (min-width: 768px) {
-  .responsive-button {
-    width: auto;
-    max-width: none;
-  }
-}
-
-  
-  
-  
-  
-  </style>
-  
  
             <div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden" >
               <div>
@@ -43,11 +19,14 @@
                 <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
                
               <div style="float: right;">
-                <input matInput (keyup)="applyFilter($event)"  placeholder="Search" #input matColumnDef="10">
+                <input  matInput (keyup)="applyFilter($event)"  placeholder="Search" #input matColumnDef="10">
                       <mat-icon >search</mat-icon>
                   </div>
-                  <button  [disabled]="!canAdd" mat-raised-button color="primary" (click)="AddNewRow()">
-                    <span style="display: inline-block;">New User</span>
+                  <button  [disabled]="!canAdd" class="c1" 
+                  (click)="AddNewRow()">
+                  
+                  <i class="fa fa-user-plus" aria-hidden="true" style="zoom: 1.5;color: #6c757d;"></i>
+
                   </button>
                   
   
@@ -80,10 +59,13 @@
                           <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
                 
                             <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-                            <mat-form-field   *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 100%;"
-                             >
-                              <input class="c1"  matInput type="text" formControlName="name"  [readonly]="VOForm.get('VORows').value[i].isEditable" >
-                            </mat-form-field>
+                              <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 100%;">
+                                <input class="c1" required matInput type="text" formControlName="name" [readonly]="VOForm.get('VORows').value[i].isEditable">
+                                <mat-error style="text-align: center;">
+                                name field is required
+                                </mat-error>
+                                  
+                              </mat-form-field>
                             <input class="c1" matInput type="text" formControlName="name" [readonly]="VOForm.get('VORows').value[i].isEditable" *ngIf="VOForm.get('VORows').value[i].isEditable">
                             <!-- </span> -->
                 
@@ -93,14 +75,11 @@
                         <!-- email Column -->
                         <ng-container matColumnDef="email">
                           <th mat-header-cell *matHeaderCellDef > email </th>
-                          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" style="width: 15.9%;">
+                          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
                             <!-- [appearance]="true ? 'outline': 'fill'" -->
                             <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-                            <mat-form-field  *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 100%;"
-                              >
-                              <input class="c1"  matInput type="text" formControlName="email" [readonly]="VOForm.get('VORows').value[i].isEditable" style="width: 100%;">
-                            </mat-form-field>
-                            <input class="c1" matInput type="text" formControlName="email" [readonly]="VOForm.get('VORows').value[i].isEditable"  *ngIf="VOForm.get('VORows').value[i].isEditable">
+                        
+                            <input class="c1" style="width: 100%;" matInput type="text" formControlName="email" [readonly]="VOForm.get('VORows').value[i].isEditable"   >
                             <!-- </span> -->
                           </td>
                         </ng-container>
@@ -110,9 +89,23 @@
                           <th mat-header-cell *matHeaderCellDef  > Phone number </th>
                           <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" style="text-align: center;" >
                             <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-                            <mat-form-field appearance="fill" *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 100%;">
-                              <input class="c1"  matInput type="text" formControlName="phoneNumber" [readonly]="VOForm.get('VORows').value[i].isEditable" style="width: 100%;">
-                            </mat-form-field>
+                              <mat-form-field appearance="fill" *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 100%;">
+                                <input class="c1" 
+                                  required
+                                  pattern="^\+\d{3}\d{6,14}$"
+                                  required matInput type="text" formControlName="phoneNumber" [readonly]="VOForm.get('VORows').value[i].isEditable" style="width: 100%;">
+                                <mat-error style="text-align: center;" *ngIf="VOForm.get('VORows.'+i+'.phoneNumber').hasError('required')">
+                                  phone field is required
+                                </mat-error>
+                                <mat-error style="text-align: center;" *ngIf="VOForm.get('VORows.'+i+'.phoneNumber').hasError('pattern')">
+                                 
+                                Incorrect phone format
+                                </mat-error>
+                              </mat-form-field>
+                              
+
+
+                          
                             <input class="c1" matInput type="text" formControlName="phoneNumber" *ngIf="VOForm.get('VORows').value[i].isEditable" [readonly]="VOForm.get('VORows').value[i].isEditable" style="border: none;">
                 
                           </td>
@@ -138,7 +131,7 @@
   
                             <mat-form-field class="w-full" *ngIf="!VOForm.get('VORows').value[i].isEditable">
                              
-                              <mat-select [formControlName]="'roles'"  >
+                              <mat-select required [formControlName]="'roles'"  >
                                 <mat-option *ngFor="let role of tabRoleNames" [value]="role">{{role}}</mat-option>
                               </mat-select>
                             </mat-form-field>
@@ -147,9 +140,9 @@
   
   
   
-                            <button  [ngClass]="VOForm.get('VORows').value[i].roles=='admin' ?'btn btn-danger':'btn btn-warning'" style="text-align: center;border-radius: 50px; width: 100%;" matInput type="text" *ngIf="VOForm.get('VORows').value[i].isEditable" [readonly]="VOForm.get('VORows').value[i].isEditable" >
-  {{VOForm.get('VORows').value[i].roles}}
-                            </button>
+                            <input class="c1"  matInput type="text" formControlName="roles" *ngIf="VOForm.get('VORows').value[i].isEditable" [readonly]="VOForm.get('VORows').value[i].isEditable" style="border: none;">
+                        
+               
                           </td>
                 
         </ng-container>
@@ -171,7 +164,12 @@
   
          <!-- Button trigger modal -->
          <div *ngIf="VOForm.get('VORows').value[i].isEditable" class="responsive-button" >
-          <button class="btn btn-outline-primary btn-md c1 responsive-button" style="border-radius: 25px;" (click)="openDialog(VOForm,i)" >show phone details</button>
+          <button   
+          (click)="openDialog(VOForm,i)" >
+          <i class="fa fa-mobile-screen-button"  aria-hidden="true" style="zoom: 2;color: #6c757d;" ></i>
+        
+        </button>
+
         </div>
           </td>
         </ng-container>
@@ -233,7 +231,7 @@
                         <ng-container matColumnDef="action">
                           <th mat-header-cell *matHeaderCellDef> Action </th>
                           <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-                            <button mat-icon-button class="material-icons app-toolbar-menu save-button c1"
+                            <button mat-icon-button class="material-icons app-toolbar-menu save-button c1" [disabled]="VOForm.invalid"
                                                     matTooltip="Save Changes" (click)="SaveVO(VOForm, i, VOForm.get('VORows').value[i].id)"
                                                     *ngIf="!VOForm.get('VORows').value[i].isEditable" >
                                                     <mat-icon style="color: green;">check_circle</mat-icon>
@@ -277,7 +275,7 @@
                     </mat-card>
                     
              
-                        <mat-paginator style="margin-top: 5%;"  [pageSizeOptions]="[3, users.data.length>8? users.data.length:'1'  ]" 
+                        <mat-paginator style="margin-top: 1%;"  [pageSizeOptions]="[20, users.data.length>8? users.data.length:'10'  ]" 
                           showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
                   </form>
                 

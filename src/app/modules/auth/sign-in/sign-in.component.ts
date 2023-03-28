@@ -74,6 +74,8 @@ export class AuthSignInComponent implements OnInit
         this.showAlert = false;
 
         // Sign in
+        console.log(this.signInForm.value);
+        
         this._authService.signIn(this.signInForm.value)
             .subscribe(
                 () => {

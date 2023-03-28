@@ -26,6 +26,7 @@ import { RoleService } from "app/core/role/role.service";
 import { UserService } from "app/core/user/user.service";
 import { User } from "app/core/user/user.types";
 import { ApexOptions } from "ng-apexcharts";
+import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { AddUserComponent } from "../add-user/add-user.component";
 import { DeleteConfirmationComponent } from "../delete-confirmation/delete-confirmation.component";
@@ -75,7 +76,8 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     private _roleService: RoleService,
     private dialog: MatDialog,
     private _claimsService: ClaimsService,
-    private _userService: UserService
+    private _userService: UserService,
+    private toastr: ToastrService
   ) {}
 
   // -----------------------------------------------------------------------------------------------------
@@ -120,6 +122,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     this.emitPageEvent(pageEvt);
   }
 
+  showToast(message:string,title:string): void {
+   this.toastr.success(message, title);
+  }
+  
   goToChange() {
     this.paginator.pageIndex = this.goTo - 1;
     const event: PageEvent = {
@@ -254,6 +260,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       disableClose: true,
       data: {
         iduser: id,
+        object:'user',
         message: "Are you sure want to delete?",
         buttonText: {
           ok: "Save",
@@ -274,7 +281,8 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     };
     if (id) 
     {
-      this._usersService.updateUser(id, user).subscribe() 
+      this._usersService.updateUser(id, user).subscribe(()=>this.showToast('User updated','success')) 
+      
     } 
     else 
     {

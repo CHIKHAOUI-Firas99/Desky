@@ -70,6 +70,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faIcons } from '@fortawesome/free-solid-svg-icons';
 import { faFontAwesome } from '@fortawesome/free-brands-svg-icons';
+import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService } from 'ngx-toastr';
 
 library.add(faIcons, faFontAwesome);
 
@@ -131,7 +132,14 @@ library.add(faIcons, faFontAwesome);
   MatSelectModule,
   KeyValuePipe,
     
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
+    ToastNoAnimationModule,
+  ],
+  providers: [
+    ToastrService,
+    ToastNoAnimation
+   
   ]
 })
 export class AddRoleModule { }

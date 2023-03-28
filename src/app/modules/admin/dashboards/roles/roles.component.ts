@@ -20,6 +20,7 @@ import { AuthService } from "app/core/auth/auth.service";
 import { ClaimsService } from "app/core/claimsManagement/claims.service";
 import { RoleService } from "app/core/role/role.service";
 import { Role } from "app/core/role/role.types";
+import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { AddRoleComponent } from "../add-role/add-role.component";
 import { DeleteConfirmationComponent } from "../delete-confirmation/delete-confirmation.component";
@@ -63,7 +64,9 @@ export class RolesComponent implements ControlValueAccessor {
     private _roleService: RoleService,
     private _RoleService: RoleService,
     private dialog: MatDialog,
-    private _claimsService: ClaimsService
+    private _claimsService: ClaimsService,
+    private toastr: ToastrService
+
   ) {}
   writeValue(obj: any): void {
     throw new Error("Method not implemented.");
@@ -250,6 +253,7 @@ export class RolesComponent implements ControlValueAccessor {
       disableClose: true,
       data: {
         idrole: id,
+        object:'role',
         message: "Are you sure want to delete?",
         buttonText: {
           ok: "Save",
@@ -317,6 +321,7 @@ export class RolesComponent implements ControlValueAccessor {
     };
     if (id) {
       this._RoleService.updateRole(id, role).subscribe((data) => {
+        this.showToast('role updated','success')
         console.log(role);
       });
     } else {
@@ -325,6 +330,9 @@ export class RolesComponent implements ControlValueAccessor {
       });
     }
   }
+  showToast(message:string,title:string): void {
+    this.toastr.success(message, title);
+   }
   openDialog(): void {
     const dialogRef = this.dialog.open(AddRoleComponent, {
       width: "640px",

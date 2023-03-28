@@ -3,6 +3,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { ActivatedRoute, Router, RouteReuseStrategy } from '@angular/router';
 import { RoleService } from 'app/core/role/role.service';
 import { UserService } from 'app/core/user/user.service';
+import { ToastrService } from 'ngx-toastr';
 import { PhoneComponent } from '../phone/phone.component';
 import { UsersService } from '../users.service';
 
@@ -21,7 +22,8 @@ export class DeleteConfirmationComponent {
     private phonedialogRef: MatDialogRef<PhoneComponent>,
     private _userService:UsersService, 
     private router:Router,private matdialog:MatDialog,
-    private dialogRef: MatDialogRef<DeleteConfirmationComponent>
+    private dialogRef: MatDialogRef<DeleteConfirmationComponent>,
+    private toastr:ToastrService
     
     ,private _roleService: RoleService
     , private route: ActivatedRoute,
@@ -44,10 +46,15 @@ export class DeleteConfirmationComponent {
       });
     });
   }
+  showToast(message:string,title:string): void {
+    this.toastr.warning(message, title);
+   }
+   object :string=this.data.object
   onConfirmClick(): void {
     
     if (this.data.iduser) {
       this._userService.deleteUser(this.data.iduser).subscribe((data) => {
+        this.showToast(this.object+' has been removed ','Success!')
         this.matdialog.closeAll()
        
         this.refreshRoute()
@@ -55,6 +62,8 @@ export class DeleteConfirmationComponent {
     } 
     if (this.data.idrole) {
       this._roleService.deleteRole(this.data.idrole).subscribe((data) => {
+        this.showToast(this.object+' has been removed ', 'Success!')
+
         const dialogRefClosedPromise = new Promise((resolve) => {
           this.matdialog.closeAll();
           resolve(true);
