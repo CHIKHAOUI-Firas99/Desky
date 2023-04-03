@@ -195,8 +195,8 @@
         
   
             
-              <button  mat-icon-button mat-icon-button class="material-icons app-toolbar-menu cancel-button c1"
-              matTooltip="user unauthorized" color="warn"
+              <button  mat-icon-button color="warn" mat-icon-button class="material-icons app-toolbar-menu cancel-button c1"
+              matTooltip="user unauthorized" 
              
               
               *ngIf="VOForm.get('VORows').value[i].isEditable && ! VOForm.get('VORows').value[i].authorization ">
@@ -243,7 +243,7 @@
           <mat-icon style="color: green;">check_circle</mat-icon>
         </button>
   
-        <button class="material-icons app-toolbar-menu cancel-button"
+        <button mat-icon-button color="warn" mat-icon-button class="material-icons app-toolbar-menu cancel-button c1"
           matTooltip="Cancel Changes" color="warn" (click)="CancelSVO(VOForm,i)">
           <mat-icon>cancel</mat-icon>
         </button>
