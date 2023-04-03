@@ -22,22 +22,31 @@ h2 {
 	font-size: small;
 }
 .addButton {
-	text-align: center;
-	font-size: small;
 	zoom: 0.7;
-	border-radius: 100px;
-	color: white;
-	background-color: aqua;
+	
+}
+mat-form-field{
+    margin-top: 7%;
 }
 .c2 {
-	zoom: 0.7;
+	zoom: 0.9;
+}
+.action {
+	zoom: 0.2;
+	width: 2%;
+
 }
 .responsive-button {
 	font-size: 1rem;
-	padding: 0.5rem 1rem;
+	
 	width: 100%;
 	max-width: 300px;
 }
+// .responsive-button {
+//     border-radius: 25px;
+//     width: 3%;
+//     word-wrap: break-word;
+// }
 
 
   .error.mat-snack-bar-container {

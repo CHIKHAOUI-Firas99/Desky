@@ -60,27 +60,18 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { RolesComponent } from './roles.component';
-import { rolesRoutes } from './roles.routing';
-import { AddRoleComponent } from '../add-role/add-role.component';
+import { PhoneComponent } from '../phone/phone.component';
+import { AddUserComponent } from '../add-user/add-user.component';
 import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirmation.module';
-import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService } from 'ngx-toastr';
-import { ColorPickerModule } from 'ngx-color-picker';
-import { NgxColorsModule } from 'ngx-colors';
-import { HammerModule } from '@angular/platform-browser';
-import { TagsUpdateComponent } from '../tags-update/tags-update.component';
+import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService  } from 'ngx-toastr';
+import { TagsUpdateComponent } from './tags-update.component';
+
+
 
 
 @NgModule({
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  declarations: [RolesComponent,
-    AddRoleComponent,
-    TagsUpdateComponent
-  ],
+  declarations: [],
   imports: [
-    RouterModule.forChild(rolesRoutes),
-    DeleteConfirmationModule,
-    ColorPickerModule,
     CommonModule,
     MatButtonModule,
     MatDividerModule,
@@ -146,18 +137,12 @@ import { TagsUpdateComponent } from '../tags-update/tags-update.component';
     ScrollingModule,
     ToastrModule.forRoot(),
     ToastNoAnimationModule,
-    NgxColorsModule,
-    NgxColorsModule,
-    ColorPickerModule,
-    HammerModule,
-    OverlayModule,
-    ColorPickerModule
-    
   ],
   providers: [
     ToastrService,
     ToastNoAnimation
    
   ]
+  
 })
-export class RolesModule { }
+export class TagsUpdateModule { }

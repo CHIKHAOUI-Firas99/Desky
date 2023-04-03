@@ -32,6 +32,7 @@ import { AddUserComponent } from "../add-user/add-user.component";
 import { DeleteConfirmationComponent } from "../delete-confirmation/delete-confirmation.component";
 import { PhoneComponent } from "../phone/phone.component";
 import { UsersService } from "../users.service";
+import { hex } from "chroma-js";
 @Component({
   selector: "app-users",
   templateUrl: "./users.component.html",
@@ -160,18 +161,38 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       data: this.getPhoneInfo(VOFormElement, index),
     });
   }
+   isDarkColor(hexColor: string): boolean {
+    // Convert hex color to RGB
+    if (hexColor) {
+      const r = parseInt(hexColor.slice(1, 3), 16);
+      const g = parseInt(hexColor.slice(3, 5), 16);
+      const b = parseInt(hexColor.slice(5, 7), 16);
+      
+      // Calculate luminance
+      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+      
+      // Return true if luminance is less than 0.5 (dark), false otherwise (light)
+      return luminance < 0.5;
+  
+    } else {
+      return false
+    }
+  }
+  
   fillFormTab(tab: Array<any>) {
     this.VOForm = this.fb.group({
       VORows: this.fb.array(
         tab
           .filter((user) => user != undefined)
           .map((val) =>
+          
             this.fb.group({
               id: new FormControl(val.id),
               name: new FormControl(val.name),
               email: new FormControl(val.email),
               phoneNumber: new FormControl(val.phoneNumber),
-              roles: new FormControl(val.role),
+              roles: new FormControl(val.role !== null ? val.role : 'None'), 
+              color: new FormControl(val.color),
               phone: new FormControl(val.phone),
               authorization: new FormControl(val.authorization),
               action: new FormControl("existingRecord"),

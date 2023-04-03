@@ -1,0 +1,57 @@
+
+  <div style="height: 100%;">
+  <button mat-icon-button aria-label="close" style="float: right;" (click)="closeDialog()">
+    <mat-icon>close</mat-icon>
+  </button>
+<br> 
+<h2 style="text-align: center;font-size: 26px">Tags</h2>
+
+
+  <form [formGroup]="form" >
+    
+   <br><br>
+
+    <div formArrayName="extraTags" style="width: 100%;">
+      <div *ngFor="let tag of tags.controls; let i=index" [formGroupName]="i">
+        <div style="display: inline-block;">
+          <label for="tag-key">Key:</label>
+          <mat-form-field style="margin-left: 10px;">
+            <input matInput type="text" id="tag-key" formControlName="key" 
+              (keyup)="checkFormControlChanges($event, i)" >
+          </mat-form-field>
+        </div>
+        <div style="display: inline-block;margin-left: 10px;">
+          <label for="tag-value">Value:</label>
+          <mat-form-field style="margin-left: 15px;">
+            <input matInput type="text" id="tag-value" formControlName="value"  style="margin-left: 10px" 
+              (keyup)="checkFormControlChanges($event, i);">
+          </mat-form-field>
+        </div>
+
+        <button mat-icon-button 
+          [disabled]="disabled[i]"
+          (click)="addTag()" 
+          class="material-icons app-toolbar-menu add-button">
+          <mat-icon style="color: green;">add_circle</mat-icon>
+        </button>
+
+        <button mat-icon-button class="material-icons app-toolbar-menu delete-button"
+          matTooltip="remove tag" color="warn" (click)="removeTag(i)"
+          [disabled]="!cancel()">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+      <div class="alert alert-warning" style="width:50%;margin-left: 25%;text-align: center;"
+      *ngIf="tagMessage"
+       >
+    key already exist
+    </div>
+    </div>
+<br><br>
+    <div class="mat-dialog-actions">
+      <button class="btn btn-primary" [disabled]="tagMessage" (click)="submit()">OK</button>
+      <button mat-flat-button (click)="closeDialog()" style="margin-left: 2px;">Close</button>
+    </div>
+  </form>
+
+</div>

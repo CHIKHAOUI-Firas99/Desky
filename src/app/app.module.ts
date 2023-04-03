@@ -79,6 +79,9 @@ import { UsersComponent } from './modules/admin/dashboards/users/users.component
 import { MapConceptorComponent } from './modules/admin/dashboards/map-conceptor/map-conceptor.component';
 import { MapComponent } from './modules/admin/dashboards/map/map.component';
 import { ToastNoAnimation, ToastrModule, ToastrService } from 'ngx-toastr';
+import { NgxColorsModule } from 'ngx-colors';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { TagsUpdateComponent } from './modules/admin/dashboards/tags-update/tags-update.component';
 
 
 library.add(faIcons, faFontAwesome);
@@ -109,7 +112,8 @@ const routerConfig: ExtraOptions = {
         // Layout module of your application
         LayoutModule,
        
-
+        NgxColorsModule,
+        ColorPickerModule,
     ],
     bootstrap   : [
         AppComponent

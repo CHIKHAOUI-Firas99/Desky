@@ -7,32 +7,51 @@
       </blockquote>
       <div *ngIf="data!='None' ; else BlocElse">
         <div mat-dialog-content>
-          <form  #f="ngForm" novalidate (ngSubmit)="submit(f);onReset(f)">
+          <form  [formGroup]="form" novalidate >
     
     
           <label matLabel for="name" > Name : </label> <br>
           <mat-form-field style="width: 60%;">
-            <input name="name" matInput placeholder="name" [(ngModel)]="name"  id="name"
-            required
-            #identifname="ngModel"
-            />
+            <input name="name" matInput placeholder="name" id="name"
+                   formControlName="name"/>
+            <ngx-colors ngx-colors-trigger 
+                         [hideColorPicker]="false" [hideTextInput]="true"
+                         [placement]="'top'"  
+                         formControlName="color"
+                         name="colorToAdd" style="display: inline; float: right;">
+            </ngx-colors>
+          
+            
           </mat-form-field>
-          <div style="width:60%;text-align: center;display: inline-block;" 
+          <div class="alert alert-danger" style="width:60%;text-align: center;display: inline-block;"  *ngIf="form.controls['name'].invalid && form.controls['name'].touched">
+      name field is required
+      </div>
+          <div class="alert alert-warning" style="width:60%;text-align: center;display: inline-block;"  *ngIf="form.controls['name'].valid && form.controls['name'].touched &&
+                               form.controls['color'].invalid">
+              Please pick a color.
+          </div>
+          
+          <!-- <div style="width:60%;text-align: center;display: inline-block;" 
+           class="alert alert-warning" *ngIf="identifname.valid && identifcolor.invalid && identifname.touched ">
+            Please pick a color
+          </div> -->
+          <!-- <div style="width:60%;text-align: center;display: inline-block;" 
           *ngIf="identifname.errors?.required && identifname.touched"
   class="alert alert-danger">
   Name is a required field
-  </div>
+  </div> -->
     <br>
+
     
           <label matLabel for="claims" > Claims : </label> <br>
           <mat-form-field style="width: 60%;">
             
           
             <mat-select name="ValidatedClaims"
-             multiple placeholder="Claims" [(ngModel)]="ValidatedClaims" 
+             multiple placeholder="Claims" 
+             formControlName="claims" 
             
             > 
-            <!-- Loop through each group via the groups array -->
             <mat-optgroup   
             *ngFor="let group of claims" 
                               [label]="group.name">
@@ -47,15 +66,79 @@
             
           </mat-select>
           </mat-form-field>
+         <br>
+        
+          <mat-label>Tags</mat-label> <br>
+<div>
+          <mat-form-field style="width: 60%;">
+            <mat-select placeholder="Tags" formControlName="tags" multiple >
+              <mat-optgroup *ngFor="let tag of alltags" [label]="tag.key">
+                <mat-option  [value]="tag.id">{{ tag.value }}</mat-option>
+              </mat-optgroup>
+            </mat-select>
+          </mat-form-field>
+         
+        </div>
+        
+      
+        <div formArrayName="extraTags">
+          <div *ngFor="let tag of tags.controls; let i=index" [formGroupName]="i">
+            <div style="display: inline-block;">
+              <label for="tag-key">Key:</label>
+              <mat-form-field style="margin-left: 10px;">
+                <input matInput type="text" id="tag-key" formControlName="key" 
+                  (keyup)="checkFormControlChanges($event, i)" >
+              </mat-form-field>
+            </div>
+            <div style="display: inline-block;margin-left: 10px;">
+              <label for="tag-value">Value:</label>
+              <mat-form-field style="margin-left: 15px;">
+                <input matInput type="text" id="tag-value" formControlName="value"  style="margin-left: 10px" 
+                  (keyup)="checkFormControlChanges($event, i);">
+              </mat-form-field>
+            </div>
+        
+            <button mat-icon-button 
+            [disabled]="disabled[i]"
+              (click)="addTag()" 
+              
+              class="material-icons app-toolbar-menu add-button">
+             
+              <mat-icon style="color: green;">add_circle</mat-icon>
+            </button>
+        
+            <button mat-icon-button class="material-icons app-toolbar-menu delete-button"
+              matTooltip="remove tag" color="warn" (click)="removeTag(i)"
+              [disabled]="!cancel()"
+              >
+              <mat-icon>cancel</mat-icon>
+              <!-- {{form.get('extraTags').length < 1}} -->
+            </button>
+          </div>
+          <div class="alert alert-warning" style="width:50%;margin-left: 25%;text-align: center;"
+          *ngIf="tagMessage"
+           >
+        key already exist
+        </div>
+        </div>
+        
+        
+          
+          
+            
+          <br><br>
+     
           <div style="width:60%;text-align: center;display: inline-block;"
           *ngIf="errMessage"
            class="alert alert-danger">
         {{errMessage}}
       </div>
+      
           <br>
+          
           <div mat-dialog-actions class="text-center">
             <button type="button" mat-button (click)="close()">Cancel</button>
-            <button  class="btn btn-primary"  [disabled]="f.invalid">Submit</button>
+            <button  class="btn btn-primary"  [disabled]="form.invalid || tagMessage" (click)="submit(form);onReset(form)" >Submit</button>
           </div>
      </form>
          </div>
@@ -66,9 +149,9 @@
     
       </div>
       <ng-template #BlocElse style="text-align: center;">
-        <blockquote class="blockquote">
-          <p class="lead">No phone affected yet</p>
-        </blockquote>
+       
         
         </ng-template>
+      
+
     </div>

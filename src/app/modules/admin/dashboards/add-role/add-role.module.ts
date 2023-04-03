@@ -1,7 +1,7 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule, KeyValuePipe } from '@angular/common';
 
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
 import { FuseModule } from '@fuse';
@@ -71,14 +71,19 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faIcons } from '@fortawesome/free-solid-svg-icons';
 import { faFontAwesome } from '@fortawesome/free-brands-svg-icons';
 import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService } from 'ngx-toastr';
-
+import { ColorPickerModule } from 'ngx-color-picker';
+import { NgxColorsModule } from 'ngx-colors';
+import { validColorValidator } from 'ngx-colors';
+import { OverlayModule } from '@angular/cdk/overlay';
 library.add(faIcons, faFontAwesome);
 
 @NgModule({
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [],
   imports: [
     CommonModule,
     MatIconModule,
+   
     BrowserModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -135,6 +140,11 @@ library.add(faIcons, faFontAwesome);
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     ToastNoAnimationModule,
+    NgxColorsModule,
+    ColorPickerModule,
+    HammerModule,
+    OverlayModule,
+    ColorPickerModule
   ],
   providers: [
     ToastrService,

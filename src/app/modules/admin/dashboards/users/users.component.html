@@ -14,20 +14,32 @@
                 </div>
   
   
-                <div class="card" style="margin-left: 2%;margin-right: 2%;margin-top: 5%;" >
+                <div class="card" style="margin-top: 1%;" >
                 
+
+                  <div >
+                    <!-- <h2 class="text-3xl font-semibold tracking-tight leading-8" style="color: rgb(64, 50, 50);margin-top: 1%; text-decoration:underline ;display: inline;" >
+                        Manage roles</h2> -->
+                      <div style="text-align: left;float:right ;display: inline;margin-top: 1%;margin-right: 2%;">
+                        <input  matInput  (keyup)="applyFilter($event)" style="text-align: left;" placeholder="Search" #input matColumnDef="10">
+                        <mat-icon >search</mat-icon>
+         
+                      </div>
+                      <div style="display: inline; margin-left: 2%;">
+                        <button  [disabled]="!canAdd" class="c1" style=" margin-top: 1%;"
+                        (click)="AddNewRow()">
+                        
+                        <i class="fa fa-user-plus" aria-hidden="true" style="zoom: 1.5;color: #6c757d;"></i>
+      
+                        </button>
+                      </div>
+                     
+                </div>
+
+
                 <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
                
-              <div style="float: right;">
-                <input  matInput (keyup)="applyFilter($event)"  placeholder="Search" #input matColumnDef="10">
-                      <mat-icon >search</mat-icon>
-                  </div>
-                  <button  [disabled]="!canAdd" class="c1" 
-                  (click)="AddNewRow()">
-                  
-                  <i class="fa fa-user-plus" aria-hidden="true" style="zoom: 1.5;color: #6c757d;"></i>
-
-                  </button>
+            
                   
   
          
@@ -45,12 +57,12 @@
                       <table #table mat-table [dataSource]="users" >
                 
                         <!-- Position Column -->
-                        <ng-container matColumnDef="user_id">
+                        <ng-container matColumnDef="user_id" >
                           <th mat-header-cell *matHeaderCellDef > User_id </th>
-                          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
                          
-                              <input matInput type="text" formControlName="id" [readonly]="true" #iduser class="c1">
-                  
+                              <input  matInput type="text" formControlName="id" [readonly]="true" #iduser class="c1" >
+                  </td>
                         </ng-container>
                 
                         <!-- Name Column -->
@@ -66,6 +78,7 @@
                                 </mat-error>
                                   
                               </mat-form-field>
+                              
                             <input class="c1" matInput type="text" formControlName="name" [readonly]="VOForm.get('VORows').value[i].isEditable" *ngIf="VOForm.get('VORows').value[i].isEditable">
                             <!-- </span> -->
                 
@@ -79,7 +92,7 @@
                             <!-- [appearance]="true ? 'outline': 'fill'" -->
                             <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
                         
-                            <input class="c1" style="width: 100%;" matInput type="text" formControlName="email" [readonly]="VOForm.get('VORows').value[i].isEditable"   >
+                            <input   matInput type="text" formControlName="email" readonly   >
                             <!-- </span> -->
                           </td>
                         </ng-container>
@@ -115,19 +128,7 @@
                         <ng-container matColumnDef="roles">
                           <th mat-header-cell *matHeaderCellDef> Roles</th>
                           <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
-                            <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-                              <!-- <mat-form-field class="w-full" *ngIf="!VOForm.get('VORows').value[i].isEditable">
-                        
-                                
-                                
-                                    <mat-select  [formControlName]="'roles'" multiple>
-                                    
-                                      <mat-option *ngFor="let role of tabRoleNames" [value]="role">{{role}}</mat-option>
-                                    </mat-select>
-                                 
-                            </mat-form-field> -->
-  
-  
+                           
   
                             <mat-form-field class="w-full" *ngIf="!VOForm.get('VORows').value[i].isEditable">
                              
@@ -137,10 +138,15 @@
                             </mat-form-field>
   
   
+                            <button mat-stroked-button type="text" 
+                            style="width: 100%;"
+                            [ngStyle]="{'color': isDarkColor(VOForm.get('VORows').value[i].color) ? 'white' : 'black','background-color': VOForm.get('VORows').value[i].color }"
+                            
+                            [readonly]="VOForm.get('VORows').value[i].isEditable" *ngIf="VOForm.get('VORows').value[i].isEditable">
+                            {{ VOForm.get('VORows').value[i].roles }}
+                          </button>
   
   
-  
-                            <input class="c1"  matInput type="text" formControlName="roles" *ngIf="VOForm.get('VORows').value[i].isEditable" [readonly]="VOForm.get('VORows').value[i].isEditable" style="border: none;">
                         
                
                           </td>
@@ -228,39 +234,35 @@
                 
                 
                 
-                        <ng-container matColumnDef="action">
-                          <th mat-header-cell *matHeaderCellDef> Action </th>
-                          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-                            <button mat-icon-button class="material-icons app-toolbar-menu save-button c1" [disabled]="VOForm.invalid"
-                                                    matTooltip="Save Changes" (click)="SaveVO(VOForm, i, VOForm.get('VORows').value[i].id)"
-                                                    *ngIf="!VOForm.get('VORows').value[i].isEditable" >
-                                                    <mat-icon style="color: green;">check_circle</mat-icon>
-                                                </button>
-                
-                            <button  mat-icon-button class="material-icons app-toolbar-menu cancel-button c1"
-                                                    matTooltip="Cancel Changes" color="warn"
-                                                    (click)="CancelSVO(VOForm,i)"
-                                                    *ngIf="!VOForm.get('VORows').value[i].isEditable">
-                                                    <mat-icon>cancel</mat-icon>
-                                                </button>
-                
-                            <button mat-icon-button class="material-icons app-toolbar-menu save-button c1"
-                                                    *ngIf="VOForm.get('VORows').value[i].isEditable"
-                                                    matTooltip="Edit" color="primary" (click)="EditSVO(VOForm,i)"
-                                                    [disabled]="!canEdit"
-                                                    >
-                                                    <mat-icon>edit</mat-icon>
-                                                </button>
-                
-                            <button mat-icon-button class="material-icons app-toolbar-menu delete-button c1"
-                                                    *ngIf="VOForm.get('VORows').value[i].isEditable"
-                                                    [disabled]="!canDelete"
-                                                    matTooltip="Delete" color="warn" (click)="delete(VOForm,i)">
-                                                    <mat-icon>delete</mat-icon>
-                                                </button>
-                          </td>
-                        </ng-container>
-                
+  <ng-container matColumnDef="action">
+    <th mat-header-cell *matHeaderCellDef> Action </th>
+    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
+      <div *ngIf="!VOForm.get('VORows').value[i].isEditable">
+        <button  class="material-icons  save-button " [disabled]="VOForm.invalid"
+          matTooltip="Save Changes" (click)="SaveVO(VOForm, i, VOForm.get('VORows').value[i].id)">
+          <mat-icon style="color: green;">check_circle</mat-icon>
+        </button>
+  
+        <button class="material-icons app-toolbar-menu cancel-button"
+          matTooltip="Cancel Changes" color="warn" (click)="CancelSVO(VOForm,i)">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </div>
+  
+      <div *ngIf="VOForm.get('VORows').value[i].isEditable" style="text-align: left;">
+        <button mat-icon-button class=" material-icons app-toolbar-menu save-button " matTooltip="Edit" color="primary"
+          (click)="EditSVO(VOForm,i)" [disabled]="!canEdit ">
+          <mat-icon>edit</mat-icon>
+        </button>
+  
+        <button mat-icon-button class=" material-icons app-toolbar-menu delete-button" matTooltip="Delete" color="warn"
+          (click)="delete(VOForm,i)" [disabled]="!canDelete">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </td>
+  </ng-container>
+  
                         <tr mat-header-row *matHeaderRowDef="displayedColumns" ></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 

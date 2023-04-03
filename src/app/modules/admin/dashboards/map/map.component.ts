@@ -427,6 +427,8 @@ export class MapComponent {
     console.log(this.canvas);
     if (this.workspaceName != null){
       console.log(this.objectsInCanvas);
+      console.log(objects);
+      
       this.workSpaces.push({"name" :this.workspaceName ,"mapUrl":this.mapUrl,objects})      
       localStorage.setItem('workspace',JSON.stringify(this.workSpaces))
       this.pushWorkspace(this.workSpaces).subscribe((data) =>{

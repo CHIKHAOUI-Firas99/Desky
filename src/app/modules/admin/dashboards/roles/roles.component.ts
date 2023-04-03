@@ -5,6 +5,16 @@ import {
   Output,
   ViewChild,
 } from "@angular/core";
+import { trigger, transition, style, animate } from '@angular/animations';
+const slideFromTop = trigger('slideFromTop', [
+  transition(':enter', [
+    style({ transform: 'translateY(-100%)' }),
+    animate('300ms ease-out', style({ transform: 'translateY(0%)' })),
+  ]),
+  transition(':leave', [
+    animate('300ms ease-out', style({ transform: 'translateY(-100%)' })),
+  ]),
+]);
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -24,11 +34,15 @@ import { ToastrService } from "ngx-toastr";
 import { Subject } from "rxjs";
 import { AddRoleComponent } from "../add-role/add-role.component";
 import { DeleteConfirmationComponent } from "../delete-confirmation/delete-confirmation.component";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { TagsUpdateComponent } from "../tags-update/tags-update.component";
+import { log } from "fabric/fabric-impl";
 
 @Component({
   selector: "app-Roles",
   templateUrl: "./roles.component.html",
   styleUrls: ["./roles.component.scss"],
+  animations: [slideFromTop]
 })
 export class RolesComponent implements ControlValueAccessor {
   groups: any[] = [];
@@ -46,7 +60,7 @@ export class RolesComponent implements ControlValueAccessor {
     VORows: this._formBuilder.array([]),
   });
   isEditableNew: boolean = true;
-  displayedColumns: string[] = ["Role_id", "name", "claims", "action"];
+  displayedColumns: string[] = ["Role_id", "name", "claims","tags", "action"];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   paginatorList: HTMLCollectionOf<Element>;
   currentIndex: any;
@@ -54,10 +68,14 @@ export class RolesComponent implements ControlValueAccessor {
   canEdit: boolean;
   canDelete: boolean;
   canAdd: boolean;
+  allTags: any;
+  inUpdate: boolean=false;
   /**
    * Constructor
    */
   constructor(
+    
+    private _snackBar: MatSnackBar,
     private fb: FormBuilder,
     private _formBuilder: FormBuilder,
     private _authService: AuthService,
@@ -97,7 +115,6 @@ export class RolesComponent implements ControlValueAccessor {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.roles.filter = filterValue.trim().toLowerCase();
-    console.log(this.roles.filter);
     
     if (this.roles.filter.length > 0) {
       let u = this.TabRoles.filter(
@@ -116,6 +133,7 @@ export class RolesComponent implements ControlValueAccessor {
     const data = this.TabRoles.slice(startIndex, endIndex);
     this.fillFormTab(data);
   }
+  
   goToPage() {
     this.paginator.pageIndex = this.pageNumber - 1;
     this.paginator.page.next({
@@ -146,9 +164,17 @@ export class RolesComponent implements ControlValueAccessor {
   }
   tabAllClaims = [];
   allclaims: any = [];
+  objectToArray(obj: any): { key: string, value: string }[] {
+    return Object.keys(obj).map(key => ({
+      key:key,
+      value:obj.value,
+      id:'value-'+key 
+    }));
+  }
   ngOnInit() {
+     
+    
     this._authService.dispalyAdminDashboard().subscribe((data) => {
-      console.log(data["details"]);
       let obj = this._claimsService.manageObject(data["details"], "roles");
       this.canAdd = obj["create"];
       this.canEdit = obj["update"];
@@ -160,45 +186,103 @@ export class RolesComponent implements ControlValueAccessor {
     this._roleService.getAllClaims().subscribe((data) => {
       this.allclaims = this._roleService.transformObject(data)[2];
     });
+    this._roleService.getAllTags().subscribe((data)=>{
+      this.allTags=data
+      console.log(this.allTags);
+      
+    })
+
+    
     this.getRoles();
   }
   modelGroup = [];
   evthgrp = [];
   modelgrp = [];
-  fillFormTab(tab: Array<Role>) {
-    this.VOForm = this.fb.group({
-      VORows: this.fb.array(
-        tab
-          .filter((user) => user != undefined)
-          .map((val) => {
-            let objtransfered = this._RoleService.transformObject(val.claims);
-            let m = objtransfered[0];
-            this.evthgrp.push(objtransfered[2]);
-            this.groups.push(objtransfered[1]);
-            m.forEach((element) => {
-              if (!this.modelgrp.includes(element)) {
-                this.modelgrp.push(element);
-              }
-            });
-            return this.fb.group({
-              id: new FormControl(val.id),
-              name: new FormControl(val.name),
-              claims: new FormControl(m),
-              action: new FormControl("existingRecord"),
-              isEditable: new FormControl(true),
-              isNewRow: new FormControl(false),
-            });
-          })
-      ),
-    });
-    console.log(this.modelgrp);
-    this.isLoading = false;
-    this.roles = new MatTableDataSource(
-      (this.VOForm.get("VORows") as FormArray).controls
-    );
+
+  isDarkColor(hexColor: string): boolean {
+    // Convert hex color to RGB
+    const r = parseInt(hexColor.slice(1, 3), 16);
+    const g = parseInt(hexColor.slice(3, 5), 16);
+    const b = parseInt(hexColor.slice(5, 7), 16);
+    
+    // Calculate luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    
+    // Return true if luminance is less than 0.5 (dark), false otherwise (light)
+    return luminance < 0.5;
   }
+tags:Array<any>=[]
+
+fillFormTab(tab: Array<Role>) {
+   // move initialization outside of .map() function
+  this.VOForm = this.fb.group({
+    VORows: this.fb.array(
+      tab
+        .filter((role) => role != undefined)
+        .map((val) => {
+          //--------------CLAIMS----------------//
+          let objtransfered = this._RoleService.transformObject(val.claims);
+          let m = objtransfered[0];
+          this.evthgrp.push(objtransfered[2]);
+          this.groups.push(objtransfered[1]);
+          m.forEach((element) => {
+            if (!this.modelgrp.includes(element))
+            {
+              this.modelgrp.push(element);
+            }
+          });
+
+          //----------------TAGS---------------------//
+          
+          let tagsValues = [];
+          
+          let rowTags = val.tags ? this.transformArray(val.tags) : [];
+          console.log(rowTags);
+          
+          this.tags.push(rowTags)
+          
+          for (let i = 0; i < rowTags.length; i++) {
+            const element = rowTags[i];
+            
+           
+              if (!tagsValues.includes(element.id)) 
+              {
+                tagsValues.push(element.id);
+              }
+            ;
+          }
+console.log(tagsValues);
+
+          return this.fb.group({
+            id: new FormControl(val.id),
+            name: new FormControl(val.name),
+            color:new FormControl(val.color),
+            claims: new FormControl(m),
+            tags: new FormControl(tagsValues),
+            action: new FormControl("existingRecord"),
+            isEditable: new FormControl(true),
+            isNewRow: new FormControl(false),
+          });
+        })
+    ),
+  });
+  this.isLoading = false;
+  this.roles = new MatTableDataSource(
+    (this.VOForm.get("VORows") as FormArray).controls
+  );
+  console.log(this.tags);
+  
+}
+
+transformArray(arr: { key: string; value: string[] }[]): any {
+  return arr.map((elem) => ({
+    key: elem.key,
+    value: elem.value,
+    id: `value-${elem.key}`
+    }))
+
+}
   getInitialClaims(claims: any): number[] {
-    console.log(this.claims);
     const selectedClaims = [];
     const allClaims = { ...this.claims };
     Object.keys(claims).forEach((key) => {
@@ -244,6 +328,7 @@ export class RolesComponent implements ControlValueAccessor {
   }
   EditSVO(VOFormElement, i) {
     VOFormElement.get("VORows").at(i).get("isEditable").patchValue(false);
+    this.inUpdate=true
   }
   delete(VOFormElement, index: number) {
     const row = VOFormElement.get("VORows")?.at(index);
@@ -270,17 +355,19 @@ export class RolesComponent implements ControlValueAccessor {
     return objects;
   }
   SaveVO(VOFormElement, i) {
-    console.log(this.VOForm.value);
     const row = VOFormElement.get("VORows").at(i);
     const id = row.get("id").value;
     let tabValidatedClaims = [];
     const validatedClaims = row.get("claims").value;
+    
     validatedClaims.forEach((element) => {
       let obj = "";
       const t = this.allclaims.find((n) =>
-        n["items"].find((item) => item["value"] === element)
-      );
-      const elm = t["items"].find((e) => e["value"] === element);
+      n["items"] && n["items"].find((item) => item["value"] === element)
+    );
+    const elm = t && t["items"] && t["items"].find((e) => e["value"] === element);
+    
+    if (elm) {
       let test = elm["value"] == element;
       let rights = "";
       if (elm.label.includes("create") && test == true) {
@@ -296,6 +383,7 @@ export class RolesComponent implements ControlValueAccessor {
         rights += "r";
       }
       obj = t["name"];
+    
       const existingObj = tabValidatedClaims.find(
         (item) => item.object === obj
       );
@@ -304,7 +392,12 @@ export class RolesComponent implements ControlValueAccessor {
       } else {
         tabValidatedClaims.push({ object: obj, rights: rights });
       }
+    } else {
+    }
+    
+
     });
+    
     let tab = this.getObjectNames(this.evthgrp[i]);
     let validatedclaimesobjects = [];
     tabValidatedClaims.forEach((elm) => {
@@ -315,30 +408,143 @@ export class RolesComponent implements ControlValueAccessor {
         tabValidatedClaims.push({ object: key, rights: "" });
       }
     });
+    console.log(this.tags[i]);
+    console.log(this.updatedTag);
+    var transformedArr = []
+    if (this.updatedTag) {
+      transformedArr=this.getYourTags(this.updatedTag)
+    }
+    else{
+      transformedArr=this.getYourTags(this.tags[i])
+    }
+    
+    console.log(transformedArr);
+    
     const role = {
       name: row.get("name").value,
       claims: tabValidatedClaims,
+      tags:transformedArr
     };
     if (id) {
+      
       this._RoleService.updateRole(id, role).subscribe((data) => {
         this.showToast('role updated','success')
-        console.log(role);
+        localStorage.removeItem('ckeckedids')
+        localStorage.removeItem('tagsArr')
       });
     } else {
       this._authService.signUp(role).subscribe(() => {
         this.getRoles();
       });
     }
+    VOFormElement.get("VORows").at(i).get("isEditable").patchValue(true);
+this.inUpdate=false
   }
-  showToast(message:string,title:string): void {
+getYourTags(arr) {
+    const transformedArr = [];
+    for (let obj of arr) {
+      if (obj.key.length > 0 && obj.value.length > 0) {
+        transformedArr.push({ key: obj.key, value: obj.value });
+      }
+    }
+    return transformedArr;
+  }
+showToast(message:string,title:string): void {
     this.toastr.success(message, title);
    }
+mergeArrays(arr1, arr2) {
+    return arr1.map((obj1) => {
+      let v=''
+      const matchingObj2 = arr2.find((obj2) => {
+         v=obj1.value        
+      return obj2.key == obj1.key});
+      if (matchingObj2) {
+        return { key: obj1.key, value: v };
+      } else {
+        return obj1;
+      }
+    }).concat(arr2.filter((obj2) => !arr1.find((obj1) => obj1.key === obj2.key)));}
+
+
+    
+updatedTag:any
+   open(tagOptions: any[], selectedValues: any[],i) {
+
+    
+    console.log(this.tags[i]);
+    
+  console.log(this.allTags);
+  
+   let t= this.dialog.open(TagsUpdateComponent, {
+    
+      data: { alltags: this.tags[i],selectedOptions:selectedValues }
+    })
+    t.afterClosed().subscribe(result => {
+      if (result) {
+        console.log(this.allTags);
+        
+        console.log('The dialog was closed', );
+        
+        console.log(result[0]);
+        this.updatedTag=result[1]
+        this.VOForm.get("VORows").value[i].tags=result[0]
+        console.log(this.VOForm.get("VORows").value[i].tags);
+        
+        console.log(this.tags);
+      }
+     
+      
+    });
+  }
+  
+  
+   transformObject(inputObj: { [key: string]: any[] }): { key: string; value: any[] }[] {
+    const outputArray = [];
+  
+    for (const key in inputObj) {
+      if (Object.prototype.hasOwnProperty.call(inputObj, key)) {
+        const value = inputObj[key];
+        const outputObject = {
+          key: key,
+          value: value,
+        };
+        outputArray.push(outputObject);
+      }
+    }
+  
+    return outputArray;
+  }
+  
+
+  objectOfTags(tab: Array<string>): { key: string, value: any[] }[] {
+    const result = [];
+ let tb: Array<any>=[]
+ tb.push(this.allTags)
+  this.allTags=this.transformObject(this.allTags);
+  
+    this.allTags.forEach(tag => {
+      const tagValues = tag.value.data.filter(elm => tab.includes(elm.id)).map(elm => elm.value);
+  
+      if (tagValues.length > 0) {
+        const existingTag = result.find(obj => obj.key === tag.key);
+  
+        if (existingTag) {
+          existingTag.value.push(...tagValues);
+        } else {
+          result.push({ key: tag.key, value: tagValues });
+        }
+      }
+    });
+  
+    return result;
+  }
   openDialog(): void {
     const dialogRef = this.dialog.open(AddRoleComponent, {
       width: "640px",
       disableClose: true,
-      data: { tabclaims: this.allclaims },
+      data: { tabclaims: this.allclaims ,tabtags:this.allTags},
     });
+    
   }
 
   // On click of cancel button in the table (after click on edit) this method will call and reset the previous data
@@ -352,15 +558,21 @@ export class RolesComponent implements ControlValueAccessor {
 
     row.get("name").patchValue(this.TabRoles[i].name);
     let m = [];
-    console.log(this.TabRoles[i].claims);
 
     row
       .get("claims")
       .patchValue(
         this._RoleService.transformObject(this.TabRoles[i].claims)[0]
       );
-
+  row
+      .get("tags")
+      .patchValue(
+        this.VOForm.get("VORows").value[i].tags
+      );
     row.get("isEditable").patchValue(true);
+    localStorage.removeItem('ckeckedids')
+    localStorage.removeItem('tagsArr')
+    this.inUpdate=false
   }
 
   idx: number;

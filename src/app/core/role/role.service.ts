@@ -23,6 +23,9 @@ export class RoleService {
   {
       return this._httpClient.get<Array<any>>(Url+"/claims/")
   }
+  getAllTags():Observable<Array<any>>{
+    return this._httpClient.get<Array<any>>(Url+"/alltags/")
+  }
   updateRole(id,role):Observable<Role>{
    return  this._httpClient.put<Role>(Url+"/updateRole/"+id,role)
   }
