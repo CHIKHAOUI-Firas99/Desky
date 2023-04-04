@@ -1,15 +1,15 @@
 
-  <div style="height: 100%;">
-  <button mat-icon-button aria-label="close" style="float: right;" (click)="closeDialog()">
-    <mat-icon>close</mat-icon>
-  </button>
-<br> 
-<h2 style="text-align: center;font-size: 26px">Tags</h2>
+  <div style="height: 100%;" class="text-center">
+    <button mat-icon-button mat-dialog-close class="close-icon" style="float: right; margin-top: 0.3%;">
+      <mat-icon>close</mat-icon>
+    </button>
+<br><br>
+<h2  class="h5">TAGS</h2>
 
 
   <form [formGroup]="form" >
     
-   <br><br>
+   <br>
 
     <div formArrayName="extraTags" style="width: 100%;">
       <div *ngFor="let tag of tags.controls; let i=index" [formGroupName]="i">
@@ -17,6 +17,7 @@
           <label for="tag-key">Key:</label>
           <mat-form-field style="margin-left: 10px;">
             <input matInput type="text" id="tag-key" formControlName="key" 
+            name="key"
               (keyup)="checkFormControlChanges($event, i)" >
           </mat-form-field>
         </div>
@@ -48,7 +49,7 @@
     </div>
     </div>
 <br><br>
-    <div class="mat-dialog-actions">
+    <div class="mat-dialog-actions" style="float: left;">
       <button class="btn btn-primary" [disabled]="tagMessage" (click)="submit()">OK</button>
       <button mat-flat-button (click)="closeDialog()" style="margin-left: 2px;">Close</button>
     </div>

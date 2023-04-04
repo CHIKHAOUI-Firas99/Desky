@@ -33,6 +33,7 @@ import { DeleteConfirmationComponent } from "../delete-confirmation/delete-confi
 import { PhoneComponent } from "../phone/phone.component";
 import { UsersService } from "../users.service";
 import { hex } from "chroma-js";
+import { Router, ActivatedRoute, RouteReuseStrategy } from "@angular/router";
 @Component({
   selector: "app-users",
   templateUrl: "./users.component.html",
@@ -69,7 +70,11 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   paginatorList: HTMLCollectionOf<Element>;
   currentIndex: number;
+  inUpdate: boolean;
   constructor(
+    private _router: Router,
+    private route: ActivatedRoute,
+    private routeReuseStrategy: RouteReuseStrategy,
     private _usersService: UsersService,
     private fb: FormBuilder,
     private _formBuilder: FormBuilder,
@@ -267,6 +272,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   EditSVO(VOFormElement, i) {
     VOFormElement.get("VORows").at(i).get("isEditable").patchValue(false);
+    this.inUpdate=true
   }
   getRoles(VOFormElement, index: number) {
     const row = VOFormElement.get("VORows")?.at(index);
@@ -302,7 +308,11 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     };
     if (id) 
     {
-      this._usersService.updateUser(id, user).subscribe(()=>this.showToast('User updated','success')) 
+      this._usersService.updateUser(id, user).subscribe(()=>{
+        this.showToast('User updated','success');
+        this.inUpdate=false
+      this.refreshRoute()
+      }) 
       
     } 
     else 
@@ -324,8 +334,18 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
     row.get("phoneNumber").patchValue(this.Tabusers[i].phoneNumber);
     row.get("authorization").patchValue(this.Tabusers[i].authorization);
     row.get("isEditable").patchValue(true);
+    this.inUpdate=false
   }
 
+ refreshRoute() {
+    this.route.data.subscribe(() => {
+      const currentUrl = this._router.url;
+      this.routeReuseStrategy.shouldReuseRoute = () => false;
+      this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+        this._router.navigate([currentUrl]);
+      });
+    });
+  }
   idx: number;
   onPaginateChange(paginator: MatPaginator, list: HTMLCollectionOf<Element>) {
     setTimeout(

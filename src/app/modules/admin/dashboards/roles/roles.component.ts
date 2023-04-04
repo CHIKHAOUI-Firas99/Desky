@@ -37,6 +37,7 @@ import { DeleteConfirmationComponent } from "../delete-confirmation/delete-confi
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { TagsUpdateComponent } from "../tags-update/tags-update.component";
 import { log } from "fabric/fabric-impl";
+import { ActivatedRoute, RouteReuseStrategy, Router } from "@angular/router";
 
 @Component({
   selector: "app-Roles",
@@ -74,7 +75,9 @@ export class RolesComponent implements ControlValueAccessor {
    * Constructor
    */
   constructor(
-    
+    private _router: Router,
+    private route: ActivatedRoute,
+    private routeReuseStrategy: RouteReuseStrategy,
     private _snackBar: MatSnackBar,
     private fb: FormBuilder,
     private _formBuilder: FormBuilder,
@@ -431,6 +434,7 @@ transformArray(arr: { key: string; value: string[] }[]): any {
         this.showToast('role updated','success')
         localStorage.removeItem('ckeckedids')
         localStorage.removeItem('tagsArr')
+        this.refreshRoute()
       });
     } else {
       this._authService.signUp(role).subscribe(() => {
@@ -439,6 +443,15 @@ transformArray(arr: { key: string; value: string[] }[]): any {
     }
     VOFormElement.get("VORows").at(i).get("isEditable").patchValue(true);
 this.inUpdate=false
+  }
+  refreshRoute() {
+    this.route.data.subscribe(() => {
+      const currentUrl = this._router.url;
+      this.routeReuseStrategy.shouldReuseRoute = () => false;
+      this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+        this._router.navigate([currentUrl]);
+      });
+    });
   }
 getYourTags(arr) {
     const transformedArr = [];

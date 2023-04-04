@@ -48,7 +48,7 @@
                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
          
                      <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-                       <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 50%">
+                       <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 60%">
                          <input class="c1" required matInput type="text" formControlName="name" [readonly]="VOForm.get('VORows').value[i].isEditable">
                          <mat-error style="text-align: center;">
                          name field is required
@@ -96,7 +96,7 @@
                        </mat-form-field>
                      
                      
-                       <mat-form-field *ngIf="VOForm.get('VORows').value[i].isEditable"  style="width: 75%;" >
+                       <mat-form-field *ngIf="VOForm.get('VORows').value[i].isEditable"  style="width: 80%;" >
                          
                          <mat-select 
                            placeholder="claims"  multiple formControlName="claims" > 
@@ -126,7 +126,7 @@
                   <th mat-header-cell *matHeaderCellDef > Tags </th>
                   <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
 
-                    <mat-form-field *ngIf="VOForm.get('VORows').value[i].isEditable" style="text-align:center;width: 70%;">
+                    <mat-form-field *ngIf="VOForm.get('VORows').value[i].isEditable" style="text-align:center;width: 80%;">
                       <mat-select placeholder="tags" multiple formControlName="tags">
                         <mat-optgroup *ngFor="let tag of tags[i]" [label]="tag.key">
                           <ng-container  >
@@ -145,7 +145,7 @@
                      class="btn"
                      style="background-color: rgb(232, 229, 224);"
                       (click)="open(tags[i],VOForm.get('VORows').value[i].tags,i)">
-                      update tags</button>
+                      Edit tags</button>
                   </td>
                 </ng-container>
 

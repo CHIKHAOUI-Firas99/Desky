@@ -47,6 +47,8 @@ export class AddRoleComponent {
   ];
   alltags: any;
   tagMessage: boolean=false;
+  initaialedKeys: any;
+  send: boolean;
 
 
 
@@ -128,13 +130,15 @@ export class AddRoleComponent {
     this.tags.push(tagFormGroup);
     lastTagIndex = extraTags.length - 1;
     this.disabled[lastTagIndex]=true
+    this.disabled[lastTagIndex-1]=true
+
   }
   
   
 
   removeTag(index: number): void {
     const extraTags = this.form.get('extraTags') as FormArray;
-    const lastTagIndex = extraTags.length - 1;
+    var lastTagIndex = extraTags.length - 1;
   
     // Check for empty key or value in each control and set corresponding disabled element to true
     for (let i = 0; i <= lastTagIndex; i++) {
@@ -152,6 +156,16 @@ export class AddRoleComponent {
   
     // Remove corresponding element from disabled array
     this.disabled.splice(index, 1);
+    lastTagIndex = extraTags.length - 1;
+  console.log(lastTagIndex);
+  
+  console.log(extraTags.get(lastTagIndex.toString()).value);
+let lastTag=extraTags.get(lastTagIndex.toString()).value
+  let check=lastTag.key && lastTag.value
+  
+  if (check) {
+    this.disabled[lastTagIndex]=false
+  } 
   }
   
   
@@ -202,6 +216,7 @@ console.log(this.keys);
     for (let i = 0; i < this.tags.length; i++) {
       this.disabled.push(true);
     }
+ this.initaialedKeys= this.alltags.map((tag) => tag.key)
    
   }
 
@@ -244,19 +259,51 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
   
     this.disabled[index] = true;
   }
-  if (this.keys.includes(valueControl.key)) {
+  if (target.name === 'key') {
+  
+    let count = 0;
+    let check=false
+    console.log(this.getExistingKeysFromExtraTags(this.form));
     
-    this.tagMessage=true
+    for (let i = 0; i < this.keys.length; i++) {
+      if (this.keys[i] === valueControl.key) {
+        count++;
+        check=   this.initaialedKeys.includes(this.keys[i]) &&
+        this.getExistingKeysFromExtraTags(this.form).includes(this.keys[i]) 
+      }
+    }
+    let tabkeys=this.getExistingKeysFromExtraTags(this.form)
+    let nb=0
+    for (let i = 0; i < tabkeys.length; i++) {
+      if (tabkeys[i] === valueControl.key) {
+        nb++;
+      }
+    }
+    
+
+    console.log(count);
+    console.log(nb);
+    
+    if (  nb>1) {
+      this.tagMessage = true;
+    } else {
+      this.tagMessage = false;
+      console.log(this.tagMessage);
+    }
   }
-  else{
-    this.tagMessage=false
-    console.log(this.tagMessage);
-    
+  if (!valueControl.key || !valueControl.value) {
+    this.send=true
+  } else {
+    this.send=false
   }
 }
 
 
-
+getExistingKeysFromExtraTags(formGroup) {
+  const extraTagsArray = formGroup.get('extraTags') as FormArray; // get the 'extraTags' FormArray from the formGroup
+  const keysArray = extraTagsArray.controls.map(control => control.get('key').value); // extract the 'key' value from each FormGroup control and create a new array
+  return keysArray.filter(key => key); // filter out any falsy values (e.g. undefined, null, '') and return the resulting array
+}
 
 // Use the changesMade property to disable the save button if no changes have been made
 
@@ -351,23 +398,22 @@ decreaseDetailRow() {
         tabValidatedClaims.push({ object: key, rights: "" });
       }
     });
-    let tabtags=this.objectOfTags(this.form.value['tags'])
+    let tabtags=[]
     console.log(tabtags);
     
     this.form.value['extraTags'].forEach((tag,i) => {
-      if (this.disabled[i]==false) {
-        const index = tabtags.findIndex((t) => t.key === tag.key);
-      if (index !== -1) {
-        this.errMessage='tag key already exist';
-      } else {
+      if (tag.key && tag.value) {
+      
+         
         tabtags.push({
           key: tag.key,
-          value: tag.value.split(/[-,or;]+/)
+          value: tag.value
         });
-      }
+      
       }
       
     });
+    console.log(tabtags);
     
     const role = {
       name: this.form.value['name'],

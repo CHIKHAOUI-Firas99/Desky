@@ -69,7 +69,7 @@
          <br>
         
           <mat-label>Tags</mat-label> <br>
-<div>
+<!-- <div>
           <mat-form-field style="width: 60%;">
             <mat-select placeholder="Tags" formControlName="tags" multiple >
               <mat-optgroup *ngFor="let tag of alltags" [label]="tag.key">
@@ -78,7 +78,7 @@
             </mat-select>
           </mat-form-field>
          
-        </div>
+        </div> -->
         
       
         <div formArrayName="extraTags">
@@ -87,6 +87,7 @@
               <label for="tag-key">Key:</label>
               <mat-form-field style="margin-left: 10px;">
                 <input matInput type="text" id="tag-key" formControlName="key" 
+                name="key"
                   (keyup)="checkFormControlChanges($event, i)" >
               </mat-form-field>
             </div>
@@ -138,7 +139,7 @@
           
           <div mat-dialog-actions class="text-center">
             <button type="button" mat-button (click)="close()">Cancel</button>
-            <button  class="btn btn-primary"  [disabled]="form.invalid || tagMessage" (click)="submit(form);onReset(form)" >Submit</button>
+            <button  class="btn btn-primary"  [disabled]="form.invalid || send || tagMessage " (click)="submit(form);onReset(form)" >Submit</button>
           </div>
      </form>
          </div>

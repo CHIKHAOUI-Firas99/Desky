@@ -12,8 +12,9 @@ export class TagsUpdateComponent {
   form: any;
   t: any;
   rntags: Array<String>;
-  keys: any[];
+  keys: any[]=[];
   tagMessage: boolean;
+  initaialedKeys: any;
   constructor(private _fb:FormBuilder, public dialogRef: MatDialogRef<TagsUpdateComponent>,@Inject(MAT_DIALOG_DATA) public data: any) {}
  alltags:any=[]
   transformObject(inputObject) {
@@ -53,15 +54,18 @@ addTag(): void {
 
   this.tags.push(tagFormGroup);
   lastTagIndex = extraTags.length - 1;
-  this.disabled[lastTagIndex]=true
+  this.disabled=this.disabled.map(()=>true)
+
   this.keys=this.getExistingKeysFromExtraTags(this.form);
 }
 
 
 
 removeTag(index: number): void {
+  console.log('aaaaaaaaaaaaaaaaaaaaa');
+  
   const extraTags = this.form.get('extraTags') as FormArray;
-  const lastTagIndex = extraTags.length - 1;
+  var lastTagIndex = extraTags.length - 1;
 
   // Check for empty key or value in each control and set corresponding disabled element to true
   for (let i = 0; i <= lastTagIndex; i++) {
@@ -71,15 +75,29 @@ removeTag(index: number): void {
     }
   }
   let control=extraTags.at(index)
-  if (this.keys.includes(control.get('key').value)) {
-    this.tagMessage=false
+  console.log(control.get('key').value);
+  
+  if (control.get('key').value && this.keys) {
+    if (this.keys.includes(control.get('key').value)) {
+      this.tagMessage=false
+    }
   }
+
   // Remove tag from tags FormArray
   this.tags.removeAt(index);
 
   // Remove corresponding element from disabled array
   this.disabled.splice(index, 1);
+  lastTagIndex = extraTags.length - 1;
+  console.log(lastTagIndex);
   
+  console.log(extraTags.get(lastTagIndex.toString()).value);
+let lastTag=extraTags.get(lastTagIndex.toString()).value
+  let check=lastTag.key && lastTag.value
+  
+  if (check) {
+    this.disabled[lastTagIndex]=false
+  } 
 }
 cancel():boolean{
 
@@ -113,15 +131,39 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
   
     this.disabled[index] = true;
   }
-  if (this.keys.includes(valueControl.key)) {
+  if (target.name === 'key') {
+    let count = 0;
+    let check=false
+    console.log(this.getExistingKeysFromExtraTags(this.form));
     
-    this.tagMessage=true
-  }
-  else{
-    this.tagMessage=false
-    console.log(this.tagMessage);
+    for (let i = 0; i < this.keys.length; i++) {
+      if (this.keys[i] === valueControl.key) {
+        count++;
+        check=   this.initaialedKeys.includes(this.keys[i]) &&
+        this.getExistingKeysFromExtraTags(this.form).includes(this.keys[i]) 
+      }
+    }
+    let tabkeys=this.getExistingKeysFromExtraTags(this.form)
+    let nb=0
+    for (let i = 0; i < tabkeys.length; i++) {
+      if (tabkeys[i] === valueControl.key) {
+        nb++;
+      }
+    }
     
+
+    console.log(count);
+    console.log(check);
+    
+    if ( count>0 && nb>1) {
+      this.tagMessage = true;
+    } else {
+      this.tagMessage = false;
+      console.log(this.tagMessage);
+    }
   }
+  
+  
 }
 disabled: boolean[] = [];
 removedisabled=true
@@ -187,7 +229,8 @@ ngOnInit() {
   }
 this.disabled[this.tags.length-1]=false
   console.log(this.form.get('extraTags'));
-
+ this.initaialedKeys= this.alltags.map((tag) => tag.key)
+  console.log(this.initaialedKeys);
   
 }
 getExistingKeysFromExtraTags(formGroup) {

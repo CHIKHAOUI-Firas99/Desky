@@ -251,7 +251,7 @@
   
       <div *ngIf="VOForm.get('VORows').value[i].isEditable" style="text-align: left;">
         <button mat-icon-button class=" material-icons app-toolbar-menu save-button " matTooltip="Edit" color="primary"
-          (click)="EditSVO(VOForm,i)" [disabled]="!canEdit ">
+          (click)="EditSVO(VOForm,i)" [disabled]="!canEdit ||inUpdate">
           <mat-icon>edit</mat-icon>
         </button>
   
