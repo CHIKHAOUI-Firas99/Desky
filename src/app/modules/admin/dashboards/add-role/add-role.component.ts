@@ -129,8 +129,8 @@ export class AddRoleComponent {
   
     this.tags.push(tagFormGroup);
     lastTagIndex = extraTags.length - 1;
+    this.disabled=this.disabled.map(()=>true)
     this.disabled[lastTagIndex]=true
-    this.disabled[lastTagIndex-1]=true
 
   }
   
@@ -166,6 +166,7 @@ let lastTag=extraTags.get(lastTagIndex.toString()).value
   if (check) {
     this.disabled[lastTagIndex]=false
   } 
+  
   }
   
   

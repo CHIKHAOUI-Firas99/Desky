@@ -15,6 +15,7 @@ export class TagsUpdateComponent {
   keys: any[]=[];
   tagMessage: boolean;
   initaialedKeys: any;
+  send: boolean;
   constructor(private _fb:FormBuilder, public dialogRef: MatDialogRef<TagsUpdateComponent>,@Inject(MAT_DIALOG_DATA) public data: any) {}
  alltags:any=[]
   transformObject(inputObject) {
@@ -135,14 +136,15 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
     let count = 0;
     let check=false
     console.log(this.getExistingKeysFromExtraTags(this.form));
+    console.log(this.keys);
     
-    for (let i = 0; i < this.keys.length; i++) {
-      if (this.keys[i] === valueControl.key) {
-        count++;
-        check=   this.initaialedKeys.includes(this.keys[i]) &&
-        this.getExistingKeysFromExtraTags(this.form).includes(this.keys[i]) 
-      }
-    }
+    // for (let i = 0; i < this.keys.length; i++) {
+    //   if (this.keys[i] === valueControl.key) {
+    //     count++;
+    //     check=   this.initaialedKeys.includes(this.keys[i]) &&
+    //     this.getExistingKeysFromExtraTags(this.form).includes(this.keys[i]) 
+    //   }
+    // }
     let tabkeys=this.getExistingKeysFromExtraTags(this.form)
     let nb=0
     for (let i = 0; i < tabkeys.length; i++) {
@@ -152,10 +154,10 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
     }
     
 
-    console.log(count);
+    console.log(tabkeys);
     console.log(check);
     
-    if ( count>0 && nb>1) {
+    if (  nb>1) {
       this.tagMessage = true;
     } else {
       this.tagMessage = false;
@@ -163,7 +165,11 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
     }
   }
   
-  
+  if (!valueControl.key || !valueControl.value) {
+    this.send=true
+  } else {
+    this.send=false
+  }
 }
 disabled: boolean[] = [];
 removedisabled=true

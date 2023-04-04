@@ -50,7 +50,7 @@
     </div>
 <br><br>
     <div class="mat-dialog-actions" style="float: left;">
-      <button class="btn btn-primary" [disabled]="tagMessage" (click)="submit()">OK</button>
+      <button class="btn btn-primary" [disabled]="tagMessage || send" (click)="submit()">OK</button>
       <button mat-flat-button (click)="closeDialog()" style="margin-left: 2px;">Close</button>
     </div>
   </form>

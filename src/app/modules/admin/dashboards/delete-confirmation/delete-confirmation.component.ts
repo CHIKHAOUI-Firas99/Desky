@@ -88,15 +88,13 @@ export class DeleteConfirmationComponent {
     
         dialogRefClosedPromise.then((result) => {
           console.log('The confirmation dialog was closed', result);
-          this.router.navigateByUrl('/',{skipLocationChange:true} ).then(() => {
-            this.router.navigate(['/dashboards/users']);
-          });
+         this.refreshRoute()
         });
       });
     }
 
   }
   
-  
+ 
  
 }
