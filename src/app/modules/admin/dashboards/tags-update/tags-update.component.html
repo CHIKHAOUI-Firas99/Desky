@@ -11,6 +11,7 @@
   <form [formGroup]="form" >
     
    <br>
+  
 
     <div formArrayName="extraTags" style="width: 100%;">
       <div *ngFor="let tag of tags.controls; let i=index" [formGroupName]="i">
@@ -44,11 +45,11 @@
         </button>
        
       </div>
-      <span  style="text-align: left;color: red;"
-        *ngIf="tagMessage"
-         >
-      key already exist
-    </span>
+      <div class="alert alert-danger" style="width:50%;margin-left: 25%;text-align: center;"
+      *ngIf="tagMessage"
+       >
+    key already exist
+    </div>
     </div>
 
     <div class="mat-dialog-actions" style="float: left;margin-top: 3%;">
@@ -56,5 +57,4 @@
       <button mat-flat-button (click)="closeDialog()" style="margin-left: 2px;">Close</button>
     </div>
   </form>
-
 </div>

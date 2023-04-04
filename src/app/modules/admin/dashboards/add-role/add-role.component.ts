@@ -267,7 +267,8 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
     console.log(this.getExistingKeysFromExtraTags(this.form));
     
     for (let i = 0; i < this.keys.length; i++) {
-      if (this.keys[i] === valueControl.key) {
+      
+      if (this.keys[i].toLocaleLowerCase() === valueControl.key.toLocaleLowerCase()) {
         count++;
         check=   this.initaialedKeys.includes(this.keys[i]) &&
         this.getExistingKeysFromExtraTags(this.form).includes(this.keys[i]) 
@@ -276,7 +277,8 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
     let tabkeys=this.getExistingKeysFromExtraTags(this.form)
     let nb=0
     for (let i = 0; i < tabkeys.length; i++) {
-      if (tabkeys[i] === valueControl.key) {
+      if (tabkeys[i].toLocaleLowerCase() === valueControl.key.toLocaleLowerCase()) {
+
         nb++;
       }
     }
@@ -292,7 +294,7 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
       console.log(this.tagMessage);
     }
   }
-  if (!valueControl.key || !valueControl.value) {
+  if (valueControl.key && !valueControl.value) {
     this.send=true
   } else {
     this.send=false

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: front
-        image: firaschikhaoui/test-frontv3:latest # Image that will be used to containers in the cluster
+        image: firaschikhaoui/test-front:v7 # Image that will be used to containers in the cluster
         ports:
         - containerPort: 80 # The port that the container is running on in the cluster
         volumeMounts:

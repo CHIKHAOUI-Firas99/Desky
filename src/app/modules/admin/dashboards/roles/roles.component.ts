@@ -73,6 +73,7 @@ export class RolesComponent implements ControlValueAccessor {
   inUpdate: boolean=false;
   mytags: any;
   i: number=0;
+  errMessage: any;
   /**
    * Constructor
    */
@@ -437,7 +438,14 @@ transformArray(arr: { key: string; value: string[] }[]): any {
         localStorage.removeItem('ckeckedids')
         localStorage.removeItem('tagsArr')
         this.refreshRoute()
-      });
+      },(err)=>{
+        console.log(err);
+        this.errMessage=err["error"]["detail"]
+        this.CancelSVO(this.VOForm,i)
+        this.toastr.error(this.errMessage, 'Failed');
+        
+      }
+      );
     } else {
       this._authService.signUp(role).subscribe(() => {
         this.getRoles();

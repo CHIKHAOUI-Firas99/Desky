@@ -68,7 +68,7 @@
           </mat-form-field>
          <br>
         
-          <mat-label>Tags</mat-label> <br>
+          <mat-label>Tags :</mat-label> <br>
 <!-- <div>
           <mat-form-field style="width: 60%;">
             <mat-select placeholder="Tags" formControlName="tags" multiple >
@@ -81,7 +81,7 @@
         </div> -->
         
       
-        <div formArrayName="extraTags">
+        <div formArrayName="extraTags" style="margin-top: 2px;">
           <div *ngFor="let tag of tags.controls; let i=index" [formGroupName]="i">
             <div style="display: inline-block;">
               <label for="tag-key">Key:</label>
@@ -93,7 +93,7 @@
             </div>
             <div style="display: inline-block;margin-left: 10px;">
               <label for="tag-value">Value:</label>
-              <mat-form-field style="margin-left: 15px;">
+              <mat-form-field style="margin-left: 10px;">
                 <input matInput type="text" id="tag-value" formControlName="value"  style="margin-left: 10px" 
                   (keyup)="checkFormControlChanges($event, i);">
               </mat-form-field>
@@ -116,7 +116,7 @@
               <!-- {{form.get('extraTags').length < 1}} -->
             </button>
           </div>
-          <div class="alert alert-warning" style="width:50%;margin-left: 25%;text-align: center;"
+          <div class="alert alert-danger" style="width:50%;margin-left: 25%;margin-bottom: 0%;"
           *ngIf="tagMessage"
            >
         key already exist

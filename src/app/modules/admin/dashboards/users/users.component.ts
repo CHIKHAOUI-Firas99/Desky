@@ -71,6 +71,7 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
   paginatorList: HTMLCollectionOf<Element>;
   currentIndex: number;
   inUpdate: boolean;
+  errMessage: any;
   constructor(
     private _router: Router,
     private route: ActivatedRoute,
@@ -312,6 +313,12 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
         this.showToast('User updated','success');
         this.inUpdate=false
       this.refreshRoute()
+      },(err)=>{
+        console.log(err);
+        this.errMessage=err["error"]["detail"]
+        this.CancelSVO(this.VOForm,i)
+        this.toastr.error(this.errMessage, 'Failed');
+        
       }) 
       
     } 

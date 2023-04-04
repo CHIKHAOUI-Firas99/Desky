@@ -16,6 +16,7 @@ export class TagsUpdateComponent {
   tagMessage: boolean;
   initaialedKeys: any;
   send: boolean;
+  notags: boolean=false;
   constructor(private _fb:FormBuilder, public dialogRef: MatDialogRef<TagsUpdateComponent>,@Inject(MAT_DIALOG_DATA) public data: any) {}
  alltags:any=[]
   transformObject(inputObject) {
@@ -36,6 +37,7 @@ export class TagsUpdateComponent {
 }
   
 addTag(): void {
+  this.notags=false
   const extraTags = this.form.get('extraTags') as FormArray;
   var lastTagIndex = extraTags.length - 1;
 
@@ -148,7 +150,8 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
     let tabkeys=this.getExistingKeysFromExtraTags(this.form)
     let nb=0
     for (let i = 0; i < tabkeys.length; i++) {
-      if (tabkeys[i] === valueControl.key) {
+    if (tabkeys[i].toLocaleLowerCase() === valueControl.key.toLocaleLowerCase()) {
+
         nb++;
       }
     }
@@ -165,7 +168,7 @@ checkFormControlChanges(event: KeyboardEvent, index: number) {
     }
   }
   
-  if (!valueControl.key || !valueControl.value) {
+  if (valueControl.key && !valueControl.value) {
     this.send=true
   } else {
     this.send=false
@@ -200,10 +203,15 @@ closeDialog(){
 }
 ngOnInit() {
   this.alltags = this.data.alltags;
+  console.log(this.alltags);
+  
+  console.log(this.alltags.length);
+  
+  this.notags=this.alltags.length == 0
   
   // this.alltags = Object.entries(this.alltags).map(([key, value]) => ({ key, value,id:'value-'+key }));
   // console.log(this.alltags);
-  console.log(this.alltags);
+  console.log(this.notags);
   
   // this.alltags = this.objectToArray(this.alltags);
   console.log(this.alltags);
@@ -237,6 +245,9 @@ this.disabled[this.tags.length-1]=false
   console.log(this.form.get('extraTags'));
  this.initaialedKeys= this.alltags.map((tag) => tag.key)
   console.log(this.initaialedKeys);
+  if (this.notags) {
+    this.addTag()
+  }
   
 }
 getExistingKeysFromExtraTags(formGroup) {
