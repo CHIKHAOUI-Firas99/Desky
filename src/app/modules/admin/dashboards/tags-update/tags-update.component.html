@@ -1,10 +1,11 @@
+<button  class="close-icon" style="float: right;zoom: 0.9;padding-top: 0;margin-top: 0;" (click)="closeDialog()">
+  <mat-icon>close</mat-icon>
+</button>
 
-  <div style="height: 100%;" class="text-center">
-    <button mat-icon-button mat-dialog-close class="close-icon" style="float: right; margin-top: 0.3%;">
-      <mat-icon>close</mat-icon>
-    </button>
-<br><br>
-<h2  class="h5">TAGS</h2>
+  <div  class="text-center">
+  
+
+<h5  class="h5" style="margin-top: 5%;">TAGS</h5>
 
 
   <form [formGroup]="form" >
@@ -23,7 +24,7 @@
         </div>
         <div style="display: inline-block;margin-left: 10px;">
           <label for="tag-value">Value:</label>
-          <mat-form-field style="margin-left: 15px;">
+          <mat-form-field style="margin-left: 10px;">
             <input matInput type="text" id="tag-value" formControlName="value"  style="margin-left: 10px" 
               (keyup)="checkFormControlChanges($event, i);">
           </mat-form-field>
@@ -41,15 +42,16 @@
           [disabled]="!cancel()">
           <mat-icon>cancel</mat-icon>
         </button>
+       
       </div>
-      <div class="alert alert-warning" style="width:50%;margin-left: 25%;text-align: center;"
-      *ngIf="tagMessage"
-       >
-    key already exist
+      <span  style="text-align: left;color: red;"
+        *ngIf="tagMessage"
+         >
+      key already exist
+    </span>
     </div>
-    </div>
-<br><br>
-    <div class="mat-dialog-actions" style="float: left;">
+
+    <div class="mat-dialog-actions" style="float: left;margin-top: 3%;">
       <button class="btn btn-primary" [disabled]="tagMessage || send" (click)="submit()">OK</button>
       <button mat-flat-button (click)="closeDialog()" style="margin-left: 2px;">Close</button>
     </div>

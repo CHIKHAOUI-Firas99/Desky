@@ -267,6 +267,8 @@ getExistingKeysFromExtraTags(formGroup) {
     return result;
   }
 submit(){
+  console.log('>>>>>>>><');
+  
   let tabtags=this.form.value['extraTags']
   console.log(tabtags);
   
@@ -278,6 +280,8 @@ submit(){
   console.log(t);
   
   let tabids =this.getAllIds(tagsarray)
+  console.log(tagsarray);
+  
   localStorage.setItem('ckeckedids',tabids.toString())
   localStorage.setItem('tagsArr',JSON.stringify(tagsarray))
   this.dialogRef.close(  [tabids,tagsarray]);

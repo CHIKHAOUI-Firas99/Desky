@@ -71,6 +71,8 @@ export class RolesComponent implements ControlValueAccessor {
   canAdd: boolean;
   allTags: any;
   inUpdate: boolean=false;
+  mytags: any;
+  i: number=0;
   /**
    * Constructor
    */
@@ -482,23 +484,29 @@ mergeArrays(arr1, arr2) {
     
 updatedTag:any
    open(tagOptions: any[], selectedValues: any[],i) {
-
+    let nb=this.i
+    this.i=i
+if (this.i!=nb) {
+  this.mytags=this.tags[i]
+}
+  
+  
+   
+  console.log(this.mytags);
     
-    console.log(this.tags[i]);
-    
-  console.log(this.allTags);
+ 
   
    let t= this.dialog.open(TagsUpdateComponent, {
     
-      data: { alltags: this.tags[i],selectedOptions:selectedValues }
+      data: { alltags: this.mytags ?this.mytags:this.tags[i],selectedOptions:selectedValues }
     })
     t.afterClosed().subscribe(result => {
       if (result) {
         console.log(this.allTags);
         
         console.log('The dialog was closed', );
-        
-        console.log(result[0]);
+        this.mytags=result[1]
+        console.log(this.mytags);
         this.updatedTag=result[1]
         this.VOForm.get("VORows").value[i].tags=result[0]
         console.log(this.VOForm.get("VORows").value[i].tags);
