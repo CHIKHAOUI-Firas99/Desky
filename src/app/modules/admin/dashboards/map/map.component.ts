@@ -294,7 +294,7 @@ export class MapComponent {
         }
         }
       }
-      else{
+      else if(objects.length>1){
         const json = JSON.stringify(this.canvas);
         const test = JSON.parse(json)
         console.log(test.objects[0].id+" left --->" +test.objects[0].left);
@@ -524,7 +524,7 @@ export class MapComponent {
       }
 
     }
-    else{
+    else if(objects.length>1){
       objects.forEach((object) => {
         let x =object['left']
         let y =object['top']

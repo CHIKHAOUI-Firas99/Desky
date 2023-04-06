@@ -1,80 +1,57 @@
-<div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
-    <hr>
-    <div class="row" style="margin-left: 2%;margin-right: 2%">
-          <div class="col-md-2">
-            <div class="card">
-                <div class="card-header"> workspace's name </div>
-                <div class="card-body">
-                    <input type="text"  class="form-control" [readonly]="canvas.readonly" [(ngModel)]="canvas.workspaceName">
-                </div>
-                <span *ngIf="canvas.workspaceName == ''" class="error text-danger">enter a workspace name </span>
+<div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden" 
+style="float: left;width: 100%;">
+    
 
-            </div>
-            <br/>
-            <div class="card">
-            </div>
-            <!-- <br/>  -->
-            <!-- <div class="col-md-4">
-            </div> -->
-          </div>
-          <div class="col-md-4 justify-content-start">
-            <div class="float-end">
-              <button class="btn btn-outline-success btn-md" title="save workspace"  type="button" [disabled]="canvas.workspaceName == ''" (click)="submit()">
-                  <i class="fa fa-regular fa-floppy-disk"></i>
+<mat-toolbar color="primary" >
+    <mat-toolbar-row >
+        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+            <div style="display: flex; align-items: center;">
+     
+              <mat-form-field appearance="outline" class="bottom-border" style="margin-left: 10px;">
+                <mat-label>Workspace name</mat-label>
+                <input placeholder="Enter workspace name" type="text" matInput [readonly]="canvas.readonly" [(ngModel)]="canvas.workspaceName">
+              </mat-form-field>
+              <button class="btn btn-outline-success btn-md" title="Save workspace" type="button" [disabled]="canvas.workspaceName == ''" style="margin-left: 10px;" (click)="submit()">
+                <i class="fa fa-regular fa-floppy-disk"></i>
               </button>
-              <button class="btn btn-outline-info btn-md" title="add workspace" type="button" (click)="addWorkSpace()">
-                  <i class="fa-sharp fa-regular fa-square-plus"></i>
+              <button class="btn btn-outline-info btn-md" title="Add workspace" type="button" style="margin-left: 10px;" (click)="addWorkSpace()">
+                <i class="fa-sharp fa-regular fa-square-plus"></i>
               </button>
-              </div>
-          </div>
-          <div class="col-md-6">
-              <mat-form-field appearance="fill" style="float:right;width: 50%;">
-              <mat-label>Workspaces</mat-label>
-                   <mat-select>
-               <mat-option *ngFor="let w of workspacesNames" [value]="w" #matOption (click)="loadCanvas(matOption.value)">
-                  {{w}}
+              <mat-form-field appearance="outline" style="float: right;margin-left: 500px;">
+                <mat-select placeholder="Current Workspaces">
+                  <mat-option *ngFor="let w of workspacesNames" [value]="w" #matOption (click)="loadCanvas(matOption.value)">
+                    {{w}}
                   </mat-option>
-              </mat-select>
-                </mat-form-field>
+                </mat-select>
+              </mat-form-field>
+            </div>
+        
           </div>
-    </div>
+          
+          
+          
+   
+        
+           
+            
+           
+                <!-- <mat-error *ngIf=" canvas.workspaceName == ''" >enter a workspace name </mat-error> -->
+
+           
+            <br/>     
+          
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+
       <div class="row" style="margin-left: 2%;margin-right: 2%">
         <div class="col-xl-2">
-            <!-- <div class="card">
-                <div class="card-header">Size</div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <input type="text" class="form-control" [(ngModel)]="canvas.size.width" (keyup)="changeSize()">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    Width
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" [(ngModel)]="canvas.size.height" (keyup)="changeSize()">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    Height
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- <br/> -->
-            <!-- <div class="card"> -->
-            <!-- </div> -->
             <br/> 
             <div class="card">
                 <div class="card-header ">Add images</div>
                 <div class="card-body">
                     <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/objects/desk.svg">
                     <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/objects/door.svg">
-  
                 </div>
             </div>
             <br/>
@@ -82,7 +59,7 @@
                 <div class="card-header">Upload image</div>
                 <div class="card-body text-center">
                     <img id="testImage" *ngIf="canvas.url" class="images-item-upload" [src]="canvas.url" (click)="addImageOnCanvas(canvas.url);">
-                    <input type="file" (change)="readUrl($event);">
+                    <input type="file"  (change)="readUrl($event);">
                     <br/>
                     <br/>
                     <div class="btn-group btn-group-justified" role="group" aria-label="...">
@@ -121,20 +98,7 @@
 
             <br/>
     </div>
-    <!-- <div class="row">
-        <div class="col-xl-12">
-            <br/>
-            <div class="card">
-                <div class="card-header">
-                    <button type="button" class="btn btn-primary btn-sm" (click)="rasterizeJSON()">
-                        <i class="fa fa-refresh" aria-hidden="true"></i> Render to json</button>
-                </div>
-                <div class="card-body">
-                    <pre>{{canvas.json}}</pre>
-                </div>
-            </div>
-        </div>
-    </div> -->
+
     <br>
     <br>
   </div>

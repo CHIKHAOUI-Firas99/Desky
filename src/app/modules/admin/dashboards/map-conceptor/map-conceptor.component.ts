@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { MapComponent } from '../map/map.component';
 import { MapConceptorService } from './map-conceptor.service';
+import { MapService } from '../map/map.service';
 
 @Component({
   selector: 'app-map-conceptor',
@@ -11,7 +12,7 @@ export class MapConceptorComponent {
   title = 'mapComponent';
 
   @ViewChild('canvas', { static: false }) canvas: MapComponent;
-  constructor(private _mapConceptorService : MapConceptorService) { }
+  constructor(private _mapConceptorService : MapService) { }
 
 
 

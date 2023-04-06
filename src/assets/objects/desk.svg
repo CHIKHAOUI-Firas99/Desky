@@ -2,9 +2,9 @@
 
 
 <svg xmlns="http://www.w3.org/2000/svg">
-  <rect x="44" y="50" width="60" height="25" rx="10" fill="rgb(169,169,169)"/>
+  <rect x="22" y="25" width="30" height="12.5" rx="5" fill="rgb(169,169,169)"/>
 
-  <rect x="10" y="10" width="128" height="50" rx="10" fill="rgb(220,220,220)"/>
+  <rect x="5" y="5" width="64" height="25" rx="5" fill="rgb(220,220,220)"/>
   <!-- <path d="M 10 10 H 90 V 50 H 10 L 10 10" fill="gray"/> -->
 
 

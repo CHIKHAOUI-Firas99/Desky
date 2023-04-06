@@ -11,6 +11,8 @@ import { MapConceptorComponent } from './map-conceptor.component';
 import { MapComponent } from '../map/map.component';
 import { mapConceptorRoutes } from './map-conceptor.routing';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+
 @NgModule({
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [
@@ -21,6 +23,7 @@ import { MatSelectModule } from '@angular/material/select';
     RouterModule.forChild(mapConceptorRoutes),
     MatSelectModule,
     DeleteConfirmationModule,
+    MatInputModule,
     CommonModule,
     MatButtonModule,
     MatDividerModule,
