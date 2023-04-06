@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { MapComponent } from '../map/map.component';
+import { MapConceptorService } from './map-conceptor.service';
 
 @Component({
   selector: 'app-map-conceptor',
@@ -8,17 +9,35 @@ import { MapComponent } from '../map/map.component';
 })
 export class MapConceptorComponent {
   title = 'mapComponent';
+
   @ViewChild('canvas', { static: false }) canvas: MapComponent;
+  constructor(private _mapConceptorService : MapConceptorService) { }
+
+
+
+
   loadCanvas(name) {
     this.canvas.loadCanvas(name);
   }
     workspaces : any[]
+    workspacesNames :any
     ngOnInit(): void {
       this.workspaces = JSON.parse(localStorage.getItem('workspace')) 
+      this.getWorkspacesNames()
+    }
+    getWorkspacesNames(){
+      return this._mapConceptorService.getWorkspacesNames().subscribe((data) =>{
+        this.workspacesNames = data     
+      })
     }
   getWorkspaces() {
     this.workspaces = JSON.parse(localStorage.getItem('workspace')) 
+  
+    
   }
+ 
+  
+  
     //CHANGE CANVAS SIZE (WIDTH AND HEIGHT)
     public changeSize() {    
       this.canvas.changeSize();
@@ -31,34 +50,45 @@ export class MapConceptorComponent {
     public addImageOnCanvas(url) {    
       this.canvas.addImageOnCanvas(url);
     }
+  
     public readUrl(event) {
       this.canvas.readUrl(event);
     }
+  
     public removeWhite(url) {
       this.canvas.removeWhite(url);
     }
+  
     public removeSelected() {
       this.canvas.removeSelected();
     }
+  
     public clone() {
       this.canvas.clone();
     }
+  
     public cleanSelect() {
       this.canvas.cleanSelect();
     }
+  
     public setCanvasImage() {
       this.canvas.setCanvasImage();
     }
+  
     public setId() {
       this.canvas.setId();
     }
     public rasterizeJSON() {
       this.canvas.rasterizeJSON();
     }
+  
+  
     public submit(){
       this.canvas.submit();
     }
     public addWorkSpace() {
       this.canvas.addWorkSpace()
+    
     }
+  
   }

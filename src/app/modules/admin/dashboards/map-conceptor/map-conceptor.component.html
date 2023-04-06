@@ -1,40 +1,46 @@
-<div>
+<div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden">
     <hr>
-    <div class="row" style="width: 100%;">
-          <div class="col-xl-6">
+    <div class="row" style="margin-left: 2%;margin-right: 2%">
+          <div class="col-md-2">
+            <div class="card">
+                <div class="card-header"> workspace's name </div>
+                <div class="card-body">
+                    <input type="text"  class="form-control" [readonly]="canvas.readonly" [(ngModel)]="canvas.workspaceName">
+                </div>
+                <span *ngIf="canvas.workspaceName == ''" class="error text-danger">enter a workspace name </span>
+
+            </div>
+            <br/>
+            <div class="card">
+            </div>
+            <!-- <br/>  -->
+            <!-- <div class="col-md-4">
+            </div> -->
           </div>
-          <div class="col-xl-3">
-              <button class="btn btn-outline-success btn-md" title="save workspace" type="button" [disabled]="canvas.workspaceName == ''" (click)="submit()">
+          <div class="col-md-4 justify-content-start">
+            <div class="float-end">
+              <button class="btn btn-outline-success btn-md" title="save workspace"  type="button" [disabled]="canvas.workspaceName == ''" (click)="submit()">
                   <i class="fa fa-regular fa-floppy-disk"></i>
               </button>
               <button class="btn btn-outline-info btn-md" title="add workspace" type="button" (click)="addWorkSpace()">
                   <i class="fa-sharp fa-regular fa-square-plus"></i>
               </button>
+              </div>
           </div>
-          <div>
-              <mat-form-field appearance="fill" style="float:right;width: 10%;">
+          <div class="col-md-6">
+              <mat-form-field appearance="fill" style="float:right;width: 50%;">
               <mat-label>Workspaces</mat-label>
-                   <mat-select (opened)="getWorkspaces()">
-               <mat-option *ngFor="let w of workspaces" [value]="w.name" #matOption (click)="loadCanvas(matOption.value)">
-                  {{w.name}}
+                   <mat-select>
+               <mat-option *ngFor="let w of workspacesNames" [value]="w" #matOption (click)="loadCanvas(matOption.value)">
+                  {{w}}
                   </mat-option>
               </mat-select>
-  </mat-form-field>
+                </mat-form-field>
           </div>
     </div>
-  
-    <p id = "p">helooo</p>
-    <div class="row">
-        <div class="col-xl-3">
-              <div class="card">
-                  <div class="card-header"> workspace's name </div>
-                  <div class="card-body">
-                      <input type="text"  class="form-control" [(ngModel)]="canvas.workspaceName">
-                  </div>
-                  <span *ngIf="canvas.workspaceName == ''" class="error text-danger">enter a workspace name </span>
-  
-              </div>
-            <div class="card">
+      <div class="row" style="margin-left: 2%;margin-right: 2%">
+        <div class="col-xl-2">
+            <!-- <div class="card">
                 <div class="card-header">Size</div>
                 <div class="card-body">
                     <div class="form-group">
@@ -58,14 +64,14 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <br/>
-            <div class="card">
-            </div>
+            </div> -->
+            <!-- <br/> -->
+            <!-- <div class="card"> -->
+            <!-- </div> -->
             <br/> 
             <div class="card">
-                <div class="card-header">Add images</div>
-                <div class="card-body max-height">
+                <div class="card-header ">Add images</div>
+                <div class="card-body">
                     <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/objects/desk.svg">
                     <img class="images-item" (click)="getImgPolaroid($event)" src="../assets/objects/door.svg">
   
@@ -110,8 +116,9 @@
             <br/>
         </div>
         <div class="col-xl-9">
-            <app-map #canvas ></app-map>
+            <app-map #canvas style="display: flex;"></app-map>
         </div>
+
             <br/>
     </div>
     <!-- <div class="row">
