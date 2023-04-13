@@ -3,15 +3,19 @@
 	margin-top: 10px;
 }
 .images-item {
-	width: 48%;
+	// width: 48%;
 	cursor: pointer;
-
-	padding: 3px;
-	max-width: 120px;
+	max-width: 85px;
+    max-height: 70px;
+	margin-top: 2px;
 	&:hover {
 		opacity: 0.7;
 	}
 }
+.col-custom-2 {
+    width: 16.6666667%;
+}
+
 .images-item-upload {
 	width: 80%;
 	cursor: pointer;
@@ -21,6 +25,59 @@
 		opacity: 0.7;
 	}
 }
+.card {
+	margin-top: 6%;
+  }
+  
+  @media only screen and (max-width: 768px) {
+	.card {
+	  margin-top: 3%;
+	}
+  }
+  
+  @media only screen and (max-width: 576px) {
+	.card {
+	  margin-top: 2%;
+	}
+  }
+  
+  .card-header {
+	font-weight: bold;
+  }
+  
+  .card-body {
+	text-align: center;
+  }
+  
+  .images-item-upload {
+	max-width: 100%;
+	height: auto;
+  }
+  
+  .btn-group {
+	margin-top: 10px;
+  }
+  
+  @media only screen and (max-width: 576px) {
+	.btn-group {
+	  margin-top: 5px;
+	}
+  }
+  
+.button-list {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+  }
+  #inp {
+	text-align: center;
+	margin: auto;
+  }
+  .canvas{
+	border: 2px dashed #cccccc;
+  }
+  
 .custom-item {
 	border-bottom: 2px solid #f3f3f3;
 	.custom-item-title {

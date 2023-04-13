@@ -6,6 +6,7 @@ import { UserService } from 'app/core/user/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { PhoneComponent } from '../phone/phone.component';
 import { UsersService } from '../users.service';
+import { MapService } from '../map/map.service';
 
 @Component({
   selector: 'app-delete-confirmation',
@@ -18,6 +19,7 @@ export class DeleteConfirmationComponent {
   cancelButtonText = "Cancel"
   ;
   constructor(
+   private _mapService:MapService,
     @Inject(MAT_DIALOG_DATA) private data: any,private _UserService:UserService,
     private phonedialogRef: MatDialogRef<PhoneComponent>,
     private _userService:UsersService, 
@@ -91,6 +93,16 @@ export class DeleteConfirmationComponent {
          this.refreshRoute()
         });
       });
+    }
+    if(this.data.workspaceId){
+      
+      
+      this._mapService.deleteworkspace(this.data.workspaceId).subscribe(()=>{
+        this.toastr.warning('workspace has been removed', 'Success!');
+        this.matdialog.closeAll()
+        this.refreshRoute()
+
+      },err=>{this.matdialog.closeAll();this.toastr.error('error has been occured', 'Error!')})
     }
 
   }

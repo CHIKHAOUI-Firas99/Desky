@@ -17,6 +17,7 @@ export class TagsUpdateComponent {
   initaialedKeys: any;
   send: boolean;
   notags: boolean=false;
+  objectsList:Array<any>=[]
   constructor(private _fb:FormBuilder, public dialogRef: MatDialogRef<TagsUpdateComponent>,@Inject(MAT_DIALOG_DATA) public data: any) {}
  alltags:any=[]
   transformObject(inputObject) {
@@ -56,8 +57,10 @@ addTag(): void {
   });
 
   this.tags.push(tagFormGroup);
-  lastTagIndex = extraTags.length - 1;
   this.disabled=this.disabled.map(()=>true)
+    lastTagIndex = extraTags.length - 1;
+  this.disabled=this.disabled.map(()=>true)
+  this.disabled[lastTagIndex]=true
 
   this.keys=this.getExistingKeysFromExtraTags(this.form);
 }
@@ -65,7 +68,7 @@ addTag(): void {
 
 
 removeTag(index: number): void {
-  console.log('aaaaaaaaaaaaaaaaaaaaa');
+  
   
   const extraTags = this.form.get('extraTags') as FormArray;
   var lastTagIndex = extraTags.length - 1;
@@ -202,12 +205,26 @@ closeDialog(){
   this.dialogRef.close()
 }
 ngOnInit() {
-  this.alltags = this.data.alltags;
-  console.log(this.alltags);
+  console.log(this.data);
+
+  if (this.data.alltags) {
+    console.log(this.data);
+    localStorage.removeItem('workspacetagsArr')
+    this.alltags = this.data.alltags;
+    this.notags=this.alltags.length == 0
+  }
+
   
-  console.log(this.alltags.length);
+  else if (this.data.workspacetags){
+
+    this.alltags = this.data.workspacetags;
+    console.log(this.alltags);
+    
+    console.log(this.alltags);
+    
+    this.notags=this.alltags.length == 0
+  }
   
-  this.notags=this.alltags.length == 0
   
   // this.alltags = Object.entries(this.alltags).map(([key, value]) => ({ key, value,id:'value-'+key }));
   // console.log(this.alltags);
@@ -215,17 +232,23 @@ ngOnInit() {
   
   // this.alltags = this.objectToArray(this.alltags);
   console.log(this.alltags);
-  const storedArray = JSON.parse(localStorage.getItem('tagsArr'));
-  if (storedArray) {
-   this.alltags= this.mergeArrays(storedArray,this.alltags)
-  }
+
+  const   storedArray = JSON.parse(localStorage.getItem('tagsArr'));
+  
+   
+ 
+  // storedArray = JSON.parse(localStorage.getItem('workspacetagsArr'));
+ 
+  // if (storedArray) {
+  //  this.alltags= this.mergeArrays(storedArray,this.alltags)
+  // }
   console.log(this.alltags);
   console.log(this.data.selectedOptions);
 
   let checkedIds = localStorage.getItem('ckeckedids');
   this.rntags = checkedIds ? checkedIds.split(',') : []; // Set to empty array if no checked IDs
 
-  console.log(this.rntags);
+  console.log(this.rntags) ;
 
   this.form = this._fb.group({
     tags: new FormControl(this.rntags.length ? this.rntags : this.data.selectedOptions),
@@ -236,7 +259,6 @@ ngOnInit() {
       });
     }))
   });
-  
 
   for (let i = 0; i < this.tags.length; i++) {
     this.disabled.push(true);
@@ -277,6 +299,8 @@ getExistingKeysFromExtraTags(formGroup) {
   
     return result;
   }
+
+
 submit(){
   console.log('>>>>>>>><');
   
@@ -292,11 +316,23 @@ submit(){
   
   let tabids =this.getAllIds(tagsarray)
   console.log(tagsarray);
-  
-  localStorage.setItem('ckeckedids',tabids.toString())
-  localStorage.setItem('tagsArr',JSON.stringify(tagsarray))
-  this.dialogRef.close(  [tabids,tagsarray]);
-  console.log(tabids);
+  if (this.data.alltags) {
+    console.log('b');
+    
+    localStorage.setItem('ckeckedids',tabids.toString())
+    localStorage.setItem('tagsArr',JSON.stringify(tagsarray))
+    console.log(localStorage.getItem('tagsArr'));
+    
+    this.dialogRef.close(  [tabids,tagsarray]);
+  }
+  else if(this.data.workspacetags){
+    console.log('a');
+    
+    localStorage.setItem('workspacetagsArr',JSON.stringify(tagsarray))
+    this.dialogRef.close(  [tabids,tagsarray]);
+    console.log(localStorage.getItem('workspacetagsArr'));
+  }
+
   
 }
 getAllIds(arr) {

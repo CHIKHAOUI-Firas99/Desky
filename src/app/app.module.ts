@@ -11,7 +11,7 @@ import { faIcons } from '@fortawesome/free-solid-svg-icons';
 import { faFontAwesome } from '@fortawesome/free-brands-svg-icons';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
-import { ReactiveFormsModule } from '@angular/forms';
+import { NgForm, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -82,6 +82,8 @@ import { ToastNoAnimation, ToastrModule, ToastrService } from 'ngx-toastr';
 import { NgxColorsModule } from 'ngx-colors';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { TagsUpdateComponent } from './modules/admin/dashboards/tags-update/tags-update.component';
+import { AddMaterialComponent } from './modules/admin/dashboards/add-material/add-material.component';
+import { MaterialsComponent } from './modules/admin/dashboards/materials/materials.component';
 
 
 library.add(faIcons, faFontAwesome);
@@ -97,6 +99,7 @@ const routerConfig: ExtraOptions = {
      
     ],
     imports     : [
+        
         BrowserModule,
         BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, routerConfig),
@@ -108,10 +111,12 @@ const routerConfig: ExtraOptions = {
 
         // Core module of your application
         CoreModule,
-
+        
         // Layout module of your application
         LayoutModule,
-       
+        ReactiveFormsModule,
+        FormsModule,
+        
         NgxColorsModule,
         ColorPickerModule,
     ],

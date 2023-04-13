@@ -1,0 +1,25 @@
+<form [formGroup]="materialForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type="text" formControlName="name" class="form-control" id="name">
+  </div>
+  <div class="form-group">
+    <label for="picture">Picture</label>
+    <input type="file" (change)="onFileSelect($event)" class="form-control-file" id="picture">
+  </div>
+  <div class="form-group">
+    <label for="quantity">Quantity</label>
+    <input type="number" formControlName="quantity" class="form-control" id="quantity">
+  </div>
+  <div class="form-group">
+    <label for="desk_id">Desk ID</label>
+    <input type="number" formControlName="desk_id" class="form-control" id="desk_id">
+  </div>
+  <button type="submit" class="btn btn-primary" [disabled]="!materialForm.valid">Add Material</button>
+</form>
+
+<div>
+
+  <img [src]="pic" alt="Material picture">
+</div>
+

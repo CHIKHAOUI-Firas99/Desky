@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Role } from './role.types';
-import {Url} from 'app/core/config/app.config'
+import {userManagementUrl} from 'app/core/config/app.config'
 
 @Injectable({
   providedIn: 'root'
@@ -13,27 +13,27 @@ export class RoleService {
 
   getAllRoles(): Observable<Array<String>>
   {
-      return this._httpClient.get<Array<String>>(Url+"/role/getAllRolesNames")
+      return this._httpClient.get<Array<String>>(userManagementUrl+"/role/getAllRolesNames")
   }
   getAll(): Observable<Array<Role>>
   {
-      return this._httpClient.get<Array<Role>>(Url+"/roles")
+      return this._httpClient.get<Array<Role>>(userManagementUrl+"/roles")
   }
   getAllClaims(): Observable<Array<any>>
   {
-      return this._httpClient.get<Array<any>>(Url+"/claims/")
+      return this._httpClient.get<Array<any>>(userManagementUrl+"/claims/")
   }
   getAllTags():Observable<Array<any>>{
-    return this._httpClient.get<Array<any>>(Url+"/alltags/")
+    return this._httpClient.get<Array<any>>(userManagementUrl+"/alltags/")
   }
   updateRole(id,role):Observable<Role>{
-   return  this._httpClient.put<Role>(Url+"/updateRole/"+id,role)
+   return  this._httpClient.put<Role>(userManagementUrl+"/updateRole/"+id,role)
   }
   addRole(role){
-    return this._httpClient.post<Role>(Url+'/addRole',role)
+    return this._httpClient.post<Role>(userManagementUrl+'/addRole',role)
   }
   deleteRole(id){
-    return  this._httpClient.delete(Url+"/deleteRole/"+id)
+    return  this._httpClient.delete(userManagementUrl+"/deleteRole/"+id)
    }
 
   transformObject(tab) {

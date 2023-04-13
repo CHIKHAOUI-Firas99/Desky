@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from 'app/core/auth/auth.service';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import {Url} from 'app/core/config/app.config'
+import {mapServiceUrl} from 'app/core/config/app.config'
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +48,7 @@ export class UsersService {
   }
   updateUser(id:number,u:any):Observable<any>{
       const headers = new HttpHeaders().set('token', ` ${this._authService.accessToken}`);
-     return this._httpClient.patch<any>(Url+'/admin/update/'+id,u,{
+     return this._httpClient.patch<any>(mapServiceUrl+'/admin/update/'+id,u,{
       headers
      })
   }
@@ -56,7 +56,7 @@ export class UsersService {
   deleteUser(id:number):Observable<any>{
     const headers = new HttpHeaders().set('token', ` ${this._authService.accessToken}`);
    
-     return this._httpClient.delete<any>(Url+'/deleteUser/'+id,{headers})
+     return this._httpClient.delete<any>(mapServiceUrl+'/deleteUser/'+id,{headers})
   }
 
 
@@ -64,6 +64,6 @@ export class UsersService {
 
   getRoleByIdUser(id:number):Observable<any>{
 
-     return this._httpClient.get<any>(Url+'/userRole/'+id)
+     return this._httpClient.get<any>(mapServiceUrl+'/userRole/'+id)
   }
 }

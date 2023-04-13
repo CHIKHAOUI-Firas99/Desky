@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, ReplaySubject, tap } from 'rxjs';
 import { User } from 'app/core/user/user.types';
-import {Url} from 'app/core/config/app.config'
+import {userManagementUrl} from 'app/core/config/app.config'
 
 @Injectable({
     providedIn: 'root'
@@ -58,14 +58,14 @@ export class UserService
         );
     }
 deletePhone(id:number){
-    return this._httpClient.delete(Url+'/deleteUserPhone/'+id)
+    return this._httpClient.delete(userManagementUrl+'/deleteUserPhone/'+id)
 }
 
     getAllUsers(): Observable<User[]>
     
     {
         // const url = `${Url+'/getAllUsers/'}?limit=${limit}&page=${page}`;
-        const url = `${Url+'/getAll/'}`;
+        const url = `${userManagementUrl+'/getAll/'}`;
 
         return this._httpClient.get<Array<User>>(url)
     

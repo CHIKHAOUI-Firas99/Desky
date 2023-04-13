@@ -500,7 +500,7 @@ if (this.i!=nb) {
   
   
    
-  console.log(this.mytags);
+  console.log(this.tags[i]);
     
  
   
@@ -516,7 +516,7 @@ if (this.i!=nb) {
         this.mytags=result[1]
         console.log(this.mytags);
         this.updatedTag=result[1]
-        this.VOForm.get("VORows").value[i].tags=result[0]
+        // this.VOForm.get("VORows").value[i].tags=result[0]
         console.log(this.VOForm.get("VORows").value[i].tags);
         
         console.log(this.tags);
@@ -601,6 +601,7 @@ if (this.i!=nb) {
     row.get("isEditable").patchValue(true);
     localStorage.removeItem('ckeckedids')
     localStorage.removeItem('tagsArr')
+    this.mytags=this.tags[i]
     this.inUpdate=false
   }
 
@@ -636,6 +637,7 @@ if (this.i!=nb) {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
+
   }
 
   // -----------------------------------------------------------------------------------------------------

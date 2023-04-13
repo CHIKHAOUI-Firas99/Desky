@@ -5,6 +5,9 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { MapService } from './map.service';
 import { ActivatedRoute, Router, RouteReuseStrategy } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-map',
@@ -33,14 +36,21 @@ export class MapComponent {
   public textString: string | undefined;
   public url: string | ArrayBuffer = '';
   public size: any = {
-    width: 1000,
-    height: 1000
+    width: 1100,
+    height: 900
   };
   public workspaceName : String = ""
   public json: any;
   public selected: any;
-
+public isSelected:boolean=false
+  public workSpaceTags: Array<any>=[];
+  ToUpdate: boolean=false;
+  workspaceId: any;
+  errMessage: any;
   constructor(
+    private dialog: MatDialog,
+
+    private toastr: ToastrService,
     private _mapService : MapService ,
     private router: Router,
     private route: ActivatedRoute,
@@ -55,7 +65,15 @@ export class MapComponent {
     }
   loadCanvas(name) {
     this._mapService.getWorkspace(name).subscribe((workspace) =>{
+    this.readonly=false
+      this.ToUpdate=true
       this.workspaceName = workspace.name
+      this.workSpaceTags=workspace["tags"]
+      this.workspaceId=workspace["id"]
+      if (!this.workSpaceTags) {
+        this.workSpaceTags=[]
+      }
+      console.log(this.workSpaceTags);
       this.canvas.clear()
       this.objectsInCanvas.clear()
       this.addImageOnCanvas(workspace.mapUrl)
@@ -95,42 +113,14 @@ export class MapComponent {
           });
           this.extend(image,key);
           this.canvas.add(image);
-        //   var c = new fabric.Circle({
-        //     left: obj.x+((image.width*obj.scaleX)/2)-(25*obj.scaleX),
-        //     top:obj.y,
-        //     radius: 25*obj.scaleX,
-        //     fill: '#5afffa',
-        //     stroke: '#666',
-        //     selectable: true,
-        //     centeredScaling:true,
-        //     padding:2,
-        //     hasRotatingPoint: false,
-        //     borderColor: 'black',
-        //     cornerColor: 'black'
-        // });
-      // var t = new fabric.Text(key, {
-      //       fontFamily: 'Calibri',
-      //       fontSize: 20,
-      //       textAlign: 'center',
-      //       originX: 'center',
-      //       originY: 'center',
-      //       left: obj.x+((image.width*obj.scaleX)/2)-(25*obj.scaleX)+25*obj.scaleX,
-      //       top: obj.y+25*obj.scaleX
-      //   });
-      
-      // var g = new fabric.Group([c, t],{
-      //       // any group attributes here
-      //   });
-      //   g.hasControls = false;
-      //   g.evented=false
-      //   this.canvas.add(g)           
-          // this.canvas.add(new fabric.Circle({radius: 25*obj.scaleX, left: obj.x+((image.width*obj.scaleX)/2)-(25*obj.scaleX), top: obj.y, fill: '#ff5722'}));
           this.selectItemAfterAdded(image);
         });
       }
-      this.readonly = true 
+       
       console.log(this.objectsInCanvas);
+  
     })
+    
 
   }
   ngAfterViewInit(): void {
@@ -142,42 +132,6 @@ export class MapComponent {
       selectionBorderColor: 'blue',
       isDrawingMode: false,
     });
-
-//     var c = new fabric.Circle({
-//       left: 20,
-//       top: 10,
-//       radius: 40,
-//       fill: '#5afffa',
-//       stroke: '#666',
-//       selectable: true,
-//       centeredScaling:true,
-//       padding:2,
-//       hasRotatingPoint: false,
-//       borderColor: 'black',
-//       cornerColor: 'black'
-//   });
-
-// var t = new fabric.Text("2", {
-//       fontFamily: 'Calibri',
-//       fontSize: 30,
-//       textAlign: 'center',
-//       originX: 'center',
-//       originY: 'center',
-//       left: 60,
-//       top: 50
-//   });
-
-// var g = new fabric.Group([c, t],{
-//       // any group attributes here
-//   });
-
-
-//   g.hasControls = false;
-//   g.evented=false
-//   this.extend(g, -1000);
-//   this.canvas.add(g)
-
-
 
 
     this.canvas.on({
@@ -211,6 +165,7 @@ export class MapComponent {
 
       },
       'object:modified': (data) => {
+        // this.isSelected=false
       },
       'selection:created':(e) => {
         const selectedObject = e.target;
@@ -225,6 +180,7 @@ export class MapComponent {
       },
 
       'selection:updated': (e) => {
+        // this.isSelected=true
         const selectedObject = e.target;                
         this.selected = selectedObject;
         selectedObject.hasRotatingPoint = true;
@@ -232,6 +188,7 @@ export class MapComponent {
         selectedObject.cornerColor = 'rgba(255, 87, 34, 0.7)';
       },
       'object:selected':(e) => {
+        // this.isSelected=true
 
          
 
@@ -240,6 +197,7 @@ export class MapComponent {
 
       'selection:cleared': (e) => {        
         this.selected = null;
+        // this.isSelected=false
       },
       'before:transform':(e) =>{
         if (this.isIntersect){
@@ -256,23 +214,31 @@ export class MapComponent {
     // get references to the html canvas element & its context
     this.canvas.on('mouse:down', (e) => {
       if(e.target){
+        // this.isSelected=true
         this.latestValidPosition ={x : e.target['translateX'],y: e.target['translateY'],o:e.target['angle'],scaleX : e.target['scaleX'],scaleY : e.target['scaleY']}
-      }    
+      } 
+      else{
+        this.selected=false
+        console.log('its empty selection');
+        
+      }   
     });
     this.canvas.on('mouse:up',(e) => {
-      // const activeSelection: fabric.ActiveSelection | undefined = this.canvas.getActiveObject() as fabric.ActiveSelection | undefined;
-      // if (activeSelection) {
-      //   const boundingRect = activeSelection.getBoundingRect();
-      //   const coords = {
-      //     tl: { x: boundingRect.left, y: boundingRect.top },
-      //     br: { x: boundingRect.left + boundingRect.width, y: boundingRect.top + boundingRect.height },
-      //   };
-      //   console.log("ppppp"+coords.tl.x, coords.tl.y, coords.br.x, coords.br.y);
-      // }
 
-      //I NEED TO GET ACTIVEOBJECTS IDS
+console.log('mouse up');
+
       let objects = this.canvas.getActiveObjects();
-
+if (objects.length>0) {
+  console.log('rrr');
+  
+  // this.isSelected=true
+  
+}
+else{
+  console.log('aaa');
+  
+  // this.isSelected=false
+}
       if (objects.length==1){
         let obj = e.target       
         if(obj){
@@ -389,6 +355,25 @@ export class MapComponent {
 
     });
   }
+  deleteWorkspace() {
+    if (this.workspaceId) 
+    {
+      this.dialog.open(DeleteConfirmationComponent, {
+        width: "640px",
+        disableClose: true,
+        data: {
+          workspaceId:this.workspaceId,
+          message: "Are you sure want to delete?",
+          buttonText: {
+            ok: "Save",
+            cancel: "No",
+          },
+        },
+      });
+
+      
+    }
+  }
   // Block "Upload Image"
   addImageOnCanvas(url) {
     if (url) {      
@@ -467,41 +452,57 @@ export class MapComponent {
 
   /*------------------------Global actions for element------------------------*/
   clone() {
-    const activeObject = this.canvas.getActiveObject();
-    let id = this.canvas.getActiveObject().toObject().id.toString();
-    let path = this.objectsInCanvas.get(id).path;  
-    if (activeObject) {
-      fabric.loadSVGFromURL(path, (objects, options) => {
-        const image = fabric.util.groupSVGElements(objects, options);
-        image.set({
-          left: 10,
-          top: 10,
-          angle : 0,
-          padding: 0,
-          cornerSize: 10,
-          hasRotatingPoint: true,
-          borderColor : "green",
-          borderScaleFactor : 5,
-          strokeWidth : 10
+    const activeObjects = this.canvas.getActiveObjects();
+    const clonedObjects = [];
+    activeObjects.forEach(activeObject => {
+        let id = activeObject.toObject().id.toString();
+        let path = this.objectsInCanvas.get(id).path;  
+        fabric.loadSVGFromURL(path, (objects, options) => {
+            const image = fabric.util.groupSVGElements(objects, options);
+            image.set({
+                left: activeObject.left + 10,
+                top: activeObject.top + 10,
+                angle : activeObject.angle,
+                padding: 0,
+                cornerSize: 10,
+                hasRotatingPoint: true,
+                borderColor : "green",
+                borderScaleFactor : 5,
+                strokeWidth : 10
+            });
+            let scaleX = this.objectsInCanvas.get(id).scaleX;
+            let scaleY = this.objectsInCanvas.get(id).scaleY;
+            let o = 0;
+            image.scaleX = scaleX;
+            image.scaleY = scaleY;
+            this.idCounter--;
+            this.extend(image, this.idCounter);
+            this.canvas.add(image);
+            let x = activeObject.left + 10;
+            let y = activeObject.top + 10;
+            let type = this.objectsInCanvas.get(id).type;
+            let flipX = false;
+            let flipY = false;
+            this.objectsInCanvas.set(this.idCounter.toString(),{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type});
+            clonedObjects.push(image);
         });
-        let scaleX = this.objectsInCanvas.get(id).scaleX
-        let scaleY = this.objectsInCanvas.get(id).scaleY
-        let o = 0
-        image.scaleX = scaleX
-        image.scaleY = scaleY
-        this.idCounter--
-        this.extend(image, this.idCounter);
-        this.canvas.add(image);
-        let x = 10
-        let y = 10
-        let type = this.objectsInCanvas.get(id).type
-        let flipX = false
-        let flipY = false
-        this.objectsInCanvas.set(this.idCounter.toString(),{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
-        this.selectItemAfterAdded(image);
-      });
+    });
+    this.canvas.renderAll();
+    this.canvas.discardActiveObject();
+    this.canvas.requestRenderAll();
+    if (clonedObjects.length > 0) {
+        this.canvas.setActiveObject(new fabric.ActiveSelection(clonedObjects, {
+            canvas: this.canvas
+        }));
     }
-  }
+}
+
+  
+  
+
+  
+
+
 //SET OBJECT POSITION AND SCALE
   changeParam(){
     const objects = this.canvas.getActiveObjects()
@@ -559,29 +560,35 @@ export class MapComponent {
   }
   /*System*/
   removeSelected() {
-    const activeObject = this.canvas.getActiveObject();
-    const activeGroup = this.canvas.getActiveObjects();
-    if (activeObject) {
-      this.objectsInCanvas.delete(activeObject.toObject().id.toString())
-      this.canvas.remove(activeObject);
-      // this.textString = '';
-    } else if (activeGroup) {
-      this.canvas.discardActiveObject();
-      const self = this;
-      activeGroup.forEach((object) => {
-        self.canvas.remove(object);
+    const activeObjects = this.canvas.getActiveObjects();
+    this.canvas.discardActiveObject();
+    if (activeObjects.length) {
+      this.canvas.remove.apply(this.canvas, activeObjects);
+      activeObjects.forEach((activeObject) => {
+        const id = activeObject.toObject().id.toString();
+        this.objectsInCanvas.delete(id);
       });
     }
   }
+  
   confirmClear() {
     if (confirm('Are you sure?')) {
       this.canvas.clear();
     }
   }
+  getYourTags(arr) {
+    const transformedArr = [];
+    for (let obj of arr) {
+      if (obj.key.length > 0 && obj.value.length > 0) {
+        transformedArr.push({ key: obj.key, value: obj.value });
+      }
+    }
+    return transformedArr;
+  }
   rasterizeJSON() {
     this.json = JSON.stringify(this.canvas, null, 2);
   }
-  submit(){
+  submit(tags){
     let objects =[]
     let l = this.objectsInCanvas.size    
     this.objectsInCanvas.forEach((value, key) => {
@@ -596,19 +603,41 @@ export class MapComponent {
       this.workSpace = {
         "name" : this.workspaceName,
         "mapUrl" : this.mapUrl,
-        objects
+        objects,
+        "tags":this.getYourTags(tags)
       } 
       console.log(this.workSpace);
-      if(this.readonly == false){
-        this._mapService.addWorkspace(this.workSpace).subscribe((data) =>{
+      console.log(this.ToUpdate);
+      
+      if(!this.ToUpdate){
+        console.log('aaa');
+        
+          this._mapService.addWorkspace(this.workSpace).subscribe((data) =>{
           console.log(data);
+          this.showToast('workspace added','success')
           this.refreshRoute()
+        },(err)=>{
+          console.log(err);
+          this.errMessage=err["error"]["detail"]
+          
+          this.toastr.error(this.errMessage, 'Failed');
+          
         })
       }
-      else{
-        this._mapService.updateWorkspace(this.workSpace).subscribe((data) =>{
+      else { 
+        console.log("bbbb");
+        
+        this._mapService.updateWorkspace(this.workspaceId,this.workSpace).subscribe((data) =>{
           console.log(data);
+          this.showToast('workspace updated','success')
+
           this.refreshRoute()
+          
+        },(err)=>{
+          console.log(err);
+          this.errMessage=err["error"]["detail"]
+          
+          this.toastr.error(this.errMessage, 'Failed');
           
         })
 
@@ -616,7 +645,9 @@ export class MapComponent {
 
     }
   }
-
+  showToast(message:string,title:string): void {
+    this.toastr.success(message, title);
+   }
 
   addWorkSpace(){    
     this.objectsInCanvas.clear()

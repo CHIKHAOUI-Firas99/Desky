@@ -9,6 +9,8 @@ import { MapConceptorComponent } from "./modules/admin/dashboards/map-conceptor/
 import { RolesAuthGuard } from "./core/auth/guards/roles.guard";
 import { MapAuthGuard } from "./core/auth/guards/map.guard";
 import { UsersAuthGuard } from "./core/auth/guards/users.guard";
+import { Component } from "@angular/core";
+import { AddMaterialComponent } from "./modules/admin/dashboards/add-material/add-material.component";
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -156,6 +158,12 @@ export const appRoutes: Route[] = [
               ).then((m) => m.MapConceptorModule),
             canActivate: [MapAuthGuard],
           },
+          {
+            path:'add-material',
+            loadChildren: () => import("app/modules/admin/dashboards/add-material/add-material.module")
+              .then((m) => m.AddMaterialModule),
+          },
+          
          
         ],
       },
@@ -169,5 +177,6 @@ export const appRoutes: Route[] = [
         (m) => m.Error404Module
       ),
   },
+{path:'add',component:AddMaterialComponent},
   { path: "**", redirectTo: "404-not-found"},
 ];

@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthUtils } from 'app/core/auth/auth.utils';
 import { UserService } from 'app/core/user/user.service';
-import {Url} from 'app/core/config/app.config'
+import {userManagementUrl} from 'app/core/config/app.config'
 import { User } from '../user/user.types';
 @Injectable()
 export class AuthService
@@ -50,13 +50,13 @@ tokenValid:boolean=false
      */
     forgotPassword(email: string): Observable<any>
     {
-        return this._httpClient.post(Url+'/forget_password', email);
+        return this._httpClient.post(userManagementUrl+'/forget_password', email);
     }
 
     dispalyAdminDashboard()
     {
         const headers = new HttpHeaders().set('token', ` ${this.accessToken}`);
-        return this._httpClient.get <any[]>(Url+'/dispalyadmin',{headers});
+        return this._httpClient.get <any[]>(userManagementUrl+'/dispalyadmin',{headers});
    
     }
 
@@ -83,7 +83,7 @@ tokenValid:boolean=false
             return throwError('User is already logged in.');
         }
 
-        return this._httpClient.post(Url+'/user_sign_in', credentials).pipe(
+        return this._httpClient.post(userManagementUrl+'/user_sign_in', credentials).pipe(
             switchMap((response: any) => {
 
 
@@ -111,7 +111,7 @@ tokenValid:boolean=false
     {
         const headers = new HttpHeaders().set('token', ` ${this.accessToken}`);
         // Sign in using the token
-        return this._httpClient.post(Url+'/token_sign_in',{}, {
+        return this._httpClient.post(userManagementUrl+'/token_sign_in',{}, {
            headers
         }).pipe(
             catchError(()=>
@@ -172,7 +172,7 @@ if(!response){
         
         const headers = new HttpHeaders().set('token', ` ${this.accessToken}`);
         // Remove the access token from the local storage
-        this._httpClient.post(Url+"/user_sign_out",{},{headers}).subscribe(()=>{
+        this._httpClient.post(userManagementUrl+"/user_sign_out",{},{headers}).subscribe(()=>{
             localStorage.removeItem('accessToken');
 
         })
@@ -193,7 +193,7 @@ if(!response){
     signUp(user): Observable<any>
     {
         
-        return this._httpClient.post(Url+'/user_sign_up', user);
+        return this._httpClient.post(userManagementUrl+'/user_sign_up', user);
     }
 
     /**
@@ -203,7 +203,7 @@ if(!response){
      */
     unlockSession(credentials: { email: string; password: string }): Observable<any>
     {
-        return this._httpClient.post(Url+'/user_sign_in', credentials);
+        return this._httpClient.post(userManagementUrl+'/user_sign_in', credentials);
     }
 
     /**
