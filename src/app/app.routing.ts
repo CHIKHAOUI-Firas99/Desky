@@ -163,6 +163,11 @@ export const appRoutes: Route[] = [
             loadChildren: () => import("app/modules/admin/dashboards/add-material/add-material.module")
               .then((m) => m.AddMaterialModule),
           },
+          {
+            path:'materials',
+            loadChildren: () => import("app/modules/admin/dashboards/materials/materials.module")
+              .then((m) => m.MaterialsModule),
+          },
           
          
         ],

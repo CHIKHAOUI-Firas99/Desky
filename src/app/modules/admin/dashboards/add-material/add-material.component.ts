@@ -23,18 +23,27 @@ export class AddMaterialComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {
-console.log('aaaa');
-
-this.pic=this.materialService.getMat(3).subscribe((d)=>{
-  this.pic=d.picture
-  console.log(d.picture);
-  
-})
-console.log(this.pic);
-
+  async ngOnInit(): Promise<void> {
+    try {
+      const material = await this.materialService.getMat(8).toPromise();
+      this.pic = this.getPictureUrl(material.picture);
+      console.log(this.pic);
+      
+    } catch (err) {
+      console.log(err);
+    }
   }
-
+  
+  getPictureUrl(picture: string): string {
+    // Decode the base64-encoded picture
+    const decodedPicture = atob(picture);
+    
+    // Construct the data URL for the picture
+    const dataUrl = `data:image/jpeg;base64,${decodedPicture}`;
+    
+    return dataUrl;
+  }
+  
   onFileSelect(event: any) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];

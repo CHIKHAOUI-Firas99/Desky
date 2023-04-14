@@ -1,0 +1,24 @@
+
+
+th, td, input,img {
+    text-align: center;
+     /* decrease font size */
+}
+
+input{
+    zoom: 1.09 ;
+}
+
+.responsive-button {
+    border-radius: 25px;
+    width: 3%;
+    word-wrap: break-word;
+}
+@media only screen and (max-width: 2000px) {
+    .responsive-button {
+        width: 100%;
+    }
+}
+mat-form-field{
+    margin-top: 7%;
+}

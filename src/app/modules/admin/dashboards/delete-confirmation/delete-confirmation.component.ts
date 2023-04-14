@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { PhoneComponent } from '../phone/phone.component';
 import { UsersService } from '../users.service';
 import { MapService } from '../map/map.service';
+import { MaterialService } from '../materials/material.service';
 
 @Component({
   selector: 'app-delete-confirmation',
@@ -25,7 +26,8 @@ export class DeleteConfirmationComponent {
     private _userService:UsersService, 
     private router:Router,private matdialog:MatDialog,
     private dialogRef: MatDialogRef<DeleteConfirmationComponent>,
-    private toastr:ToastrService
+    private toastr:ToastrService,
+    private _materialService: MaterialService
     
     ,private _roleService: RoleService
     , private route: ActivatedRoute,
@@ -103,6 +105,12 @@ export class DeleteConfirmationComponent {
         this.refreshRoute()
 
       },err=>{this.matdialog.closeAll();this.toastr.error('error has been occured', 'Error!')})
+    }
+    if (this.data.idmat) {
+      this._materialService.deleteMat(this.data.idmat).subscribe()
+      this.toastr.warning('workspace has been removed', 'Success!');
+      this.matdialog.closeAll()
+      this.refreshRoute()
     }
 
   }
