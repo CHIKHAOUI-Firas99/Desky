@@ -8,6 +8,7 @@ import { ActivatedRoute, Router, RouteReuseStrategy } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MapConceptorComponent } from '../map-conceptor/map-conceptor.component';
 
 @Component({
   selector: 'app-map',
@@ -21,7 +22,7 @@ export class MapComponent {
   private workSpace : any
   private mapUrl : String
   private u :any
-  private objectsInCanvas = new Map<string,any>()
+  public objectsInCanvas = new Map<string,any>()
   private canvas: fabric.Canvas | undefined;
   private idCounter : number =0
   private latestValidPosition :any;
@@ -47,6 +48,12 @@ public isSelected:boolean=false
   ToUpdate: boolean=false;
   workspaceId: any;
   errMessage: any;
+  selectedObjectId: any;
+  MapConceptorComponent:MapConceptorComponent
+  tabObjects: any;
+  currentType: any;
+  objects: any[];
+  objectsMat: any;
   constructor(
     private dialog: MatDialog,
 
@@ -70,6 +77,8 @@ public isSelected:boolean=false
       this.workspaceName = workspace.name
       this.workSpaceTags=workspace["tags"]
       this.workspaceId=workspace["id"]
+      console.log(workspace['objects']);
+      this.objectsMat=workspace['matnames']
       if (!this.workSpaceTags) {
         this.workSpaceTags=[]
       }
@@ -77,7 +86,16 @@ public isSelected:boolean=false
       this.canvas.clear()
       this.objectsInCanvas.clear()
       this.addImageOnCanvas(workspace.mapUrl)
-      workspace.objects.forEach(obj =>{        
+      workspace.objects.forEach(obj =>{ 
+        let matnames=[]
+        console.log(obj);
+               if (workspace.matnames) {
+                workspace.matnames.forEach(element => {
+                  if (element.id==obj.id) {
+                    matnames=element.values
+                  }
+                });
+               }
         this.objectsInCanvas.set(obj.id.toString(),{
           id:obj.id.toString(),
           x: obj.x,
@@ -88,7 +106,10 @@ public isSelected:boolean=false
           scaleY:obj.scaleY,
           flipX:obj.flipX,
           flipY:obj.flipY,
-          type : obj.discriminator
+          type : obj.discriminator,
+          tags:obj.tags,
+          material:matnames
+          // materials:obj.materials
         })
 
       })
@@ -319,7 +340,7 @@ else{
     this.canvas.setHeight(this.size.height);
   }
   // Block "Add images"
-  getImgPolaroid(event: any) {
+  getImgPolaroid(event: any,objectType:string) {
     const el = event.target;    
     fabric.loadSVGFromURL(el.src, (objects, options) => {      
       const image = fabric.util.groupSVGElements(objects, options);
@@ -346,9 +367,10 @@ else{
       let flipX = false
       let flipY = false
       let path = el.src
-      let type = "desk"
+      let type = objectType
       let id = this.idCounter.toString()
-      this.objectsInCanvas.set(this.idCounter.toString(),{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
+      this.objectsInCanvas.set(this.idCounter.toString(),
+      {id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
       this.selectItemAfterAdded(image);
       // const zoom = this.canvas.getZoom();
       // this.canvas.setZoom(zoom * 1.1);
@@ -518,10 +540,16 @@ else{
         let flipY = activeObject['flipY']
         let id = this.canvas.getActiveObject().toObject().id.toString();
         console.log("id --->",id);
-        
+        this.selectedObjectId=id
         let path = this.objectsInCanvas.get(id).path
         let type = this.objectsInCanvas.get(id).type
-        this.objectsInCanvas.set(id,{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
+        console.log(type);
+        this.currentType=type
+        let tags=this.objectsInCanvas.get(id).tags?this.objectsInCanvas.get(id).tags:[]
+        let material=this.objectsInCanvas.get(id).material?this.objectsInCanvas.get(id).material:[]
+      console.log(tags,this.objectsInCanvas.get(id).material);
+      
+        this.objectsInCanvas.set(id,{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type,tags,material})
       }
 
     }
@@ -546,8 +574,29 @@ else{
     
 
   }
+getTypeofselectedObject(){
+
+// let id = this.getId()
+// console.log(id);
+
+// const type = 
+// console.log(type);
+console.log(
+  this.canvas.getActiveObject()
+);
+
+let type=this.canvas.getActiveObject().toObject().type 
+console.log(type);
+
+
+return type
+  }
   getId() {
-    this.props.id = this.canvas.getActiveObject().toObject().id;
+    if (this.canvas.getActiveObject()) {
+      this.props.id = this.canvas.getActiveObject().toObject().id;
+      return this.props.id
+    }
+
   }
   setId() {
     const val = this.props.id;
@@ -559,7 +608,7 @@ else{
     };
   }
   /*System*/
-  removeSelected() {
+  removeSelected(objects) {
     const activeObjects = this.canvas.getActiveObjects();
     this.canvas.discardActiveObject();
     if (activeObjects.length) {
@@ -567,7 +616,10 @@ else{
       activeObjects.forEach((activeObject) => {
         const id = activeObject.toObject().id.toString();
         this.objectsInCanvas.delete(id);
+    objects=objects.filter((n)=>n.id!=id)
+        
       });
+      return objects
     }
   }
   
@@ -588,44 +640,39 @@ else{
   rasterizeJSON() {
     this.json = JSON.stringify(this.canvas, null, 2);
   }
-  submit(tags){
-    let objects =[]
-    let l = this.objectsInCanvas.size    
-    this.objectsInCanvas.forEach((value, key) => {
-      console.log("value -->" +value);
-            
-      objects[(l-1).toString()] = value;
-      l--
-    });
-    console.log(this.objectsInCanvas);
+  submit(tags,objects){
+  
+    console.log(this.objects);
     
     if (this.workspaceName != null){
       this.workSpace = {
         "name" : this.workspaceName,
         "mapUrl" : this.mapUrl,
-        objects,
+        'objects':objects,
         "tags":this.getYourTags(tags)
       } 
       console.log(this.workSpace);
       console.log(this.ToUpdate);
       
       if(!this.ToUpdate){
-        console.log('aaa');
+      this._mapService.addWorkspace(this.workSpace).subscribe((data)=>{
+        console.log(data);
+        this.showToast('workspace added','success')
+
+        this.refreshRoute()
         
-          this._mapService.addWorkspace(this.workSpace).subscribe((data) =>{
-          console.log(data);
-          this.showToast('workspace added','success')
-          this.refreshRoute()
-        },(err)=>{
-          console.log(err);
-          this.errMessage=err["error"]["detail"]
-          
-          this.toastr.error(this.errMessage, 'Failed');
-          
-        })
+      },(err)=>{
+        console.log(err);
+        this.errMessage=err["error"]["detail"]
+        
+        this.toastr.error(this.errMessage, 'Failed');
+        
+      })
+
       }
       else { 
         console.log("bbbb");
+        console.log(this.workSpace);
         
         this._mapService.updateWorkspace(this.workspaceId,this.workSpace).subscribe((data) =>{
           console.log(data);
@@ -645,6 +692,7 @@ else{
 
     }
   }
+  
   showToast(message:string,title:string): void {
     this.toastr.success(message, title);
    }

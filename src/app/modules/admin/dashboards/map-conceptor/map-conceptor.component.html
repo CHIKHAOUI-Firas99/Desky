@@ -45,9 +45,9 @@ style="float: left;width: 100%;">
                 <div class="card-header ">Add images</div>
                 <div style="display: inline;">
                   
-                    <img  class="images-item" style="display: inline;" (click)="getImgPolaroid($event);" src="../assets/objects/desk.svg">
-                    <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event)" src="../assets/objects/door.svg">
-                    <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event)" src="../assets/objects/door.svg">
+                    <img  class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'desk');" src="../assets/objects/desk.svg">
+                    <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'door')" src="../assets/objects/door.svg">
+                    <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'door')" src="../assets/objects/door.svg">
               
                   </div>
             </div>
@@ -64,7 +64,7 @@ style="float: left;width: 100%;">
                   <button  data-toggle="tooltip" data-placement="bottom" title="Unselect" type="button" class="btn btn-outline-secondary" [disabled]="!canvas.selected" (click)="cleanSelect();" style="margin-left: 5px;">
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
-                  <button  data-toggle="tooltip" type="button" data-placement="bottom" title="Unselect"  class="btn btn-info"*ngIf="canvas.selected" (click)="cleanSelect();" style="margin-top: 5px;">
+                  <button  (click)="getObjectInfo()"  data-toggle="tooltip" type="button" data-placement="bottom" title="Unselect"  class="btn btn-info" *ngIf="canvas.selected " (click)="cleanSelect();" style="margin-top: 5px;">
                     Object info
                   </button>
               </div>

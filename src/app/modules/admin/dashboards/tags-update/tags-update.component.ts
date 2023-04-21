@@ -1,7 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { log } from 'fabric/fabric-impl';
+import { MaterialService } from '../materials/material.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-tags-update',
@@ -18,7 +20,17 @@ export class TagsUpdateComponent {
   send: boolean;
   notags: boolean=false;
   objectsList:Array<any>=[]
-  constructor(private _fb:FormBuilder, public dialogRef: MatDialogRef<TagsUpdateComponent>,@Inject(MAT_DIALOG_DATA) public data: any) {}
+  allMaterials: any;
+  materials: any;
+  errMessage: any;
+  allMat2: any;
+  objectType: any;
+  constructor(private _fb:FormBuilder, 
+    public dialogRef: MatDialogRef<TagsUpdateComponent>,
+    public matdialog:MatDialog,
+    private toastr:ToastrService,
+    private _matService:MaterialService,
+    @Inject(MAT_DIALOG_DATA) public data: any) {}
  alltags:any=[]
   transformObject(inputObject) {
   const outputObject = {
@@ -28,7 +40,13 @@ export class TagsUpdateComponent {
   };
   return outputObject;
 }
-
+isBase64(str: string): boolean {
+  try {
+    return btoa(atob(str)) === str;
+  } catch (e) {
+    return false;
+  }
+}
  objectToArray(obj: any): { key: string, value: string }[] {
   return Object.keys(obj).map(key => ({
     key:key,
@@ -224,6 +242,23 @@ ngOnInit() {
     
     this.notags=this.alltags.length == 0
   }
+  else if( this.data.allMat){
+this.alltags=this.data.ObjectTags?this.data.ObjectTags:[]
+this.notags=this.alltags.length == 0
+this.data.allMat.forEach(element => {
+  if (this.isBase64(element.picture)) {
+    element.picture=this.getPictureUrl(element.picture)
+  }
+  
+});
+this.allMaterials=this.data.allMat
+
+this.allMat2=this.data.allMat
+this.objectType = this.data.type
+console.log(this.allMaterials);
+this.materials=this.data.CurrentMaterials 
+
+}
   
   
   // this.alltags = Object.entries(this.alltags).map(([key, value]) => ({ key, value,id:'value-'+key }));
@@ -272,6 +307,7 @@ this.disabled[this.tags.length-1]=false
   }
   
 }
+
 getExistingKeysFromExtraTags(formGroup) {
   const extraTagsArray = formGroup.get('extraTags') as FormArray; // get the 'extraTags' FormArray from the formGroup
   const keysArray = extraTagsArray.controls.map(control => control.get('key').value); // extract the 'key' value from each FormGroup control and create a new array
@@ -332,9 +368,54 @@ submit(){
     this.dialogRef.close(  [tabids,tagsarray]);
     console.log(localStorage.getItem('workspacetagsArr'));
   }
+  else if(this.data.allMat){
+    let obj={}
+    console.log(this.allMat2);
+    
+console.log(this.allMaterials);
+console.log(this.materials);
+let listmat=[]
+    let materials=this.allMaterials
+    .filter((n)=>{
+      // delete n['picture'];
+      // listmat.push
+     return  this.materials.includes(n.name)}
+      )
+console.log(materials);
+
+    materials.forEach(element => {
+      listmat.push(element['name'])
+  // element.picture=element.picture.split(',')[1];
+});
+    if (materials.length > 0) {
+      obj['material']=listmat
+    }
+ 
+  obj['tags']=tagsarray
+  console.log(obj);
+ console.log(obj);
+  
+
+    let id=this.data.objectId
+    console.log(obj);
+    this.dialogRef.close(obj)
+
+    
+  }
 
   
 }
+getPictureUrl(picture) {
+  let base64Picture;
+  
+  try {
+    // Try to decode the base64-encoded picture
+    base64Picture = atob(picture);
+    
+  } catch (e) {
+    console.error("Invalid base64 string:", picture);
+    return "";
+  }}
 getAllIds(arr) {
   const ids = [];
   arr.forEach((obj) => {

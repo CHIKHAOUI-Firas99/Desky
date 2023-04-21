@@ -2,17 +2,34 @@
   <mat-icon>close</mat-icon>
 </button>
 
-  <div  class="text-center">
+  <div  class="text-center" >
   
+<div *ngIf="objectType==='desk'">
 
-<h5  class="h5" style="margin-top: 5%;">TAGS</h5>
+    <mat-label class="text-center" style="margin-top: 20%;">Equipements</mat-label>
 
+<mat-form-field appearance="fill" style="width:100%">
+  
+  <mat-select [(ngModel)]="materials" multiple>
+    <ng-container *ngFor="let mat of allMaterials">
+      <mat-option  [value]="mat.name" [disabled]="mat.quantity <=0 && !data.CurrentMaterials.includes(mat.name)" >
+        <div style="display: inline;" >
+        <img [src]="mat.picture" alt="" srcset="" style="height: 60px;width: 80px;display: inline;">
+        <span style="display: inline;margin-left: 20px;"> {{mat.name}} </span>
+      </div>
+      </mat-option>
+    </ng-container>
 
+  </mat-select>
+</mat-form-field>
+</div>
+
+<h5  class="h5" style="margin-top: 5%;" *ngIf="!data.allMat || objectType==='door'">TAGS</h5>
   <form [formGroup]="form" >
     
-   <br>
-  
-
+   
+  <mat-label *ngIf=" objectType && objectType!=='door'">Object tags</mat-label>
+  <br>
     <div formArrayName="extraTags" style="width: 100%;">
       <div *ngFor="let tag of tags.controls; let i=index" [formGroupName]="i">
         <div style="display: inline-block;">

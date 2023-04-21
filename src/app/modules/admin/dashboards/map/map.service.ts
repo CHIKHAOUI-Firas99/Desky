@@ -27,12 +27,17 @@ export class MapService {
     return this._httpClient.get<any>(mapServiceUrl+'/workspace',{
       params: new HttpParams().set('name', name)
     })
+  
   }
 
   updateWorkspace(id:number,w):Observable<any>{
     
     
     return this._httpClient.put<any>(mapServiceUrl+'/workspace/'+id,w)
+  }
+  getSelectedObjectInfo(id:number){
+    return this._httpClient.get(mapServiceUrl+'/object/'+id)
+      
   }
 
 }

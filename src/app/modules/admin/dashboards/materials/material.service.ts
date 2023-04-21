@@ -53,4 +53,7 @@ export class MaterialService {
     }
     return false;
   }
+  public updateObject(id,w){
+    return this._httpClient.put(mapServiceUrl+'/object/'+id,w)
+  }
 }

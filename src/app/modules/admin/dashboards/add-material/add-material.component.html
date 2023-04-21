@@ -1,25 +1,39 @@
-<form [formGroup]="materialForm" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" formControlName="name" class="form-control" id="name">
+<button mat-icon-button mat-dialog-close class="close-icon" style="margin-left: 93%; " (click)="close()">
+  <mat-icon>close</mat-icon>
+</button>
+<p class="h4 text-center">Add Equipement</p>
+<div class="text-center" style="margin-top: 3%;">
+  
+<form [formGroup]="materialForm" >
+  <div>
+    <label for="name">Name :</label><br>
+    
+    <input type="text" matInput formControlName="name" class="form-control" id="name">
+  
+    </div>
+<br>
+    <div>
+    <label for="quantity" matLabel>Quantity :</label><br>
+    
+    <input type="number" matInput formControlName="quantity" class="form-control" id="quantity">
+
+</div>
+
+
+<br>
+  <div  >
+    <label for="formFile" matLabel >Equipement picture :</label>
+    <input style="width: 50%;" class="form-control" id="myFile"  type="file" (change)="onFileSelect($event)">
   </div>
-  <div class="form-group">
-    <label for="picture">Picture</label>
-    <input type="file" (change)="onFileSelect($event)" class="form-control-file" id="picture">
-  </div>
-  <div class="form-group">
-    <label for="quantity">Quantity</label>
-    <input type="number" formControlName="quantity" class="form-control" id="quantity">
-  </div>
-  <div class="form-group">
-    <label for="desk_id">Desk ID</label>
-    <input type="number" formControlName="desk_id" class="form-control" id="desk_id">
-  </div>
-  <button type="submit" class="btn btn-primary" [disabled]="!materialForm.valid">Add Material</button>
+  
+  <!-- <button  class="btn btn-secondary" style="font-size: 15px; margin-left: 25%;" (click)="choseFile()">Choose a picture</button> -->
+  <!-- <input style="" id="myFile"  type="file" (change)="onFileSelect($event)"> -->
+
+  <br>
+  <button  style="float: left;" class="btn btn-light" (click)="close()">Cancel</button>
+
+  <button (click)="onSubmit()" style="float: left;" class="btn btn-primary" [disabled]="!materialForm.valid">Submit</button>
 </form>
 
-<div>
-
-  <img style="height: 50px;width: 50px;" [src]="pic" alt="Material picture">
 </div>
 

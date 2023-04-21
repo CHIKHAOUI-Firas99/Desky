@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import {
   EventEmitter,
   Input,
@@ -40,6 +40,7 @@ import { log } from "fabric/fabric-impl";
 import { ActivatedRoute, RouteReuseStrategy, Router } from "@angular/router";
 import { MaterialService } from './material.service';
 import { Material } from './material';
+import { AddMaterialComponent } from '../add-material/add-material.component';
 
 @Component({
   selector: 'app-materials',
@@ -76,10 +77,12 @@ export class MaterialsComponent {
   i: number=0;
   errMessage: any;
   pic: string;
+  file: File;
   /**
    * Constructor
    */
   constructor(
+    private renderer: Renderer2,
     private _router: Router,
     private route: ActivatedRoute,
     private routeReuseStrategy: RouteReuseStrategy,
@@ -129,12 +132,20 @@ export class MaterialsComponent {
       let u = this.TabMaterials.filter(
         (n) =>
           n.id.toString().toLowerCase().includes(this.materials.filter) ||
-          
           n.name.toLowerCase().includes(this.materials.filter)||
-          n.claims.toString().toLowerCase().includes(this.materials.filter)
+          n.quantity.toString().toLowerCase().includes(this.materials.filter)
       );
       this.fillFormTab(u);
     } else this.fillFormTab(this.TabMaterials);
+  }
+  choseFile()
+  {
+    const elementToClick = document.getElementById('myFile');
+console.log(elementToClick);
+
+if (elementToClick) {
+this.renderer.selectRootElement(elementToClick).click();
+}
   }
   onPageChange(event: PageEvent) {
     const startIndex = event.pageIndex * event.pageSize;
@@ -184,6 +195,12 @@ export class MaterialsComponent {
   async ngOnInit(): Promise<void> {
     try {
       this.getRoles()
+      this._authService.dispalyAdminDashboard().subscribe((data) => {
+        let obj = this._claimsService.manageObject(data["details"], "materials");
+        this.canAdd = obj["create"];
+        this.canEdit = obj["update"];
+        this.canDelete = obj["delete"];
+      });
     } catch (err) {
       console.log(err);
     }
@@ -321,38 +338,14 @@ getPictureUrl(picture) {
 
 
 
-  
+
   SaveVO(VOFormElement, i) {
     const row = VOFormElement.get("VORows").at(i);
     const id = row.get("id").value;
   
     if (id) {
       const pictureElement = row.get("picture");
-      if (pictureElement instanceof HTMLInputElement && pictureElement.getAttribute("type") === "file" && pictureElement.files.length > 0) {
-        const material = {
-          id: id,
-          name: row.get("name").value,
-          picture: pictureElement.files[0],
-          quantity: row.get("quantity").value,
-          desk_id: '1'
-        };
-  
-        const formData = new FormData();
-        formData.append('name', material['name']);
-        formData.append('picture', material['picture']);
-        formData.append('quantity', material['quantity']);
-        formData.append('desk_id', material['desk_id']);
-        let m:Material
-        m.name=material['name']
-        m.picture=material['picture']
-        m.quantity=material['quantity']
-        
-        
-        this._materialService.updateMaterial(id, m).subscribe((data) => {
-          console.log(data);
-        });
-      } else {
-        console.log('rrrrrrrrrrr');
+   
         
         const material = {
           
@@ -366,11 +359,19 @@ getPictureUrl(picture) {
 
         
         this._materialService.updateMaterial(id, material,material.picture).subscribe((data) => {
+          this.toastr.success('Material updated','Success')
           console.log(data);
-        });
+          this.refreshRoute()
+        },(err)=>{
+          this.errMessage=err["error"]["detail"]
+          this.CancelSVO(this.VOForm,i)
+          this.toastr.error(this.errMessage, 'Failed');
+         
+      
+      })
       }
       
-    }
+    
   }
   
 
@@ -415,7 +416,7 @@ showToast(message:string,title:string): void {
     
 
   openDialog(): void {
-    const dialogRef = this.dialog.open(AddRoleComponent, {
+    const dialogRef = this.dialog.open(AddMaterialComponent, {
       width: "640px",
       disableClose: true,
       data: { tabclaims: this.allclaims ,tabtags:this.allTags},
@@ -438,15 +439,17 @@ showToast(message:string,title:string): void {
       .patchValue(
         this.VOForm.get("VORows").value[i].name
       );
+      console.log(      this.VOForm.get("VORows").value[i].name);
+      
       row
       .get("quantity")
       .patchValue(
-        this.VOForm.get("VORows").value[i].quantity
+        this.TabMaterials[i].quantity
       );
       row
       .get("picture")
       .patchValue(
-        this.VOForm.get("VORows").value[i].picture
+        this.getPictureUrl(this.TabMaterials[i].picture) 
       );
 
     row.get("isEditable").patchValue(true);
@@ -509,7 +512,7 @@ showToast(message:string,title:string): void {
     return this.fb.group({
       id: new FormControl(""),
       name: new FormControl(""),
-      claims: this.fb.control([]),
+       quantity: this.fb.control([]),
       action: new FormControl("newRecord"),
       isEditable: new FormControl(false),
       isNewRow: new FormControl(true),

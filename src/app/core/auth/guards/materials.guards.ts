@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, CanMatch, Route, Router, RouterSta
 import { Observable, of, switchMap } from 'rxjs';
 import { AuthService } from 'app/core/auth/auth.service';
 import { RoleService } from 'app/core/role/role.service';
+import { User } from 'app/core/user/user.types';
 
 
 @Injectable({
@@ -13,9 +14,10 @@ import { RoleService } from 'app/core/role/role.service';
 @Injectable({
     providedIn: 'root'
 })
-export class MapAuthGuard implements CanActivate {
+export class MaterialsAuthGuard implements CanActivate {
 
   constructor(private _roleService: RoleService, private _router: Router,private _authService:AuthService) {}
+
 
   roles:any=[]
   user:any
@@ -41,7 +43,7 @@ export class MapAuthGuard implements CanActivate {
       }
   
       // Find the "adminmap" claim for the role
-      const adminmapClaim = role.claims.find(c => c['object'] === 'workspaces');
+      const adminmapClaim = role.claims.find(c => c['object'] === 'materials');
   console.log(adminmapClaim);
   
       // If the "adminmap" claim doesn't exist or doesn't have "r" rights, deny access to the route
@@ -64,4 +66,5 @@ export class MapAuthGuard implements CanActivate {
     }
    
   }
-  }
+  
+}

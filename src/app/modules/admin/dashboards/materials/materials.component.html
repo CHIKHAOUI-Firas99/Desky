@@ -17,9 +17,10 @@
                      <mat-icon >search</mat-icon>
                    </div>
                    <button  [disabled]="!canAdd" style="float:left ;display: inline; margin-left: 2%;margin-top: 1%;"  (click)="openDialog()">
-                 <i class="fa fa-circle-plus" style="
-                   zoom: 1.5;color: #6c757d;"></i>           
-                   </button>
+                    <i class="fa fa-circle-plus" style="
+                      zoom: 1.5;color: #6c757d;"></i>
+                       
+                      </button>
              </div>
              <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
              
@@ -44,7 +45,7 @@
                      <th mat-header-cell *matHeaderCellDef > quantity </th>
                      <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
            
-        <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable">
+        <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 90%;">
             <input class="c1" required matInput type="number" formControlName="quantity" [readonly]="VOForm.get('VORows').value[i].isEditable">
         </mat-form-field>
 
@@ -68,9 +69,14 @@
                        [src]="element.get('picture').value" alt="Picture">
                     
                      </div>
-                      
-                   
-                        <input type="file" (change)="onFileSelect(VOForm,$event,i)"  class="form-control-file" id="picture" *ngIf="!VOForm.get('VORows').value[i].isEditable">
+                      <div *ngIf="!VOForm.get('VORows').value[i].isEditable" class="text-center">
+
+                        <!-- <button  class="btn btn-secondary" style="font-size: 15px; margin-left: 25%;" (click)="choseFile()">Change picture</button> -->
+                        <input style="width: 67%;margin-left: 25%;zoom: 1;" class="form-control" id="myFile"  type="file" (change)="onFileSelect(VOForm,$event,i)">
+
+                      </div>
+                    
+                        <!-- <input type="file" (change)="onFileSelect(VOForm,$event,i)"  class="form-control-file" id="picture" *ngIf="!VOForm.get('VORows').value[i].isEditable"> -->
                   
                     </td>
                   </ng-container>
@@ -78,7 +84,7 @@
                     <th mat-header-cell *matHeaderCellDef > name </th>
                     <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
                         
-                        <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 60%">
+                        <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 100%">
                             <input class="c1" required matInput type="text" formControlName="name" [readonly]="VOForm.get('VORows').value[i].isEditable">
                             <mat-error style="text-align: center;">
                             name field is required
@@ -86,12 +92,12 @@
                               
                           </mat-form-field>
                           
-                          <button type="text"  
+                          <p
                           
                           
-                          [readonly]="VOForm.get('VORows').value[i].isEditable" *ngIf="VOForm.get('VORows').value[i].isEditable">
+                           *ngIf="VOForm.get('VORows').value[i].isEditable">
                           {{ VOForm.get('VORows').value[i].name }}
-                        </button>
+                        </p>
       
                     </td>
                   </ng-container>             
@@ -110,21 +116,20 @@
                                                *ngIf="!VOForm.get('VORows').value[i].isEditable">
                                                <mat-icon>cancel</mat-icon>
                                            </button>
+                                           <button mat-icon-button class="material-icons app-toolbar-menu save-button"
+                                           *ngIf="VOForm.get('VORows').value[i].isEditable"
+                                           matTooltip="Edit" color="primary" (click)="EditSVO(VOForm,i)"
+                                           [disabled]="!canEdit ||inUpdate"
+                                           >
+                                           <mat-icon>edit</mat-icon>
+                                       </button>
            
-                       <button mat-icon-button class="material-icons app-toolbar-menu save-button"
-                                               *ngIf="VOForm.get('VORows').value[i].isEditable"
-                                               matTooltip="Edit" color="primary" (click)="EditSVO(VOForm,i)"
-                                               
-                                               >
-                                               <mat-icon>edit</mat-icon>
-                                           </button>
-           
-                       <button mat-icon-button class="material-icons app-toolbar-menu delete-button"
-                       
-                                               *ngIf="VOForm.get('VORows').value[i].isEditable"
-                                               matTooltip="Delete" color="warn" (click)="delete(VOForm,i)">
-                                               <mat-icon>delete</mat-icon>
-                                           </button>
+                                       <button mat-icon-button class="material-icons app-toolbar-menu delete-button"
+                                       [disabled]="!canDelete"
+                                                               *ngIf="VOForm.get('VORows').value[i].isEditable"
+                                                               matTooltip="Delete" color="warn" (click)="delete(VOForm,i)">
+                                                               <mat-icon>delete</mat-icon>
+                                                           </button>
                      </td>
                    </ng-container>
            

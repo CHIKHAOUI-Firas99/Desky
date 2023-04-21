@@ -8,6 +8,9 @@ import { RoleService } from 'app/core/role/role.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ClaimsService } from 'app/core/claimsManagement/claims.service';
 import { TagsUpdateComponent } from '../tags-update/tags-update.component';
+import { toInteger } from 'lodash';
+import { MaterialService } from '../materials/material.service';
+import { ActivatedRoute, RouteReuseStrategy, Router } from '@angular/router';
 
 @Component({
   selector: 'app-map-conceptor',
@@ -18,6 +21,7 @@ export class MapConceptorComponent {
   title = 'mapComponent';
 
   @ViewChild('canvas', { static: false }) canvas: MapComponent;
+  map:MapComponent
   clicked: boolean=false;
   file:File
   optionSelected:string
@@ -30,7 +34,14 @@ export class MapConceptorComponent {
   allTags: any;
   workspaceTags: any;
   nwTags: boolean=false;
+  ObjectInfo: any;
+  allMaterials: any;
+  errMessage: any;
+ public objects: any=[];
+  nObjectsTab: any;
+  tab: any;
   constructor(private _mapConceptorService : MapService,
+    private materialService:MaterialService,
     private renderer: Renderer2,
     private toastr: ToastrService,
     private _authService: AuthService,
@@ -38,7 +49,13 @@ export class MapConceptorComponent {
     private _RoleService: RoleService,
     private dialog: MatDialog,
     private _claimsService: ClaimsService,
+    private _router: Router,
+    private route: ActivatedRoute,
+    private routeReuseStrategy: RouteReuseStrategy,
     ) { }
+
+
+
 
     updatedTag:any
     wtags:any
@@ -57,7 +74,6 @@ export class MapConceptorComponent {
     else {
       console.log('is an object ------->'+wTags);
       this.wtags=this.getYourTags(wTags)
-      
     }
     
    }
@@ -73,13 +89,134 @@ export class MapConceptorComponent {
          this.updatedTag=result[1]
          console.log(this.tags);
          localStorage.removeItem('ckeckedids')
-        
        }
       
        
      });
    }
+getObjectInfo(){
+  console.log(this.tab);
+  
+  let l = this.canvas.objectsInCanvas.size    
+  this.canvas.objectsInCanvas.forEach((value, key) => {
+    console.log("value -->" +value);
+          
+    this.objects[(l-1).toString()] = value;
+    l--
+  });
+  console.log(this.canvas.getTypeofselectedObject());
+  
+  let id=this.canvas.getId()
+console.log(this.objects);
+var listnames=[]
+  let names:any
+   let objectsmat=this.canvas.objectsMat
+   if (objectsmat) {
+    names= objectsmat.find((n)=>{
+      return  n.id==id
+     })
 
+    
+
+      this.objects.forEach(element => {
+        if (element.id==id) {
+console.log(element);
+
+      
+          if(element.material){
+            console.log(element.material);
+     
+            
+            for (let i = 0; i < element.material.length; i++) {
+              const e = element.material[i];
+              console.log(e);
+              if (e.name) {
+                listnames.push(e.name)
+              }
+              else{
+                listnames.push(e)
+              }
+              
+              console.log(listnames);
+              
+             }
+          }
+  
+        }
+      });
+     
+   }
+
+
+    
+
+     let tags=[]
+    console.log(this.allMaterials);
+    console.log(this.objects);
+    console.log(listnames);
+    
+    this.objects.forEach(element => {
+      if (element.id==id) {
+  tags=element.tags?element.tags:[]
+  if (element.material) {
+    element.material.forEach(e => {
+      listnames.push(e.name)
+    });
+    
+  }
+      }
+    });
+    
+      this.dialog.open(TagsUpdateComponent, {
+        data: { 
+          objectId:id,
+          type:this.canvas.currentType ,
+          allMat:this.allMaterials,
+          CurrentMaterials:listnames,
+          ObjectTags:tags
+        }
+      }).afterClosed().subscribe(result => {
+  
+        
+       if (result) {
+        console.log(result);
+   
+
+          this.objects.forEach(element => {
+            if (element.id==id) {
+          
+              element['tags']=result['tags']
+              element['material']=result['material']
+              
+            }
+          });
+          this.tab=this.objects
+          console.log(this.objects);
+        
+        
+
+     
+
+       }
+
+      });
+    
+
+    
+  
+  
+ 
+  
+}
+refreshRoute() {
+  this.route.data.subscribe(() => {
+    const currentUrl = this._router.url;
+    this.routeReuseStrategy.shouldReuseRoute = () => false;
+    this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+      this._router.navigate([currentUrl]);
+    });
+  });
+}
 
   loadCanvas(name)
   {
@@ -108,7 +245,7 @@ export class MapConceptorComponent {
         localStorage.getItem('workspacetagsArr')
       );
       
-      localStorage.removeItem('aaaa')
+
    
       
       this.workspaces = JSON.parse(localStorage.getItem('workspace')) 
@@ -117,7 +254,7 @@ export class MapConceptorComponent {
         console.log(this.canvas);
       }, 1);
       this._authService.dispalyAdminDashboard().subscribe((data) => {
-        let obj = this._claimsService.manageObject(data["details"], "adminmap");
+        let obj = this._claimsService.manageObject(data["details"], "workspaces");
         this.canAdd = obj["create"];
         this.canEdit = obj["update"];
         this.canDelete = obj["delete"];
@@ -130,10 +267,32 @@ export class MapConceptorComponent {
           
         }
       });
-      // let rowTags =this.transformArray(val.tags) : [];
-      // console.log(rowTags);
+   this.materialService.getAllMaterials().subscribe((data)=>{
+   this.allMaterials=data 
+
+   
+   this.allMaterials.forEach(element => {
+    element.picture=this.getPictureUrl(element.picture)
+  });
+  console.log(this.allMaterials);
+   })
+    }
+    getPictureUrl(picture) {
+      let base64Picture;
       
-      // this.tags.push(rowTags)
+      try {
+        // Try to decode the base64-encoded picture
+        base64Picture = atob(picture);
+        
+      } catch (e) {
+        console.error("Invalid base64 string:", picture);
+        return "";
+      }
+      
+      // Construct the data URL for the picture
+      const dataUrl = `data:image/jpeg;base64,${base64Picture}`;
+    
+      return dataUrl;
     }
     getWorkspacesNames(){
       return this._mapConceptorService.getWorkspacesNames().subscribe((data) =>{
@@ -153,8 +312,10 @@ export class MapConceptorComponent {
       this.canvas.changeSize();
     }
   
-    public getImgPolaroid(event) {
-      this.canvas.getImgPolaroid(event);
+    public getImgPolaroid(event,objectType) {
+      console.log(event);
+      
+      this.canvas.getImgPolaroid(event,objectType);
     }
   //UPLOAD IMAGE INTO CANVAS
     public addImageOnCanvas(url) {    
@@ -178,8 +339,8 @@ export class MapConceptorComponent {
       this.nwTags=false
     }
   
-    public removeSelected() {
-      this.canvas.removeSelected();
+    public removeSelected( ) {
+    this.objects=  this.canvas.removeSelected(this.objects);
     }
   public isSelected(){
     if (this.canvas) {
@@ -209,23 +370,32 @@ export class MapConceptorComponent {
   
   
     public submit(){
+      let l = this.canvas.objectsInCanvas.size    
+      this.canvas.objectsInCanvas.forEach((value, key) => {
+        console.log("value -->" +value);
+              
+        this.objects[(l-1).toString()] = value;
+        l--
+      });
+      console.log(this.objects);
+      
       console.log(this.updatedTag);
       
-      this.canvas.submit(this.updatedTag?this.updatedTag:this.canvas.workSpaceTags);
+      this.canvas.submit(this.updatedTag?this.updatedTag:this.canvas.workSpaceTags,this.objects);
     }
     showToast(message:string,title:string): void {
       this.toastr.success(message, title);
      }
-    public addWorkSpace() {
-      this.canvas.ToUpdate=false
+    public addWorkSpace()
+    { this.canvas.ToUpdate=false
       this.canvas.addWorkSpace()
     }
     choseFile()
     {
       const elementToClick = document.getElementById('myFile');
-console.log(elementToClick);
-
-if (elementToClick) {
+      console.log(elementToClick);
+ if (elementToClick)
+{
   this.renderer.selectRootElement(elementToClick).click();
 }
     }

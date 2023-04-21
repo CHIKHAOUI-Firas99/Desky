@@ -69,6 +69,7 @@ import { NgxColorsModule } from 'ngx-colors';
 import { HammerModule } from '@angular/platform-browser';
 import { TagsUpdateComponent } from '../tags-update/tags-update.component';
 import { MaterialsComponent } from './materials.component';
+import { AddMaterialComponent } from '../add-material/add-material.component';
 
 const materialsRouter: Route[] = [
   {
@@ -80,7 +81,8 @@ const materialsRouter: Route[] = [
 @NgModule({
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [
-    MaterialsComponent
+    MaterialsComponent,
+    AddMaterialComponent
   ],
   imports: [
     RouterModule.forChild(materialsRouter),

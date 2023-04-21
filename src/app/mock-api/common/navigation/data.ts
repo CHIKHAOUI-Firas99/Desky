@@ -153,10 +153,16 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         link : '/dashboards/roles'
                     },
                     {
-                        id   : 'adminMap',
+                        id   : 'workspaces',
                         title: 'Build ',
                         type : 'basic',
                         link : '/dashboards/mapConceptor'
+                    },
+                    {
+                        id   : 'materials',
+                        title: 'Materials ',
+                        type : 'basic',
+                        link : '/dashboards/materials'
                     }
                 ]
             },
