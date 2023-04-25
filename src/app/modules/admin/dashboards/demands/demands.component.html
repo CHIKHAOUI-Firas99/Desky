@@ -8,7 +8,7 @@
 <div class="xl:col-span-2 flex flex-col flex-auto bg-card  rounded-2xl overflow-hidden" >
     <strong>
        <h2  style="color: rgb(102, 125, 148); text-decoration:underline ;text-align: center; font-size: 30px; margin-top: 2%;" >
-         Equipement</h2>
+         Manage demands</h2>
      </strong>
          <div class="card" style="margin-left: 7%;margin-right: 7%;margin-top: 5%; margin-top: 5%;" >
              <div>
@@ -31,29 +31,26 @@
                  <table #table mat-table [dataSource]="materials" class="table-responsive" >
          
                    <!-- Position Column -->
-                   <ng-container matColumnDef="Material_id">
-                     <th mat-header-cell *matHeaderCellDef> Material_id </th>
+                   <ng-container matColumnDef="desk_id">
+                     <th mat-header-cell *matHeaderCellDef> Desk_id </th>
                      <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-                       <input matInput type="text" formControlName="id" [readonly]="true" #iduser 
+                       <input matInput type="text" formControlName="desk_id"[readonly]="true" #iduser 
                               style="width: 20px">
                      </td>
                    </ng-container>
                    
                                
                    <!-- Name Column -->
-                   <ng-container matColumnDef="quantity">
-                     <th mat-header-cell *matHeaderCellDef > quantity </th>
+                   <ng-container matColumnDef="user_id">
+                     <th mat-header-cell *matHeaderCellDef > user_id </th>
                      <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
            
-        <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 90%;">
-            <input class="c1" required matInput type="number" formControlName="quantity" [readonly]="VOForm.get('VORows').value[i].isEditable">
-        </mat-form-field>
+       
 
 
+ <span >
 
- <span *ngIf="VOForm.get('VORows').value[i].isEditable">
-
-                        {{ VOForm.get('VORows').value[i].quantity }}
+                        {{ VOForm.get('VORows').value[i].user_id }}
          </span>
                       
                        
@@ -61,15 +58,38 @@
                      </td>
                    </ng-container>
 
-                   <ng-container matColumnDef="picture">
-                    <th mat-header-cell *matHeaderCellDef>Picture</th>
+                   <ng-container matColumnDef="demands">
+                    <th mat-header-cell *matHeaderCellDef>Demands</th>
                     <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
                      <div class="text-center">
-                      <img  *ngIf="VOForm.get('VORows').value[i].isEditable" style="height:100px; width:150px;margin-left: 35%;margin-top: 4%;margin-bottom: 4%;"
-                       [src]="element.get('picture').value" alt="Picture"  class="w3-circle">
+                        <ul style="list-style-type: square;">
+                            <li *ngFor="let item of VOForm.get('VORows').value[i].demands">
+    
+                                <span >
+                                        {{item.quantity}}
+                                </span>
+                                <span style="margin-left: 10px;">
+                                    {{item.material}}
+                            </span>
+    
+                            </li>
+                        </ul>
                     
                      </div>
-                      <div *ngIf="!VOForm.get('VORows').value[i].isEditable" class="text-center">
+                  
+                    
+                        <!-- <input type="file" (change)="onFileSelect(VOForm,$event,i)"  class="form-control-file" id="picture" *ngIf="!VOForm.get('VORows').value[i].isEditable"> -->
+                  
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="equipements">
+                    <th mat-header-cell *matHeaderCellDef>Equipements</th>
+                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                     <div class="text-center">
+           
+                    
+                     </div>
+                      <div >
 
                         <!-- <button  class="btn btn-secondary" style="font-size: 15px; margin-left: 25%;" (click)="choseFile()">Change picture</button> -->
                         <input style="width: 67%;margin-left: 25%;zoom: 1;" class="form-control" id="myFile"  type="file" (change)="onFileSelect(VOForm,$event,i)">
@@ -80,23 +100,16 @@
                   
                     </td>
                   </ng-container>
-                   <ng-container matColumnDef="name">
-                    <th mat-header-cell *matHeaderCellDef > name </th>
+                   <ng-container matColumnDef="demandDate">
+                    <th mat-header-cell *matHeaderCellDef > Date </th>
                     <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
                         
-                        <mat-form-field *ngIf="!VOForm.get('VORows').value[i].isEditable" style="width: 100%">
-                            <input class="c1" required matInput type="text" formControlName="name" [readonly]="VOForm.get('VORows').value[i].isEditable">
-                            <mat-error style="text-align: center;">
-                            name field is required
-                            </mat-error>
-                              
-                          </mat-form-field>
+               
                           
                           <p
                           
-                          
-                           *ngIf="VOForm.get('VORows').value[i].isEditable">
-                          {{ VOForm.get('VORows').value[i].name }}
+                          >
+                          {{ VOForm.get('VORows').value[i].demandDate}}
                         </p>
       
                     </td>

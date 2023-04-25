@@ -1,0 +1,94 @@
+h1{
+    font-size: xx-large;
+    font-weight: bold;
+
+}
+.title{
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-top: 2%;
+    width: 100%;
+}
+.custom-button {
+    width: 130px;
+    height: 50px;
+    margin-left: 2px
+  }
+
+.weekday-button {
+    margin: 5px;
+  }
+
+  .checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+  }
+  
+  .mat-checkbox-label {
+    font-size: 18px;
+  }
+  
+  .mat-checkbox-inner-container {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .mat-checkbox-frame {
+    width: 25px;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .mat-checkbox-checked .mat-checkbox-frame {
+    background-color: #007bff;
+    border-color: #007bff;
+  }
+  
+  .mat-checkbox-ripple .mat-ripple-element {
+    opacity: 0.3;
+  }
+  
+  .timepicker-container {
+    display: flex;
+    align-items: center;
+  }
+  #canvas {
+  border: 2px dashed #cccccc;
+}
+
+.divWorkspace{
+  width: 230px;
+  height: 150px;
+  background-color: white; 
+  margin: 10px;
+  margin-left: 0px;
+  border-radius: 4%;
+  padding-left: 10px;
+  padding-right: 10px;
+  // float: left;
+  border: 1px solid rgb(207, 204, 204);
+  position: relative;
+  transition: transform 0.5s ease-out;
+
+}
+.divWorkspace:hover {
+  // transform: scale(1.1);
+  border-color: rgb(100, 100, 245); /* Change the border color on hover */
+
+}
+.canvas{
+	border: 2px dashed #cccccc;
+  }
+// .red{
+//   background-color: red;
+// }
+
+
+// .orange{
+//   background-color: orange;
+// }
+// .green {
+//   background-color: green;
+// }

@@ -84,6 +84,9 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { TagsUpdateComponent } from './modules/admin/dashboards/tags-update/tags-update.component';
 import { AddMaterialComponent } from './modules/admin/dashboards/add-material/add-material.component';
 import { MaterialsComponent } from './modules/admin/dashboards/materials/materials.component';
+import { DemandsComponent } from './modules/admin/dashboards/demands/demands.component';
+import { BookingComponent } from './modules/booking/dashboards/booking/booking/booking.component';
+import { BookingMapComponent } from './modules/booking/dashboards/booking/booking-map/booking-map.component';
 
 
 library.add(faIcons, faFontAwesome);
@@ -96,6 +99,9 @@ const routerConfig: ExtraOptions = {
     
     declarations: [
         AppComponent,
+        BookingComponent,
+        BookingMapComponent,
+        
      
     ],
     imports     : [

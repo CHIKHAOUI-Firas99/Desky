@@ -12,6 +12,7 @@ import { UsersAuthGuard } from "./core/auth/guards/users.guard";
 import { Component } from "@angular/core";
 import { AddMaterialComponent } from "./modules/admin/dashboards/add-material/add-material.component";
 import { MaterialsAuthGuard } from "./core/auth/guards/materials.guards";
+import { BookingComponent } from "./modules/booking/dashboards/booking/booking/booking.component";
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -170,12 +171,30 @@ export const appRoutes: Route[] = [
               .then((m) => m.MaterialsModule),
               canActivate: [MaterialsAuthGuard],
           },
+          {
+            path:'demands',
+            loadChildren: () => import("app/modules/admin/dashboards/demands/demands.module")
+              .then((m) => m.DemandsModule),
+             
+          },
           
          
         ],
       },
     ],
   },
+  {
+    path: '',
+    canMatch: [AuthGuard],
+    component: LayoutComponent,
+    resolve: {
+        initialData: InitialDataResolver,
+    },
+    children: [{
+        path : "dashboards/booking" , component : BookingComponent,
+    },
+    ]
+},
   {
     path: "404-not-found",
     pathMatch: "full",

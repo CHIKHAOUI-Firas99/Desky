@@ -52,10 +52,10 @@ export const defaultNavigation: FuseNavigationItem[] = [
             // },
             {
                 id   : 'dashboards.crypto',
-                title: 'Crypto',
+                title: 'Booking',
                 type : 'basic',
                 icon : 'heroicons_outline:currency-dollar',
-                link : '/dashboards/crypto'
+                link : '/dashboards/booking'
             },
         //         {
         // id      : 'user-interface',
