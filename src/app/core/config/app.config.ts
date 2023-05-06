@@ -71,3 +71,5 @@ export const appConfig: AppConfig = {
 };
 export const userManagementUrl="http://localhost:8000"
 export const mapServiceUrl="http://localhost:8080"
+export const notificationServiceUrl="http://localhost:8001"
+

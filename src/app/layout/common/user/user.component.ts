@@ -4,6 +4,7 @@ import { BooleanInput } from '@angular/cdk/coercion';
 import { Subject, takeUntil } from 'rxjs';
 import { User } from 'app/core/user/user.types';
 import { UserService } from 'app/core/user/user.service';
+import { NavigationService } from 'app/core/navigation/navigation.service';
 
 @Component({
     selector       : 'user',
@@ -29,11 +30,15 @@ export class UserComponent implements OnInit, OnDestroy
     constructor(
         private _changeDetectorRef: ChangeDetectorRef,
         private _router: Router,
-        private _userService: UserService
+        private _userService: UserService,
+        
     )
     {
     }
 
+    navigateToSettings() {
+        this._router.navigate(['/settings']);
+      }
     // -----------------------------------------------------------------------------------------------------
     // @ Lifecycle hooks
     // -----------------------------------------------------------------------------------------------------
@@ -45,10 +50,11 @@ export class UserComponent implements OnInit, OnDestroy
     {
         // Subscribe to user changes
         this._userService.user$
-            .pipe(takeUntil(this._unsubscribeAll))
+           
             .subscribe((user: User) => {
-                this.user = user;
+                // user.avatar='data:image/jpeg;base64,'+user.avatar
 
+                this.user = user;
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });

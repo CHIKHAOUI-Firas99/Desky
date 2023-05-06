@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, ReplaySubject, switchMap, take, tap } from 'rxjs';
 import { Notification } from 'app/layout/common/notifications/notifications.types';
+import { mapServiceUrl,notificationServiceUrl } from 'app/core/config/app.config';
+import { create, update } from 'lodash';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -9,11 +12,12 @@ import { Notification } from 'app/layout/common/notifications/notifications.type
 export class NotificationsService
 {
     private _notifications: ReplaySubject<Notification[]> = new ReplaySubject<Notification[]>(1);
+    userId: any;
 
     /**
      * Constructor
      */
-    constructor(private _httpClient: HttpClient)
+    constructor(private _httpClient: HttpClient,private authService:AuthService)
     {
     }
 
@@ -25,9 +29,27 @@ export class NotificationsService
      * Getter for notifications
      */
     get notifications$(): Observable<Notification[]>
-    {
-        return this._notifications.asObservable();
-    }
+    {this.userId = this.authService.getCurrentUser().id;
+        return this._httpClient.get<any[]>(`${mapServiceUrl}/notification/${this.userId}`).pipe(
+            map((result: any[]) => {
+              return result.map((notification: any) => {
+                console.log(notification);
+                
+                return {
+                  id: notification.id,
+                  icon: 'heroicons_solid:star',
+                  title: notification.title,
+                  description: notification.description,
+                  time: notification.time, // You can modify this to format the date/time as needed
+                  read: notification.read
+                };
+              });
+            })
+          );
+          
+          
+           }
+    
 
     // -----------------------------------------------------------------------------------------------------
     // @ Public methods
@@ -38,6 +60,8 @@ export class NotificationsService
      */
     getAll(): Observable<Notification[]>
     {
+        console.log('get all notification function');
+        
         return this._httpClient.get<Notification[]>('api/common/notifications').pipe(
             tap((notifications) => {
                 this._notifications.next(notifications);
@@ -73,30 +97,9 @@ export class NotificationsService
      * @param id
      * @param notification
      */
-    update(id: string, notification: Notification): Observable<Notification>
+    update(id: string, notification: Notification)
     {
-        return this.notifications$.pipe(
-            take(1),
-            switchMap(notifications => this._httpClient.patch<Notification>('api/common/notifications', {
-                id,
-                notification
-            }).pipe(
-                map((updatedNotification: Notification) => {
-
-                    // Find the index of the updated notification
-                    const index = notifications.findIndex(item => item.id === id);
-
-                    // Update the notification
-                    notifications[index] = updatedNotification;
-
-                    // Update the notifications
-                    this._notifications.next(notifications);
-
-                    // Return the updated notification
-                    return updatedNotification;
-                })
-            ))
-        );
+        return this._httpClient.put(notificationServiceUrl+'/read_notification/'+id,notification)
     }
 
     /**
@@ -104,51 +107,16 @@ export class NotificationsService
      *
      * @param id
      */
-    delete(id: string): Observable<boolean>
+    delete(id)
     {
-        return this.notifications$.pipe(
-            take(1),
-            switchMap(notifications => this._httpClient.delete<boolean>('api/common/notifications', {params: {id}}).pipe(
-                map((isDeleted: boolean) => {
-
-                    // Find the index of the deleted notification
-                    const index = notifications.findIndex(item => item.id === id);
-
-                    // Delete the notification
-                    notifications.splice(index, 1);
-
-                    // Update the notifications
-                    this._notifications.next(notifications);
-
-                    // Return the deleted status
-                    return isDeleted;
-                })
-            ))
-        );
+        return   this._httpClient.delete(`${notificationServiceUrl}/notification/${id}`)
     }
 
     /**
      * Mark all notifications as read
      */
-    markAllAsRead(): Observable<boolean>
+    markAllAsRead()
     {
-        return this.notifications$.pipe(
-            take(1),
-            switchMap(notifications => this._httpClient.get<boolean>('api/common/notifications/mark-all-as-read').pipe(
-                map((isUpdated: boolean) => {
-
-                    // Go through all notifications and set them as read
-                    notifications.forEach((notification, index) => {
-                        notifications[index].read = true;
-                    });
-
-                    // Update the notifications
-                    this._notifications.next(notifications);
-
-                    // Return the updated status
-                    return isUpdated;
-                })
-            ))
-        );
+        return this._httpClient.get(notificationServiceUrl+'/read_notifications/')
     }
 }

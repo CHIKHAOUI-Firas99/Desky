@@ -41,7 +41,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatDialogModule} from '@angular/material/dialog';
+import {MatDialogConfig, MatDialogModule} from '@angular/material/dialog';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatListModule} from '@angular/material/list';
@@ -65,7 +65,8 @@ import { usersRoutes } from './users.routing';
 import { PhoneComponent } from '../phone/phone.component';
 import { AddUserComponent } from '../add-user/add-user.component';
 import { DeleteConfirmationModule } from '../delete-confirmation/delete-confirmation.module';
-import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService  } from 'ngx-toastr';
+import { OverlayRef, ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService  } from 'ngx-toastr';
+import { UsersMailingComponent } from '../users-mailing/users-mailing.component';
 
 
 
@@ -73,12 +74,13 @@ import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService  
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [UsersComponent,
     PhoneComponent,
-    AddUserComponent
+    AddUserComponent,
+    UsersMailingComponent,
   
   ],
   imports: [
     DeleteConfirmationModule,
-
+    
     RouterModule.forChild(usersRoutes),
     CommonModule,
     MatButtonModule,
@@ -148,8 +150,12 @@ import { ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService  
   ],
   providers: [
     ToastrService,
-    ToastNoAnimation
+    ToastNoAnimation,
+//     MatDialogConfig,
+// MatDialogModule,
+
    
-  ]
+  ],
+
 })
 export class UsersModule { }

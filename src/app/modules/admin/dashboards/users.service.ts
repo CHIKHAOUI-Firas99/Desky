@@ -18,6 +18,13 @@ export class UsersService {
   constructor(private _httpClient: HttpClient,private _authService:AuthService)
   {
   }
+  isStringOrFile(input: any): boolean {
+    if (input instanceof File) {
+      return true;
+    }
+    return false;
+  }
+
 
   // -----------------------------------------------------------------------------------------------------
   // @ Accessors
@@ -66,4 +73,8 @@ export class UsersService {
 
      return this._httpClient.get<any>(userManagementUrl+'/userRole/'+id)
   }
+  sendEmails(object):Observable<any>{
+
+    return this._httpClient.post(userManagementUrl+'/sendEmails',object)
+ }
 }

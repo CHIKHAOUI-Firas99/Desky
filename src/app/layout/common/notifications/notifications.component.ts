@@ -5,6 +5,7 @@ import { MatButton } from '@angular/material/button';
 import { Subject, takeUntil } from 'rxjs';
 import { Notification } from 'app/layout/common/notifications/notifications.types';
 import { NotificationsService } from 'app/layout/common/notifications/notifications.service';
+import { ActivatedRoute, RouteReuseStrategy, Router } from '@angular/router';
 
 @Component({
     selector       : 'notifications',
@@ -30,7 +31,11 @@ export class NotificationsComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _notificationsService: NotificationsService,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _router: Router,
+        private route: ActivatedRoute,
+        private routeReuseStrategy: RouteReuseStrategy,
+
     )
     {
     }
@@ -50,15 +55,30 @@ export class NotificationsComponent implements OnInit, OnDestroy
             .subscribe((notifications: Notification[]) => {
 
                 // Load the notifications
-                this.notifications = notifications;
 
+                this.notifications = notifications;
+                console.log(this.notifications);
                 // Calculate the unread count
                 this._calculateUnreadCount();
 
                 // Mark for check
                 this._changeDetectorRef.markForCheck();
             });
+            
+            
     }
+reloadComponent() {
+    this.route.data.subscribe(() => {
+        const currentUrl = this._router.url;
+        this.routeReuseStrategy.shouldReuseRoute = () => false;
+        this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+          this._router.navigate([currentUrl]);
+        });
+      });
+}
+
+      
+      
 
     /**
      * On destroy
@@ -114,20 +134,44 @@ export class NotificationsComponent implements OnInit, OnDestroy
      */
     markAllAsRead(): void
     {
+        console.log(this.unreadCount);
+        this.unreadCount=0
+        this.notifications.map((n)=>n.read= !n.read)
         // Mark all as read
-        this._notificationsService.markAllAsRead().subscribe();
+        this._notificationsService.markAllAsRead().subscribe(()=>{
+            
+            console.log(this.unreadCount);
+
+        this._changeDetectorRef.detectChanges()
+            
+            // this.reloadComponent()
+        });
     }
 
     /**
      * Toggle read status of the given notification
      */
+    
     toggleRead(notification: Notification): void
-    {
+        {
+        console.log(notification.read);
+        
+if (! notification.read) {
+    this.unreadCount-=1
+}
+else{
+    this.unreadCount+=1
+}
         // Toggle the read status
         notification.read = !notification.read;
 
         // Update the notification
-        this._notificationsService.update(notification.id, notification).subscribe();
+        this._notificationsService.update(notification.id, notification).subscribe(()=>{
+        this._changeDetectorRef.detectChanges()
+            
+        });
+        
+
     }
 
     /**
@@ -135,8 +179,15 @@ export class NotificationsComponent implements OnInit, OnDestroy
      */
     delete(notification: Notification): void
     {
+        
+        this.notifications=this.notifications.filter((n)=>n.id!=notification.id)
+        if (!notification.read  ) {
+            this.unreadCount=this.unreadCount-1
+
+        }
+        
         // Delete the notification
-        this._notificationsService.delete(notification.id).subscribe();
+        this._notificationsService.delete(Number(notification.id) ).subscribe(()=>this._changeDetectorRef.detectChanges());
     }
 
     /**

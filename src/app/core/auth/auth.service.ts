@@ -11,6 +11,7 @@ export class AuthService
     private _currentUser:User
     private _authenticated: boolean = false;
 tokenValid:boolean=false
+    private _userPhone: any;
 
     /**
      * Constructor
@@ -51,6 +52,9 @@ tokenValid:boolean=false
     forgotPassword(email: string): Observable<any>
     {
         return this._httpClient.post(userManagementUrl+'/forget_password', email);
+    }
+    getUserPhone(){
+return this._userPhone
     }
 
     dispalyAdminDashboard()
@@ -96,6 +100,9 @@ tokenValid:boolean=false
                 // Store the user on the user service
                 this._userService.user = response.user;
                 this._currentUser=response.user
+                this._currentUser.avatar='data:image/jpeg;base64,'+this._currentUser.avatar
+
+                this._userPhone=response.phone
                 console.log('response sign in',response);
 
                 // Return a new observable with the response
@@ -140,7 +147,12 @@ if(!response){
                 //     this.accessToken = response.accessToken;
                 // }
                 this._currentUser=response.user
-                console.log(response.user.name);
+                this._currentUser.avatar='data:image/jpeg;base64,'+this._currentUser.avatar
+                console.log(this._currentUser);
+                
+                this._userPhone=response.phone
+
+                console.log(this._currentUser);
                 
               
 
@@ -165,6 +177,9 @@ if(!response){
      * Sign out
      */
     getCurrentUser():User{
+        console.log('hw lkhraaaaaaaaaaa');
+        
+        // this._currentUser.avatar='data:image/jpeg;base64,'+this._currentUser.avatar
         return this._currentUser
     }
     signOut(): Observable<any>

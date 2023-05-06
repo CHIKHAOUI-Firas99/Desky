@@ -24,12 +24,12 @@ import { DemandsService } from './demands.service';
 export class DemandsComponent {
   groups: any[] = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  TabMaterials: any;
+  TabDemands: any;
   idsUser: any;
   data: any;
   tabRoleNames: Array<Role>;
   userRole: String;
-  materials = new MatTableDataSource<any>();
+  demands = new MatTableDataSource<any>();
   isLoading = true;
   pageNumber: number = 1;
   displayPassword = false;
@@ -52,6 +52,7 @@ export class DemandsComponent {
   errMessage: any;
   pic: string;
   file: File;
+  allMat:any;
   /**
    * Constructor
    */
@@ -101,17 +102,18 @@ export class DemandsComponent {
   
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.materials.filter = filterValue.trim().toLowerCase();
+    this.demands.filter = filterValue.trim().toLowerCase();
     
-    if (this.materials.filter.length > 0) {
-      let u = this.TabMaterials.filter(
+    if (this.demands.filter.length > 0) {
+      let u = this.TabDemands.filter(
         (n) =>
-          n.id.toString().toLowerCase().includes(this.materials.filter) ||
-          n.name.toLowerCase().includes(this.materials.filter)||
-          n.quantity.toString().toLowerCase().includes(this.materials.filter)
+          n.user_id.toString().toLowerCase().includes(this.demands.filter) ||
+          n.desk_id.toString().toLowerCase().includes(this.demands.filter)||
+          n.demands.toString().toLowerCase().includes(this.demands.filter)||
+          n.demandDate.toString().toLowerCase().includes(this.demands.filter)
       );
       this.fillFormTab(u);
-    } else this.fillFormTab(this.TabMaterials);
+    } else this.fillFormTab(this.TabDemands);
   }
   choseFile()
   {
@@ -125,7 +127,7 @@ this.renderer.selectRootElement(elementToClick).click();
   onPageChange(event: PageEvent) {
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;
-    const data = this.TabMaterials.slice(startIndex, endIndex);
+    const data = this.TabDemands.slice(startIndex, endIndex);
     this.fillFormTab(data);
   }
   
@@ -136,7 +138,7 @@ this.renderer.selectRootElement(elementToClick).click();
       pageSize: this.paginator.pageSize,
       length: this.paginator.length,
     });
-    this.getRoles();
+    this.getDemands();
   }
   paginationChange(pageEvt: PageEvent) {
     this.length = pageEvt.length;
@@ -169,7 +171,7 @@ this.renderer.selectRootElement(elementToClick).click();
   }
   async ngOnInit(): Promise<void> {
     try {
-      this.getRoles()
+      this.getDemands()
       this._authService.dispalyAdminDashboard().subscribe((data) => {
         let obj = this._claimsService.manageObject(data["details"], "materials");
         this.canAdd = obj["create"];
@@ -192,7 +194,7 @@ tags:Array<any>=[]
     this.VOForm = this.fb.group({
       VORows: this.fb.array(
         tab
-          .filter((role) => role != undefined)
+          .filter((demand) => demand != undefined)
           .map( (val) => {
             //--------------CLAIMS----------------//
           
@@ -211,7 +213,7 @@ tags:Array<any>=[]
     });
     
     this.isLoading = false;
-    this.materials = new MatTableDataSource(
+    this.demands = new MatTableDataSource(
       (this.VOForm.get("VORows") as FormArray).controls
     );
     
@@ -254,16 +256,30 @@ getPictureUrl(picture) {
 
 
 
-  async getRoles() {
+  async getDemands() {
     try {
       const data = await this._DemandsService.getAllDemands().toPromise();
-      this.TabMaterials = data;
-      this.fillFormTab(this.TabMaterials);
-      this.materials.paginator = this.paginator;
-      const filterPredicate = this.materials.filterPredicate;
-      this.materials.filterPredicate = (data: AbstractControl, filter) => {
-        return filterPredicate.call(this.materials, data.value, filter);
+      
+      this.TabDemands = data;
+      console.log(this.TabDemands);
+      
+      this.fillFormTab(this.TabDemands);
+      this.demands.paginator = this.paginator;
+      const filterPredicate = this.demands.filterPredicate;
+      this.demands.filterPredicate = (data: AbstractControl, filter) => {
+        return filterPredicate.call(this.demands, data.value, filter);
       };
+      const allMat=await this._materialService.getAllMaterials().toPromise()
+      this.allMat=allMat
+      console.log(this.allMat);
+      
+      this.allMat.forEach(element => {
+        const pictureUrl = this.getPictureUrl(element.picture);
+        this.pic=pictureUrl
+        element['picture']=this.pic
+      });
+      console.log(this.allMat);
+      
     } catch (err) {
       console.log(err);
     }
@@ -286,7 +302,7 @@ getPictureUrl(picture) {
     this.displayPassword = true;
     const control = this.VOForm.get("VORows") as FormArray;
     control.insert(0, this.initiateVOForm());
-    this.materials = new MatTableDataSource(control.controls);
+    this.demands = new MatTableDataSource(control.controls);
   }
   EditSVO(VOFormElement, i) {
     VOFormElement.get("VORows").at(i).get("isEditable").patchValue(false);
@@ -294,13 +310,16 @@ getPictureUrl(picture) {
   }
   delete(VOFormElement, index: number) {
     const row = VOFormElement.get("VORows")?.at(index);
-    const id = row?.get("id")?.value ?? null;
+    const id = row?.get("desk_id")?.value ?? null;
+    const user_id = row?.get("user_id")?.value ?? null;
+
     this.dialog.open(DeleteConfirmationComponent, {
       width: "640px",
       disableClose: true,
       data: {
-        idmat: id,
-        object:'role',
+        demand_id: id,
+        user_id:user_id,
+        object:'demands',
         message: "Are you sure want to delete?",
         buttonText: {
           ok: "Save",
@@ -316,7 +335,8 @@ getPictureUrl(picture) {
 
   SaveVO(VOFormElement, i) {
     const row = VOFormElement.get("VORows").at(i);
-    const id = row.get("id").value;
+    const id = row.get("desk_id").value;
+    const user_id = row.get("user_id").value;
   
     if (id) {
       const pictureElement = row.get("picture");
@@ -324,16 +344,15 @@ getPictureUrl(picture) {
         
         const material = {
           
-          name: row.get("name").value,
-          picture: row.get("picture").value,
-          quantity: row.get("quantity").value,
-          desk_id: 1
+          material: row.get("equipements").value
+       
         };
         // const pictureFile = this.base64ToFile(material.picture, 'material-picture', 'image/jpg');
 
+console.log(material);
 
         
-        this._materialService.updateMaterial(id, material,material.picture).subscribe((data) => {
+        this._DemandsService.acceptDemand(user_id,id, material).subscribe((data) => {
           this.toastr.success('Material updated','Success')
           console.log(data);
           this.refreshRoute()
@@ -403,28 +422,15 @@ showToast(message:string,title:string): void {
   CancelSVO(VOFormElement, i) {
     const row = VOFormElement.get("VORows").at(i);
 
-    let id = row.get("id").value;
+    let id = row.get("desk_id").value;
     if (!id) {
-      this.fillFormTab(this.TabMaterials);
+      this.fillFormTab(this.TabDemands);
     }
 
-    row.get("name").patchValue(this.TabMaterials[i].name);
-    row
-      .get("name")
-      .patchValue(
-        this.VOForm.get("VORows").value[i].name
-      );
-      console.log(      this.VOForm.get("VORows").value[i].name);
-      
       row
-      .get("quantity")
+      .get("equipements")
       .patchValue(
-        this.TabMaterials[i].quantity
-      );
-      row
-      .get("picture")
-      .patchValue(
-        this.getPictureUrl(this.TabMaterials[i].picture) 
+      this.TabDemands[i].equipements 
       );
 
     row.get("isEditable").patchValue(true);

@@ -22,6 +22,8 @@ export class PhoneComponent {
   ) {}
 
   ngOnInit() {
+    console.log(this.data);
+    
    this.id=this.data.id
    this.uid=this.data.uid
    this.model=this.data.model

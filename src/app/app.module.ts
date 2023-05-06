@@ -66,7 +66,7 @@ import {MatNativeDateModule, MatRippleModule} from '@angular/material/core';
 
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatRadioModule} from '@angular/material/radio';
-import {MatSelectModule} from '@angular/material/select';
+import {MAT_SELECT_SCROLL_STRATEGY, MatSelectModule} from '@angular/material/select';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -87,6 +87,11 @@ import { MaterialsComponent } from './modules/admin/dashboards/materials/materia
 import { DemandsComponent } from './modules/admin/dashboards/demands/demands.component';
 import { BookingComponent } from './modules/booking/dashboards/booking/booking/booking.component';
 import { BookingMapComponent } from './modules/booking/dashboards/booking/booking-map/booking-map.component';
+import { HttpClientModule } from '@angular/common/http';
+import { SettingsAccountComponent } from './modules/settings/settings-account/settings-account.component';
+import { UsersMailingComponent } from './modules/admin/dashboards/users-mailing/users-mailing.component';
+import { Component } from '@angular/core';
+import { Overlay, ScrollStrategyOptions } from '@angular/cdk/overlay';
 
 
 library.add(faIcons, faFontAwesome);
@@ -102,10 +107,12 @@ const routerConfig: ExtraOptions = {
         BookingComponent,
         BookingMapComponent,
         
+        
+        
      
     ],
     imports     : [
-        
+        ToastrModule.forRoot(),
         BrowserModule,
         BrowserAnimationsModule,
         RouterModule.forRoot(appRoutes, routerConfig),
@@ -125,10 +132,19 @@ const routerConfig: ExtraOptions = {
         
         NgxColorsModule,
         ColorPickerModule,
+        HttpClientModule
     ],
     bootstrap   : [
         AppComponent
     ],
+    providers: [
+        {
+          provide: MAT_SELECT_SCROLL_STRATEGY,
+          useFactory: (overlay: Overlay) => () => overlay.scrollStrategies.block(),
+          deps: [Overlay],
+        },
+        ScrollStrategyOptions,
+      ],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA , NO_ERRORS_SCHEMA],
   
 })

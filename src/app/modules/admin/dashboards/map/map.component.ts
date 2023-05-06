@@ -235,34 +235,33 @@ public isSelected:boolean=false
     // get references to the html canvas element & its context
     this.canvas.on('mouse:down', (e) => {
       if(e.target){
+        // this.isSelected=true
         this.latestValidPosition ={x : e.target['translateX'],y: e.target['translateY'],o:e.target['angle'],scaleX : e.target['scaleX'],scaleY : e.target['scaleY']}
-      }
-      const activeSelection: fabric.ActiveSelection | undefined = this.canvas.getActiveObject() as fabric.ActiveSelection | undefined;
-      if (activeSelection) {
-        console.log(activeSelection);
+      } 
+      else{
+        this.selected=false
+        console.log('its empty selection');
         
-        this.latestValidPosition ={x : activeSelection['translateX'],y: activeSelection['translateY'],o:activeSelection.angle,scaleX : activeSelection.scaleX,scaleY : activeSelection.scaleY}
-
-      }
-          
+      }   
     });
     this.canvas.on('mouse:up',(e) => {
-      console.log(e.target);
-      
-      // const activeSelection: fabric.ActiveSelection | undefined = this.canvas.getActiveObject() as fabric.ActiveSelection | undefined;
-      // if (activeSelection) {
-      //   const boundingRect = activeSelection.getBoundingRect();
-      //   const coords = {
-      //     tl: { x: boundingRect.left, y: boundingRect.top },
-      //     br: { x: boundingRect.left + boundingRect.width, y: boundingRect.top + boundingRect.height },
-      //   };
-      //   console.log("ppppp"+coords.tl.x, coords.tl.y, coords.br.x, coords.br.y);
-      // }
 
-      //I NEED TO GET ACTIVEOBJECTS IDS      
+console.log('mouse up');
+
       let objects = this.canvas.getActiveObjects();
+if (objects.length>0) {
+  console.log('rrr');
+  
+  // this.isSelected=true
+  
+}
+else{
+  console.log('aaa');
+  
+  // this.isSelected=false
+}
       if (objects.length==1){
-        let obj = e.target               
+        let obj = e.target       
         if(obj){
           if (obj.borderColor == "red"){
             let id = obj.toObject().id.toString()
@@ -273,41 +272,38 @@ public isSelected:boolean=false
             obj.setCoords()
             obj.borderColor = "green"
           }
-        //   else{   
-        //     let id = obj.toObject().id      
-        //     id = id.toString()
-        //     let x = obj['left']
-        //     let y = obj['top']
-        //     let o =obj['angle']
-        // }
+          else{   
+            let id = obj.toObject().id      
+            id = id.toString()
+            let x = obj['left']
+            let y = obj['top']
+            let o =obj['angle']
+        }
         }
       }
-      else{
-        const activeSelection: fabric.ActiveSelection | undefined = this.canvas.getActiveObject() as fabric.ActiveSelection | undefined;
-        if (activeSelection){
-          if(activeSelection.borderColor == "red"){
-            activeSelection.scaleX = this.latestValidPosition.scaleX
-            activeSelection.scaleY = this.latestValidPosition.scaleY
-            activeSelection.angle = this.latestValidPosition.o  
-            activeSelection.setPositionByOrigin(new fabric.Point(this.latestValidPosition.x,this.latestValidPosition.y),'center','center')
-            activeSelection.setCoords()
-            activeSelection.borderColor = "green"
-            for (let index = 0; index < activeSelection._objects.length; index++) {
-              activeSelection._objects[index].borderColor="green"
-            }
-          }
-        }
+      else if(objects.length>1){
+        const json = JSON.stringify(this.canvas);
+        const test = JSON.parse(json)
+        console.log(test.objects[0].id+" left --->" +test.objects[0].left);
+        let l =[]
+        objects.forEach((obj) => {
+          let id = obj.toObject().id.toString()
+          l.push(id)    
+          console.log(l);      
+        })
+        
+
       }                
       this.changeParam()
 
     })
   }
-  
   onChange(options) {
-    const activeSelection: fabric.ActiveSelection | undefined = this.canvas.getActiveObject() as fabric.ActiveSelection | undefined;
     if(options.length>1){
+      const activeSelection: fabric.ActiveSelection | undefined = this.canvas.getActiveObject() as fabric.ActiveSelection | undefined;
       if (activeSelection) {
         console.log(activeSelection);
+        
         let s = 0
         this.canvas.forEachObject(function(obj) {
           for (let index = 0; index < activeSelection._objects.length; index++) {
@@ -318,10 +314,6 @@ public isSelected:boolean=false
             s++
           }
           activeSelection.set('borderColor' ,s >0 ? "red" : "green");
-          
-          for (let index = 0; index < activeSelection._objects.length; index++) {
-            activeSelection._objects[index].set('borderColor' ,s >0 ? "red" : "green");
-          }
         });
 
       }
@@ -336,9 +328,6 @@ public isSelected:boolean=false
           s++
         }
         options.target.set('borderColor' ,s >0 ? "red" : "green");
-        for (let index = 0; index < activeSelection._objects.length; index++) {
-          activeSelection._objects[index].set('borderColor' ,s >0 ? "red" : "green");
-        }
       });
     }
 
@@ -485,182 +474,58 @@ public isSelected:boolean=false
 
   /*------------------------Global actions for element------------------------*/
   clone() {
-    const objects = this.canvas.getActiveObjects()
-    if(objects.length == 1){
-      const activeObject = this.canvas.getActiveObject();
-      let id = this.canvas.getActiveObject().toObject().id.toString();
-      let path = this.objectsInCanvas.get(id).path;  
-      if (activeObject) {
+    const activeObjects = this.canvas.getActiveObjects();
+    const clonedObjects = [];
+    activeObjects.forEach(activeObject => {
+        let id = activeObject.toObject().id.toString();
+        let path = this.objectsInCanvas.get(id).path;  
         fabric.loadSVGFromURL(path, (objects, options) => {
-          const image = fabric.util.groupSVGElements(objects, options);
-          image.set({
-            left: 10,
-            top: 10,
-            angle : 0,
-            padding: 0,
-            cornerSize: 10,
-            hasRotatingPoint: true,
-            borderColor : "green",
-            borderScaleFactor : 5,
-            strokeWidth : 10
-          });
-          let scaleX = this.objectsInCanvas.get(id).scaleX
-          let scaleY = this.objectsInCanvas.get(id).scaleY
-          let o = 0
-          image.scaleX = scaleX
-          image.scaleY = scaleY
-          this.idCounter--
-          this.extend(image, this.idCounter);
-          this.canvas.add(image);
-          let x = 10
-          let y = 10
-          let type = this.objectsInCanvas.get(id).type
-          let flipX = false
-          let flipY = false
-          this.objectsInCanvas.set(this.idCounter.toString(),{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
-          this.selectItemAfterAdded(image);
-        });
-      }
-    }
-    else if (objects.length > 1){
-      // console.log(objects[0].toObject().id.toString());
-      // const activeSelection: fabric.ActiveSelection | undefined = this.canvas.getActiveObject() as fabric.ActiveSelection | undefined;
-      //   // Clone the selected objects
-      // const clonedObjects = activeSelection.getObjects().map(obj => fabric.util.object.clone(obj));
-
-      //   // Create a new active selection with the cloned objects
-      //   const clonedSelection = new fabric.ActiveSelection(clonedObjects, {
-      //   canvas: this.canvas
-      //     });
-
-      //   // Add the cloned selection to the canvas
-      //   this.extend(clonedSelection, this.idCounter);
-
-      //   this.canvas.add(clonedSelection);
-
-      // console.log(activeSelection._objects[0].toObject().id.toString())
-      const json = JSON.stringify(this.canvas);
-      const test = JSON.parse(json)
-      console.log(test.objects[1].id+" left --->" +test.objects[0].left);
-      let l =[]
-      objects.forEach((obj) => {
-        let id = obj.toObject().id.toString()
-        l.push(id)    
-      })
-      let minLeft = 2000
-      let minTop = 2000
-      let listObjects =[]
-      for (let index = 0; index < test.objects.length || index < l.length; index++) {
-        console.log(test.objects[index].id);
-        console.log(l[index]);
-        let x =l.find(x => x ==test.objects[index].id)
-        if(x){          
-          listObjects.push(test.objects[index])
-          if (minLeft > test.objects[index].left){
-            minLeft = test.objects[index].left
-          }
-          if (minTop > test.objects[index].top){
-            minTop = test.objects[index].top
-          }
-        }          
-      }
-      console.log("minLeft" ,minLeft);
-      console.log("minTop" ,minTop);
-      for (let index = 0; index < listObjects.length; index++) {
-        const element = listObjects[index];
-        let id =element.id.toString()        
-        let path = this.objectsInCanvas.get(id).path; 
-        console.log(element.left);
-         
-          fabric.loadSVGFromURL(path, (objects, options) => {
             const image = fabric.util.groupSVGElements(objects, options);
             image.set({
-              left: element.left - minLeft,
-              top: element.top - minTop,
-              angle : 0,
-              padding: 0,
-              cornerSize: 10,
-              hasRotatingPoint: true,
-              borderColor : "green",
-              borderScaleFactor : 5,
-              strokeWidth : 10
+                left: activeObject.left + 10,
+                top: activeObject.top + 10,
+                angle : activeObject.angle,
+                padding: 0,
+                cornerSize: 10,
+                hasRotatingPoint: true,
+                borderColor : "green",
+                borderScaleFactor : 5,
+                strokeWidth : 10
             });
-            let scaleX = this.objectsInCanvas.get(id).scaleX
-            let scaleY = this.objectsInCanvas.get(id).scaleY
-            let o = 0
-            image.scaleX = scaleX
-            image.scaleY = scaleY
-            this.idCounter--
+            let scaleX = this.objectsInCanvas.get(id).scaleX;
+            let scaleY = this.objectsInCanvas.get(id).scaleY;
+            let o = 0;
+            image.scaleX = scaleX;
+            image.scaleY = scaleY;
+            this.idCounter--;
             this.extend(image, this.idCounter);
             this.canvas.add(image);
-            let x = element.left - minLeft
-            let y = element.top - minTop
-            let type = this.objectsInCanvas.get(id).type
-            let flipX = false
-            let flipY = false
-            this.objectsInCanvas.set(this.idCounter.toString(),{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
-            this.selectItemAfterAdded(image);
-          });
-
-        
-      }
+            let x = activeObject.left + 10;
+            let y = activeObject.top + 10;
+            let type = this.objectsInCanvas.get(id).type;
+            let flipX = false;
+            let flipY = false;
+            this.objectsInCanvas.set(this.idCounter.toString(),{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type});
+            clonedObjects.push(image);
+        });
+    });
+    this.canvas.renderAll();
+    this.canvas.discardActiveObject();
+    this.canvas.requestRenderAll();
+    if (clonedObjects.length > 0) {
+        this.canvas.setActiveObject(new fabric.ActiveSelection(clonedObjects, {
+            canvas: this.canvas
+        }));
+    }
+}
 
   
-    }}
+  
 
   
 
 
 //SET OBJECT POSITION AND SCALE
-  // changeParam(){
-  //   const objects = this.canvas.getActiveObjects()
-  //   if (objects.length == 1){
-  //     const activeObject = this.canvas.getActiveObject();
-  //     if (activeObject){
-  //       let x =activeObject['left']
-  //       let y =activeObject['top']
-  //       let o =activeObject['angle']
-  //       let scaleX = activeObject['scaleX']
-  //       let scaleY = activeObject['scaleY']
-  //       let flipX = activeObject['flipX']
-  //       let flipY = activeObject['flipY']
-  //       let id = this.canvas.getActiveObject().toObject().id.toString();
-  //       console.log("id --->",id);
-  //       this.selectedObjectId=id
-  //       let path = this.objectsInCanvas.get(id).path
-  //       let type = this.objectsInCanvas.get(id).type
-  //       console.log(type);
-  //       this.currentType=type
-  //       let tags=this.objectsInCanvas.get(id).tags?this.objectsInCanvas.get(id).tags:[]
-  //       let material=this.objectsInCanvas.get(id).material?this.objectsInCanvas.get(id).material:[]
-  //     console.log(tags,this.objectsInCanvas.get(id).material);
-      
-  //       this.objectsInCanvas.set(id,{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type,tags,material})
-  //     }
-
-  //   }
-  //   else if(objects.length>1){
-  //     objects.forEach((object) => {
-  //       let x =object['left']
-  //       let y =object['top']
-  //       let o =object['angle']
-  //       let scaleX = object['scaleX']
-  //       let scaleY = object['scaleY']
-  //       let flipX = object['flipX']
-  //       let flipY = object['flipY']
-  //       let id = object.toObject().id.toString()
-  //       console.log("ID : " + id +" left :" + x);
-                
-  //       let path = this.objectsInCanvas.get(id).path
-  //       let type = this.objectsInCanvas.get(id).type
-  //       this.objectsInCanvas.set(id,{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
-  //     })
-  //   }
-  //   console.log(this.objectsInCanvas);
-    
-
-  // }
-
   changeParam(){
     const objects = this.canvas.getActiveObjects()
     if (objects.length == 1){
@@ -675,37 +540,35 @@ public isSelected:boolean=false
         let flipY = activeObject['flipY']
         let id = this.canvas.getActiveObject().toObject().id.toString();
         console.log("id --->",id);
+        this.selectedObjectId=id
         let path = this.objectsInCanvas.get(id).path
         let type = this.objectsInCanvas.get(id).type
-        this.objectsInCanvas.set(id,{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
+        console.log(type);
+        this.currentType=type
+        let tags=this.objectsInCanvas.get(id).tags?this.objectsInCanvas.get(id).tags:[]
+        let material=this.objectsInCanvas.get(id).material?this.objectsInCanvas.get(id).material:[]
+      console.log(tags,this.objectsInCanvas.get(id).material);
+      
+        this.objectsInCanvas.set(id,{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type,tags,material})
       }
 
     }
-    else if (objects.length > 1){
-      const json = JSON.stringify(this.canvas);
-      const test = JSON.parse(json)
-      console.log(test.objects[1].id+" left --->" +test.objects[0].left);
-      let l =[]
-      objects.forEach((obj) => {
-        let id = obj.toObject().id.toString()
-        l.push(id)    
+    else if(objects.length>1){
+      objects.forEach((object) => {
+        let x =object['left']
+        let y =object['top']
+        let o =object['angle']
+        let scaleX = object['scaleX']
+        let scaleY = object['scaleY']
+        let flipX = object['flipX']
+        let flipY = object['flipY']
+        let id = object.toObject().id.toString()
+        console.log("ID : " + id +" left :" + x);
+                
+        let path = this.objectsInCanvas.get(id).path
+        let type = this.objectsInCanvas.get(id).type
+        this.objectsInCanvas.set(id,{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
       })
-      for (let index = 0; index < test.objects.length || index < l.length; index++) {
-        if(test.objects[index].id == l[index]){
-          console.log(test.objects[index].left);
-          let x =test.objects[index].left
-          let y =test.objects[index].top
-          let o =test.objects[index].angle
-          let scaleX = test.objects[index].scaleX
-          let scaleY = test.objects[index].scaleY
-          let flipX = test.objects[index].flipX
-          let flipY = test.objects[index].flipY
-          let id = l[index]       
-          let path = this.objectsInCanvas.get(id).path
-          let type = this.objectsInCanvas.get(id).type
-          this.objectsInCanvas.set(id,{id,path,x,y,o,scaleX,scaleY,flipX,flipY,type})
-        }          
-      }
     }
     console.log(this.objectsInCanvas);
     

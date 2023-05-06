@@ -38,6 +38,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { TagsUpdateComponent } from "../tags-update/tags-update.component";
 import { log } from "fabric/fabric-impl";
 import { ActivatedRoute, RouteReuseStrategy, Router } from "@angular/router";
+import { MatSelectChange } from "@angular/material/select";
 
 @Component({
   selector: "app-Roles",
@@ -74,6 +75,7 @@ export class RolesComponent implements ControlValueAccessor {
   mytags: any;
   i: number=0;
   errMessage: any;
+  selectAllChecked: boolean;
   /**
    * Constructor
    */
@@ -177,6 +179,17 @@ export class RolesComponent implements ControlValueAccessor {
       id:'value-'+key 
     }));
   }
+  selectAll(checked: boolean,i) {
+  const claimsFormArray = this.VOForm.get('VORows').value[i].get('claims') as FormArray;
+  if (checked) {
+    // Select all options
+    claimsFormArray.patchValue(this.allclaims.flatMap(group => group.items.map(item => item.value)));
+  } else {
+    // Deselect all options
+    claimsFormArray.clear();
+  }
+}
+
   ngOnInit() {
      
     
@@ -201,6 +214,11 @@ export class RolesComponent implements ControlValueAccessor {
     
     this.getRoles();
   }
+
+
+
+
+  
   modelGroup = [];
   evthgrp = [];
   modelgrp = [];
@@ -360,6 +378,39 @@ transformArray(arr: { key: string; value: string[] }[]): any {
     });
     return objects;
   }
+
+
+
+  onSelectionChange(VOFormElement,event: MatSelectChange,i) {
+    const row = VOFormElement.get("VORows").at(i);
+    console.log(this.allclaims);
+    
+    row
+    .get("claims")
+    .patchValue(
+      this._RoleService.transformObject(this.TabRoles[i].claims)[0]
+    );
+    const selectedValues = event.value as string[];
+    const claimsFormArray = this.VOForm.get('VORows').value[i].get('claims') as FormArray;
+    if (selectedValues.includes('selectAll')) {
+      // Select all options
+      claimsFormArray.patchValue(this.allclaims.flatMap(group => group.items.map(item => item.value)));
+      this.selectAllChecked = true;
+    } else {
+      // Deselect "Select All" option
+      const selectAllIndex = selectedValues.indexOf('selectAll');
+      if (selectAllIndex !== -1) {
+        selectedValues.splice(selectAllIndex, 1);
+        this.selectAllChecked = false;
+      }
+      // Update claims form control
+      claimsFormArray.patchValue(selectedValues);
+    }
+  }
+  
+
+
+
   SaveVO(VOFormElement, i) {
     const row = VOFormElement.get("VORows").at(i);
     const id = row.get("id").value;

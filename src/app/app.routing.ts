@@ -13,6 +13,8 @@ import { Component } from "@angular/core";
 import { AddMaterialComponent } from "./modules/admin/dashboards/add-material/add-material.component";
 import { MaterialsAuthGuard } from "./core/auth/guards/materials.guards";
 import { BookingComponent } from "./modules/booking/dashboards/booking/booking/booking.component";
+import { SettingsAccountComponent } from "./modules/settings/settings-account/settings-account.component";
+import { DemandsAuthGuard } from "./core/auth/guards/demands.guards";
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -29,7 +31,7 @@ export const appRoutes: Route[] = [
   {
     path: "signed-in-redirect",
     pathMatch: "full",
-    redirectTo: "dashboards/users",
+    redirectTo: "dashboards/booking",
   },
 
   // Auth routes for guests
@@ -175,7 +177,7 @@ export const appRoutes: Route[] = [
             path:'demands',
             loadChildren: () => import("app/modules/admin/dashboards/demands/demands.module")
               .then((m) => m.DemandsModule),
-             
+              canActivate: [DemandsAuthGuard],
           },
           
          
@@ -193,6 +195,13 @@ export const appRoutes: Route[] = [
     children: [{
         path : "dashboards/booking" , component : BookingComponent,
     },
+    {
+      path : "settings",pathMatch: "full",
+      loadChildren: () =>
+        import("app/modules/settings/settings.module").then(
+          (m) => m.SettingsModule
+        ),
+    }
     ]
 },
   {

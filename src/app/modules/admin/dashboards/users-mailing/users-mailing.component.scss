@@ -1,0 +1,12 @@
+.mat-checkbox-inner-container {
+    width: 16px;
+    height: 16px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+  }
+  
+  .mat-checkbox-input:checked ~ .mat-checkbox-inner-container {
+    background-color: #0078d4;
+    border-color: #0078d4;
+  }
+  

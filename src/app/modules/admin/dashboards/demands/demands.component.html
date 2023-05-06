@@ -16,11 +16,11 @@
                      <input  matInput  (keyup)="applyFilter($event)" style="text-align: left;" placeholder="Search" #input matColumnDef="10">
                      <mat-icon >search</mat-icon>
                    </div>
-                   <button  [disabled]="!canAdd" style="float:left ;display: inline; margin-left: 2%;margin-top: 1%;"  (click)="openDialog()">
+                   <!-- <button  [disabled]="!canAdd" style="float:left ;display: inline; margin-left: 2%;margin-top: 1%;"  (click)="openDialog()">
                     <i class="fa fa-circle-plus" style="
                       zoom: 1.5;color: #6c757d;"></i>
                        
-                      </button>
+                      </button> -->
              </div>
              <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
              
@@ -28,7 +28,7 @@
              
              <!-- <button  color="primary"  style="display: inline;"><mat-icon (click)="AddNewRow()" class="add-button">add_box</mat-icon></button> -->
                 <ng-container formArrayName="VORows" >
-                 <table #table mat-table [dataSource]="materials" class="table-responsive" >
+                 <table #table mat-table [dataSource]="demands" class="table-responsive" >
          
                    <!-- Position Column -->
                    <ng-container matColumnDef="desk_id">
@@ -60,20 +60,21 @@
 
                    <ng-container matColumnDef="demands">
                     <th mat-header-cell *matHeaderCellDef>Demands</th>
-                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-                     <div class="text-center">
-                        <ul style="list-style-type: square;">
-                            <li *ngFor="let item of VOForm.get('VORows').value[i].demands">
-    
-                                <span >
-                                        {{item.quantity}}
-                                </span>
-                                <span style="margin-left: 10px;">
-                                    {{item.material}}
-                            </span>
-    
-                            </li>
-                        </ul>
+                    <td style="text-align: left;margin-left: 150px;" mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                     <div style="text-align: left;margin-left: 70px;"  >
+                      <ul style="list-style-type: none; padding-left: 0;">
+                        <li *ngFor="let item of VOForm.get('VORows').value[i].demands"
+                            style="display: block; margin: 0; padding: 0;">
+                          <span style="vertical-align: middle; margin-right: 5px;">
+                            <mat-icon>done</mat-icon>
+                          </span>
+                          <span style="display: inline-block; vertical-align: middle;">
+                            {{item}}
+                          </span>
+                        </li>
+                      </ul>
+                      
+                    
                     
                      </div>
                   
@@ -87,12 +88,41 @@
                     <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
                      <div class="text-center">
            
-                    
+                      <mat-form-field appearance="fill" style="width:100%" *ngIf="VOForm.get('VORows').value[i].equipements.length > 0 && VOForm.get('VORows').value[i].isEditable">
+  
+                        <mat-select formControlName="equipements" multiple>
+                          <ng-container *ngFor="let mat of allMat">
+                            <mat-option [disabled]="true" [value]="mat.name" *ngIf=" VOForm.get('VORows').value[i].equipements.includes(mat.name) " >
+                              <div style="display: inline;" >
+                              <img [src]="mat.picture" alt="" srcset="" style="height: 60px;width: 80px;display: inline;">
+                              <span style="display: inline;margin-left: 10px;"> {{mat.name}} </span>
+                            </div>
+                            </mat-option>
+                          </ng-container>
+                      
+                        </mat-select>
+                      </mat-form-field>     
+                      <p style="color: red;" *ngIf="VOForm.get('VORows').value[i].equipements.length <= 0 && VOForm.get('VORows').value[i].isEditable">
+                          No Equipements on that desk
+                      </p>  
+                      <mat-form-field appearance="fill" style="width:100%" *ngIf="!VOForm.get('VORows').value[i].isEditable">
+  
+                        <mat-select formControlName="equipements" multiple>
+                          <ng-container *ngFor="let mat of allMat">
+                            <mat-option  [value]="mat.name"  >
+                              <div style="display: inline;" >
+                              <img [src]="mat.picture" alt="" srcset="" style="height: 60px;width: 80px;display: inline;">
+                              <span style="display: inline;margin-left: 10px;"> {{mat.name}} </span>
+                            </div>
+                            </mat-option>
+                          </ng-container>
+                      
+                        </mat-select>
+                      </mat-form-field>    
                      </div>
                       <div >
 
                         <!-- <button  class="btn btn-secondary" style="font-size: 15px; margin-left: 25%;" (click)="choseFile()">Change picture</button> -->
-                        <input style="width: 67%;margin-left: 25%;zoom: 1;" class="form-control" id="myFile"  type="file" (change)="onFileSelect(VOForm,$event,i)">
 
                       </div>
                     
@@ -163,7 +193,7 @@
                </mat-card>
                
            
-                   <mat-paginator  [pageSizeOptions]="[8, materials.data.length>8? materials.data.length:'10'  ]" 
+                   <mat-paginator  [pageSizeOptions]="[8, demands.data.length>8? demands.data.length:'10'  ]" 
                      style="margin-top: 1%;" 
                     showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
                    

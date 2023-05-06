@@ -9,13 +9,13 @@ export const defaultNavigation: FuseNavigationItem[] = [
         type    : 'group',
         icon    : 'heroicons_outline:home',
         children: [
-            {
-                id   : 'dashboards.project',
-                title: 'Project',
-                type : 'basic',
-                icon : 'heroicons_outline:clipboard-check',
-                link : '/dashboards/project'
-            },
+            // {
+            //     id   : 'profile',
+            //     title: 'Profile',
+            //     type : 'basic',
+            //     icon : 'heroicons_outline:clipboard-check',
+            //     link : '/profile'
+            // },
             {
                 id   : 'dashboards.analytics',
                 title: 'Analytics',
@@ -163,6 +163,12 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         title: 'Materials ',
                         type : 'basic',
                         link : '/dashboards/materials'
+                    },
+                    {
+                        id   : 'demands',
+                        title: 'Demands ',
+                        type : 'basic',
+                        link : '/dashboards/demands'
                     }
                 ]
             },

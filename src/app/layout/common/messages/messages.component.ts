@@ -5,6 +5,10 @@ import { MatButton } from '@angular/material/button';
 import { Subject, takeUntil } from 'rxjs';
 import { Message } from 'app/layout/common/messages/messages.types';
 import { MessagesService } from 'app/layout/common/messages/messages.service';
+import { UserService } from 'app/core/user/user.service';
+import { UsersMailingComponent } from 'app/modules/admin/dashboards/users-mailing/users-mailing.component';
+import { MatDialog } from '@angular/material/dialog';
+import { AuthService } from 'app/core/auth/auth.service';
 
 @Component({
     selector       : 'messages',
@@ -13,15 +17,17 @@ import { MessagesService } from 'app/layout/common/messages/messages.service';
     changeDetection: ChangeDetectionStrategy.OnPush,
     exportAs       : 'messages'
 })
-export class MessagesComponent implements OnInit, OnDestroy
+export class MessagesComponent implements OnInit
 {
-    @ViewChild('messagesOrigin') private _messagesOrigin: MatButton;
-    @ViewChild('messagesPanel') private _messagesPanel: TemplateRef<any>;
+
 
     messages: Message[];
     unreadCount: number = 0;
     private _overlayRef: OverlayRef;
     private _unsubscribeAll: Subject<any> = new Subject<any>();
+    Tabusers: any;
+    isAdmin: boolean | null = null;
+
 
     /**
      * Constructor
@@ -30,7 +36,10 @@ export class MessagesComponent implements OnInit, OnDestroy
         private _changeDetectorRef: ChangeDetectorRef,
         private _messagesService: MessagesService,
         private _overlay: Overlay,
-        private _viewContainerRef: ViewContainerRef
+        private _viewContainerRef: ViewContainerRef,
+        private _userService: UserService,
+        private dialog: MatDialog,
+        private authService:AuthService
     )
     {
     }
@@ -42,180 +51,24 @@ export class MessagesComponent implements OnInit, OnDestroy
     /**
      * On init
      */
-    ngOnInit(): void
-    {
+    ngOnInit(): void {
         // Subscribe to message changes
-        this._messagesService.messages$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((messages: Message[]) => {
-
-                // Load the messages
-                this.messages = messages;
-
-                // Calculate the unread count
-                this._calculateUnreadCount();
-
-                // Mark for check
-                this._changeDetectorRef.markForCheck();
-            });
-    }
-
-    /**
-     * On destroy
-     */
-    ngOnDestroy(): void
-    {
-        // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
-
-        // Dispose the overlay
-        if ( this._overlayRef )
-        {
-            this._overlayRef.dispose();
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Public methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Open the messages panel
-     */
-    openPanel(): void
-    {
-        // Return if the messages panel or its origin is not defined
-        if ( !this._messagesPanel || !this._messagesOrigin )
-        {
-            return;
-        }
-
-        // Create the overlay if it doesn't exist
-        if ( !this._overlayRef )
-        {
-            this._createOverlay();
-        }
-
-        // Attach the portal to the overlay
-        this._overlayRef.attach(new TemplatePortal(this._messagesPanel, this._viewContainerRef));
-    }
-
-    /**
-     * Close the messages panel
-     */
-    closePanel(): void
-    {
-        this._overlayRef.detach();
-    }
-
-    /**
-     * Mark all messages as read
-     */
-    markAllAsRead(): void
-    {
-        // Mark all as read
-        this._messagesService.markAllAsRead().subscribe();
-    }
-
-    /**
-     * Toggle read status of the given message
-     */
-    toggleRead(message: Message): void
-    {
-        // Toggle the read status
-        message.read = !message.read;
-
-        // Update the message
-        this._messagesService.update(message.id, message).subscribe();
-    }
-
-    /**
-     * Delete the given message
-     */
-    delete(message: Message): void
-    {
-        // Delete the message
-        this._messagesService.delete(message.id).subscribe();
-    }
-
-    /**
-     * Track by function for ngFor loops
-     *
-     * @param index
-     * @param item
-     */
-    trackByFn(index: number, item: any): any
-    {
-        return item.id || index;
-    }
-
-    // -----------------------------------------------------------------------------------------------------
-    // @ Private methods
-    // -----------------------------------------------------------------------------------------------------
-
-    /**
-     * Create the overlay
-     */
-    private _createOverlay(): void
-    {
-        // Create the overlay
-        this._overlayRef = this._overlay.create({
-            hasBackdrop     : true,
-            backdropClass   : 'fuse-backdrop-on-mobile',
-            scrollStrategy  : this._overlay.scrollStrategies.block(),
-            positionStrategy: this._overlay.position()
-                                  .flexibleConnectedTo(this._messagesOrigin._elementRef.nativeElement)
-                                  .withLockedPosition(true)
-                                  .withPush(true)
-                                  .withPositions([
-                                      {
-                                          originX : 'start',
-                                          originY : 'bottom',
-                                          overlayX: 'start',
-                                          overlayY: 'top'
-                                      },
-                                      {
-                                          originX : 'start',
-                                          originY : 'top',
-                                          overlayX: 'start',
-                                          overlayY: 'bottom'
-                                      },
-                                      {
-                                          originX : 'end',
-                                          originY : 'bottom',
-                                          overlayX: 'end',
-                                          overlayY: 'top'
-                                      },
-                                      {
-                                          originX : 'end',
-                                          originY : 'top',
-                                          overlayX: 'end',
-                                          overlayY: 'bottom'
-                                      }
-                                  ])
+        this._userService.getAllUsers().subscribe((data) => {
+            this.Tabusers = data;
         });
-
-        // Detach the overlay from the portal on backdrop click
-        this._overlayRef.backdropClick().subscribe(() => {
-            this._overlayRef.detach();
+    
+    
+    }
+    open() {
+        let UsersEmails=this.Tabusers.map((n)=>n.email)
+        console.log(UsersEmails);
+        
+        const dialogRef = this.dialog.open(UsersMailingComponent, {
+          width: "640px",
+          disableClose: true,
+          data: {usersEmails:UsersEmails},
         });
-    }
+      }
 
-    /**
-     * Calculate the unread count
-     *
-     * @private
-     */
-    private _calculateUnreadCount(): void
-    {
-        let count = 0;
 
-        if ( this.messages && this.messages.length )
-        {
-            count = this.messages.filter(message => !message.read).length;
-        }
-
-        this.unreadCount = count;
-    }
 }

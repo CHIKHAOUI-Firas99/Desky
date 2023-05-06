@@ -1,0 +1,37 @@
+<form [formGroup]="emailForm" style="display: flex; flex-direction: column; align-items: center;margin-top: 0px;">
+    <button mat-icon-button mat-dialog-close class="close-icon" style="margin-left: 93%; margin-top: -10px;">
+      <mat-icon>close</mat-icon>
+    </button>
+    <h2  style="margin-top: 0px;" class="h6">Send Email</h2>
+   
+
+    <mat-form-field style="width: 80%;">
+      <mat-label>To:</mat-label>
+     
+
+      <mat-select formControlName="recipients" (selectionChange)="onSelectionChange($event)" multiple>
+        <mat-checkbox class="mat-checkbox-label" [checked]="allSelected" (change)="selectAll($event)">(Select All)</mat-checkbox>
+
+        
+        <mat-option *ngFor="let email of usersList" [value]="email">{{ email }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  
+  
+    <mat-form-field style="width: 80%;">
+      <mat-label>Subject:</mat-label>
+      <input matInput formControlName="subject" />
+    </mat-form-field>
+  
+    <mat-form-field style="width: 80%;height: 200px;">
+      <mat-label>Message:</mat-label>
+      <textarea matInput formControlName="body" style="height: 130px"></textarea>
+    </mat-form-field>
+  
+  </form>
+  
+  <div style="float: left;">
+    <button mat-button (click)="closeEmailDialog()" class="btn">Cancel</button>
+    <button class="btn btn-primary" [disabled]="emailForm.invalid" (click)="onSubmit()">Send</button>
+  </div>
+  

@@ -11,10 +11,10 @@ export class DemandsService {
   public getAllDemands(){
     return this._httpClient.get(mapServiceUrl+'/demands/')
   }
-  public acceptDemand(desk_id,material){
-return this._httpClient.put(mapServiceUrl+'/acceptDemand/'+desk_id,material)
+  public acceptDemand(user_id,desk_id,material){
+return this._httpClient.put(mapServiceUrl+'/acceptDemand/'+desk_id+'/'+user_id,material)
   }
-  public deleteDemand(desk_id){
-    return this._httpClient.delete(mapServiceUrl+'/demands/'+desk_id)
+  public deleteDemand(user_id,demand_id){
+    return this._httpClient.delete(mapServiceUrl+'/demands/'+demand_id+'/'+user_id)
   }
 }

@@ -13,6 +13,9 @@ import { FuturisticLayoutModule } from 'app/layout/layouts/vertical/futuristic/f
 import { ThinLayoutModule } from 'app/layout/layouts/vertical/thin/thin.module';
 import { SettingsModule } from 'app/layout/common/settings/settings.module';
 import { SharedModule } from 'app/shared/shared.module';
+import { Overlay, ToastNoAnimation, ToastNoAnimationModule, ToastrModule, ToastrService } from 'ngx-toastr';
+import { ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { MAT_SELECT_SCROLL_STRATEGY, MatSelectModule } from '@angular/material/select';
 
 const layoutModules = [
     // Empty
@@ -40,8 +43,26 @@ const layoutModules = [
     imports     : [
         SharedModule,
         SettingsModule,
-        ...layoutModules
-    ],
+        ...layoutModules,
+  
+    // ToastrModule.forRoot(),
+    // ToastNoAnimationModule,
+  ],
+//   providers: [
+//     ToastrService,
+//     ToastNoAnimation,
+//     MatSelectModule
+//     // {
+//     //     provide: MAT_SELECT_SCROLL_STRATEGY,
+//     //     useFactory: (overlay: Overlay) => () => overlay.scrollStrategies.block(),
+//     //     deps: [Overlay],
+//     //   },
+//     //   ScrollStrategyOptions,
+// //     MatDialogConfig,
+// // MatDialogModule,
+
+   
+//   ],
     exports     : [
         LayoutComponent,
         ...layoutModules

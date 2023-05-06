@@ -34,6 +34,7 @@ import { PhoneComponent } from "../phone/phone.component";
 import { UsersService } from "../users.service";
 import { hex } from "chroma-js";
 import { Router, ActivatedRoute, RouteReuseStrategy } from "@angular/router";
+import { UsersMailingComponent } from "../users-mailing/users-mailing.component";
 @Component({
   selector: "app-users",
   templateUrl: "./users.component.html",
@@ -167,6 +168,10 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       data: this.getPhoneInfo(VOFormElement, index),
     });
   }
+  // UsersMailingComponent
+
+
+
    isDarkColor(hexColor: string): boolean {
     // Convert hex color to RGB
     if (hexColor) {
@@ -269,6 +274,16 @@ export class UsersComponent implements OnInit, AfterViewInit, OnDestroy {
       width: "640px",
       disableClose: true,
       data: { roles: this.tabRoleNames },
+    });
+  }
+  open() {
+    let UsersEmails=this.Tabusers.map((n)=>n.email)
+    console.log(UsersEmails);
+    
+    const dialogRef = this.dialog.open(UsersMailingComponent, {
+      width: "640px",
+      disableClose: true,
+      data: {usersEmails:UsersEmails},
     });
   }
   EditSVO(VOFormElement, i) {

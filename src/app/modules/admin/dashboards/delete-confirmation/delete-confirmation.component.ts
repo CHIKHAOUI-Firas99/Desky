@@ -8,6 +8,7 @@ import { PhoneComponent } from '../phone/phone.component';
 import { UsersService } from '../users.service';
 import { MapService } from '../map/map.service';
 import { MaterialService } from '../materials/material.service';
+import { DemandsService } from '../demands/demands.service';
 
 @Component({
   selector: 'app-delete-confirmation',
@@ -31,7 +32,8 @@ export class DeleteConfirmationComponent {
     
     ,private _roleService: RoleService
     , private route: ActivatedRoute,
-    private routeReuseStrategy: RouteReuseStrategy
+    private routeReuseStrategy: RouteReuseStrategy,
+    private _demandsService:DemandsService
     ) {
       if(data){
     this.message = data.message || this.message;
@@ -86,6 +88,7 @@ export class DeleteConfirmationComponent {
     if(this.data.id) {
       this._UserService.deletePhone(this.data.id).subscribe(() => {
         const dialogRefClosedPromise = new Promise((resolve) => {
+          this.toastr.warning('your phone has been removed', 'Success!');
           this.matdialog.closeAll();
           resolve(true);
         });
@@ -111,6 +114,12 @@ export class DeleteConfirmationComponent {
       this.toastr.warning('workspace has been removed', 'Success!');
       this.matdialog.closeAll()
       this.refreshRoute()
+    }
+    if (this.data.object ==='demands') {
+      this._demandsService.deleteDemand(this.data.user_id,this.data.demand_id).subscribe()
+      this.toastr.warning('workspace has been removed', 'Success!');
+      this.matdialog.closeAll()
+      // this.refreshRoute()
     }
 
   }
