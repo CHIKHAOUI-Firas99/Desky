@@ -30,9 +30,10 @@
   <!-- <input style="" id="myFile"  type="file" (change)="onFileSelect($event)"> -->
 
   <br>
+  <button (click)="onSubmit()" style="float: left;" class="btn btn-primary" [disabled]="!materialForm.valid">Submit</button>
+
   <button  style="float: left;" class="btn btn-light" (click)="close()">Cancel</button>
 
-  <button (click)="onSubmit()" style="float: left;" class="btn btn-primary" [disabled]="!materialForm.valid">Submit</button>
 </form>
 
 </div>

@@ -15,6 +15,7 @@ import { MaterialsAuthGuard } from "./core/auth/guards/materials.guards";
 import { BookingComponent } from "./modules/booking/dashboards/booking/booking/booking.component";
 import { SettingsAccountComponent } from "./modules/settings/settings-account/settings-account.component";
 import { DemandsAuthGuard } from "./core/auth/guards/demands.guards";
+import { AnalyticsComponent } from "./modules/analytics/analytics.component";
 
 // @formatter:off
 /* eslint-disable max-len */
@@ -185,6 +186,7 @@ export const appRoutes: Route[] = [
       },
     ],
   },
+
   {
     path: '',
     canMatch: [AuthGuard],
@@ -193,7 +195,19 @@ export const appRoutes: Route[] = [
         initialData: InitialDataResolver,
     },
     children: [{
-        path : "dashboards/booking" , component : BookingComponent,
+      path : "dashboards/booking" ,    loadChildren: () =>
+      import("app/modules/booking/dashboards/booking/booking/booking.module").then(
+        (m) => m.BookingModule
+      ),
+  },
+    {
+      path: "dashboards/analytics",
+      loadChildren: () =>
+        import("app/modules/analytics/analytics.module").then(
+          (m) => m.AnalyticsModule
+        ),
+  
+      canActivate: [UsersAuthGuard],
     },
     {
       path : "settings",pathMatch: "full",
@@ -212,6 +226,5 @@ export const appRoutes: Route[] = [
         (m) => m.Error404Module
       ),
   },
-{path:'add',component:AddMaterialComponent},
   { path: "**", redirectTo: "404-not-found"},
 ];

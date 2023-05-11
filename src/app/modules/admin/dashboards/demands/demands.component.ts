@@ -37,7 +37,7 @@ export class DemandsComponent {
     VORows: this._formBuilder.array([]),
   });
   isEditableNew: boolean = true;
-  displayedColumns: string[] = ["desk_id", "user_id", "demands","equipements","demandDate", "action"];
+  displayedColumns: string[] = ["id","desk_id", "user_id", "demands","equipements","demandDate","status", "action"];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   paginatorList: HTMLCollectionOf<Element>;
   currentIndex: any;
@@ -196,14 +196,17 @@ tags:Array<any>=[]
         tab
           .filter((demand) => demand != undefined)
           .map( (val) => {
+            
             //--------------CLAIMS----------------//
           
             return  this.fb.group({
+              id:new FormControl(val.id),
               desk_id: new FormControl(val.desk_id),
               user_id: new FormControl(val.user_id),
               demands: new FormControl(val.demands),
               equipements: new FormControl(val.equipements),
               demandDate:new FormControl(val.demandDate),
+              status:new FormControl(val.status),
               action: new FormControl("existingRecord"),
               isEditable: new FormControl(true),
               isNewRow: new FormControl(false),
@@ -227,6 +230,18 @@ tags:Array<any>=[]
   this.VOForm.get("VORows") 
  );
  
+}
+isDarkColor(hexColor: string): boolean {
+  // Convert hex color to RGB
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+  
+  // Calculate luminance
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  
+  // Return true if luminance is less than 0.5 (dark), false otherwise (light)
+  return luminance < 0.5;
 }
 onFileSelect(VOFormElement,event: any,i) {
   if (event.target.files.length > 0) {
@@ -320,7 +335,7 @@ getPictureUrl(picture) {
         demand_id: id,
         user_id:user_id,
         object:'demands',
-        message: "Are you sure want to delete?",
+        message: "Refuse demand?",
         buttonText: {
           ok: "Save",
           cancel: "No",
@@ -336,23 +351,28 @@ getPictureUrl(picture) {
   SaveVO(VOFormElement, i) {
     const row = VOFormElement.get("VORows").at(i);
     const id = row.get("desk_id").value;
+    const demandid = row.get("id").value;
     const user_id = row.get("user_id").value;
   
     if (id) {
       const pictureElement = row.get("picture");
    
-        
-        const material = {
+      let demand={status:'accepted'}
+        const obj = {
           
           material: row.get("equipements").value
        
         };
         // const pictureFile = this.base64ToFile(material.picture, 'material-picture', 'image/jpg');
+console.log(demand);
+console.log(obj);
 
-console.log(material);
+
+       console.log(Number(user_id),Number(id),Number(demandid));
+       
 
         
-        this._DemandsService.acceptDemand(user_id,id, material).subscribe((data) => {
+        this._DemandsService.acceptDemand(Number(user_id),Number(id),Number(demandid),obj, demand).subscribe((data) => {
           this.toastr.success('Material updated','Success')
           console.log(data);
           this.refreshRoute()
@@ -407,7 +427,7 @@ showToast(message:string,title:string): void {
    }
 
 
-    
+
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddMaterialComponent, {

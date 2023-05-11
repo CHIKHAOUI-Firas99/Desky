@@ -24,4 +24,15 @@ export class BookingService {
   getWorkspacesForBooking(date:any):Observable<any>{
     return this._httpClient.get<any>('http://localhost:8080/workspaces?date='+`${date}`)
   }
+
+  addReservation(data:any):Observable<any>{
+    return this._httpClient.post<any>('http://localhost:8080/reservation',data)
+
+  }
+
+  get_available_time_slots(desk_id,date):Observable<any>{
+    return this._httpClient.get<any>('http://localhost:8080/get_available_time_slots/'+desk_id+'/'+date)
+
+  }
+
 }

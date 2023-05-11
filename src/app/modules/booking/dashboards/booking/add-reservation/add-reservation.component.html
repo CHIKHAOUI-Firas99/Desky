@@ -1,0 +1,43 @@
+<button mat-icon-button mat-dialog-close class="close-icon" style="margin-left: 93%; margin-top: 0.3%;">
+    <mat-icon>close</mat-icon>
+  </button>
+<div>
+    <div style="height: 100px;">
+        <h1 style="font-size: 150%;"><b>{{workspaceName}}</b></h1>
+        <h1>desk Id : {{id}}</h1>
+        <br>
+        <h1>Equipement</h1>
+    </div>
+    <div class = "div">
+        <h1 style="float: right;"><b>Date</b></h1> 
+        <h1 style="float: left;">{{date}}</h1>
+    </div>
+    <div class = "div">
+        <div class ="container">
+            <div class="row">
+                    <mat-checkbox class="example-margin" [checked]="color != 'orange' && color != 'green'"(change)="onCheckboxChange($event)" [disabled]="isDisabled || color=='orange'" style="width :25%; float: left;">Full time </mat-checkbox>
+                    <mat-form-field style="width: 25%; float: left;" appearance="fill">
+                        <mat-select matNativeControl [disabled]="fullDay || isDisabled" [(ngModel)]="selectedStartTime" [disabled]="isDisabled">
+                          <mat-option *ngFor="let item of listStartTime" value={{item}} (click)="test(selectedStartTime)">{{item}}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    <mat-form-field style="width: 25%;float: left;" appearance="fill">
+                        <mat-select [disabled]="fullDay || isDisabled" matNativeControl [(ngModel)]="selectedEndTime">
+                          <mat-option *ngFor="let item of TemcheckedListTime" value={{item}} [disabled]="item <= selectedStartTime">{{item}}</mat-option>
+                        </mat-select>
+                      </mat-form-field> 
+            </div>
+        </div>
+    </div>
+    <div class = "div">
+        <mat-icon style="color: #666; font-size: 24px;">person_outline</mat-icon>
+        <mat-checkbox class="example-margin" [disabled]="isDisabled" (change)="anonymous = !anonymous" style=" float: left;">book anonymously</mat-checkbox>
+    </div>
+
+
+
+
+    <button mat-button (click)="close()">Cancel</button>
+    <button  class="btn btn-primary" [disabled]="isDisabled || selectedEndTime == null" (click)="submit()" >Submit</button>
+
+</div>

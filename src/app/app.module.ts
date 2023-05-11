@@ -92,6 +92,9 @@ import { SettingsAccountComponent } from './modules/settings/settings-account/se
 import { UsersMailingComponent } from './modules/admin/dashboards/users-mailing/users-mailing.component';
 import { Component } from '@angular/core';
 import { Overlay, ScrollStrategyOptions } from '@angular/cdk/overlay';
+import { AnalyticsComponent } from './modules/analytics/analytics.component';
+import { GoogleChartsModule } from 'angular-google-charts';
+import { AddReservationComponent } from './modules/booking/dashboards/booking/add-reservation/add-reservation.component';
 
 
 library.add(faIcons, faFontAwesome);
@@ -104,8 +107,10 @@ const routerConfig: ExtraOptions = {
     
     declarations: [
         AppComponent,
-        BookingComponent,
-        BookingMapComponent,
+        // BookingComponent,
+        // BookingMapComponent,
+        // AddReservationComponent,
+       
         
         
         
@@ -115,6 +120,7 @@ const routerConfig: ExtraOptions = {
         ToastrModule.forRoot(),
         BrowserModule,
         BrowserAnimationsModule,
+       
         RouterModule.forRoot(appRoutes, routerConfig),
 
         // Fuse, FuseConfig & FuseMockAPI

@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BookingService } from 'app/modules/booking/booking.service';
 import { fabric } from 'fabric';
+import { AddReservationComponent } from '../add-reservation/add-reservation.component';
 
 @Component({
   selector: 'app-booking-map',
@@ -44,17 +45,19 @@ export class BookingMapComponent {
       console.log(e);
       
       if (e.target){
+        let color = e.target["_objects"][1]["group"]["_objects"][1]["_objects"][0]["fill"] 
         let id = this.canvas.getActiveObject().toObject().id.toString();
         console.log(id);
-        // const dialogRef = this.dialog.open(AddReservationComponent,{
-        //   width: '400px',disableClose: true, 
-        //   data:
-        //   {"id": id,
-        //   "workspaceName" : this.workspaceName,
-        //   "date" : this.date
-        //     }
+        const dialogRef = this.dialog.open(AddReservationComponent,{
+          width: '600px',disableClose: true, 
+          data:
+          {"id": id,
+          "workspaceName" : this.workspaceName,
+          "date" : this.date,
+          "color" : color
+            }
 
-        // });
+        });
         this.cleanSelect()      
 
       }
@@ -113,12 +116,13 @@ export class BookingMapComponent {
           // this.extend(image,key);
           // this.canvas.add(image);
           const scaledRadius = 15 * obj.scaleX;          
-          let condition = workspace.bookedDesks.indexOf(Number(key)) !=-1
-          console.log(workspace);
-          
-          let color = condition ? 'red': 'green'
+          let totallyBooked = workspace.bookedDesks.indexOf(Number(key)) !=-1
+          let partiallyBooked = workspace.availableBookedDesks.indexOf(Number(key)) !=-1
+          let color = "green"
+          if (totallyBooked) color = "red"
+          if (partiallyBooked) color = "orange"
           console.log(color);
-          
+
           if(obj.type == "desk")
           {
             var c = new fabric.Circle({

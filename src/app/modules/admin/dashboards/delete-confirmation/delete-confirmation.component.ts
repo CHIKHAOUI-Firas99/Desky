@@ -119,7 +119,7 @@ export class DeleteConfirmationComponent {
       this._demandsService.deleteDemand(this.data.user_id,this.data.demand_id).subscribe()
       this.toastr.warning('workspace has been removed', 'Success!');
       this.matdialog.closeAll()
-      // this.refreshRoute()
+      this.refreshRoute()
     }
 
   }

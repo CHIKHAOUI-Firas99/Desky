@@ -59,7 +59,7 @@
                             "src/styles/styles.scss",
                             "src/styles/tailwind.scss"
                         ],
-                        "scripts": []
+                        "scripts": ["node_modules/google-charts/dist/googleCharts.js"]
                     },
                     "configurations": {
                         "production": {
@@ -123,7 +123,7 @@
                         "styles": [
                             "src/styles/styles.scss"
                         ],
-                        "scripts": []
+                        "scripts": [ "node_modules/google-charts/dist/googleCharts.js"]
                     }
                 }
             }
