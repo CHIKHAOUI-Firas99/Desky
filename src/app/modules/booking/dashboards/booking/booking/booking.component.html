@@ -1,121 +1,87 @@
-<br>
-<div style="margin-left: 5%;margin-right: 5%;justify-content: center;">
-  <h1>Book a desk !</h1>
-  <br>
-  <div style="width: 100%;margin: 0 auto;display: flex;justify-content: center;">
-    <mat-grid-list cols="8" rowHeight="50px">
-      <button class="btn btn-outline-primary custom-button" style="height: 50px;margin-left: 2px;" mat-grid-tile
-        *ngFor="let day of selectedWeek ; let i =index"
-        [ngClass]="{ 'disabled': weekdays.indexOf(day.substring(0,3)) < weekdays.indexOf(today.substring(0,3)) && isFirstWeek}"
-        (click)="onButtonClick(i)">
-        {{ day }} {{this.showedList[i]}}<sup>th</sup></button>
-      <button *ngIf="isFirstWeek" (click)="showNextWeekDays()" class="btn btn-info custom-button">
-        next
-        <i class="fa-solid fa-arrow-turn-right"></i>
-      </button>
-      <button *ngIf="!isFirstWeek" (click)="previousWeekDays()" class="btn btn-info custom-button">
-        previous
-        <i class="fa-solid fa-arrow-turn-left"></i>
-      </button>
-    </mat-grid-list>
-  </div>
-  <!-- <div style="position:relative;  display: block; margin-left: 20%; margin-right: 20%;">
-    <div>
-      <b>Select days to book</b> 
-      <button mat-icon-button [matMenuTriggerFor]="appMenu"class="mat-checkbox">
-        <mat-icon>calendar_today</mat-icon>
-      </button>
-      <mat-menu #appMenu="matMenu">
-        <div (click)="$event.stopPropagation()">
-          <mat-calendar #calendar 
-                        (selectedChange)="select($event, calendar)" 
-                        [dateClass]="isSelected"
-                        [minDate]="minDate" [maxDate]="maxDate">
-          </mat-calendar>
-        </div>
-      </mat-menu>
-      <mat-checkbox class="mat-checkbox" style="width :25%;" (click)="setFullDay()" >Full day </mat-checkbox>
-      <mat-form-field style="width: 15%;" appearance="fill">
-        <mat-select [disabled]="fullDay"  matNativeControl class="mat-checkbox" [(ngModel)]="selectedStartTime">
-          <mat-option *ngFor="let item of listStartTime" value={{item}} (click)="test(selectedStartTime)">{{item}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field style="width: 15%;"  appearance="fill">
-        <mat-select [disabled]="fullDay" matNativeControl class="mat-checkbox" [(ngModel)]="selectedEndTime">
-          <mat-option *ngFor="let item of checkedListTime" value={{item}} [disabled]="item <= selectedStartTime">{{item}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+<div style="width: 100%;">
+  <h1 class="h4 text-center" style="margin-top: 2%;"> Desk Reservations</h1>
+  <div class="container" style="margin-top: 2%;">
+    <div class="row">
+      <div class="col-3">
+        <ul class="list-group" style="width: 100%;">
+          <h6 class="h5 text-center list-group-item  text-dark"
+            style="width: 90%;border-radius: 4px;background-color: #f0f0f0;height: 60px;padding-top: 5%;">
+            List of workspaces</h6>
+          <li class=" divWorkspace" *ngFor="let item of listWorkspaces; let i = index"
+            (click)="loadCanvas(item.name, i)" [ngClass]="{ 'isactive': isActiveElement(item.name) }">
 
-  
-    <div>
-      <mat-chip-grid #chipGrid aria-label="Enter fruits">
-        <mat-chip-row *ngFor="let day of daysSelected"  [editable]="false">
-          {{day}}
-        </mat-chip-row>
-      </mat-chip-grid>
-    </div>
+            <div>
+              <b>{{item.name}}</b>
 
-    <button type="button" style="bottom: 0%; float: right;" class="btn btn-outline-primary">Search</button>
-  </div> -->
-
-
-  <!-- <div class="container">
-      <div class="row">
-        <div class="checkbox-container">
-          <mat-checkbox>Full Day</mat-checkbox>
-        </div>      
-        </div>
-      </div> -->
-  <br>
-  <br>
-  <h1>Workspaces</h1>
-  <!-- <div *ngIf=!showCanvas>
-      <div class="container" *ngFor="let item of listWorkspaces">
-        <div class="divWorkspace">
-          <b>{{item.name}}</b>
-          <div style="  position: absolute;bottom: 20px; width: 280px;">
-          <span style="float: left;">Available {{item.totalPlaces-item.nbBooked}}</span>
-          <span style="float: right;">Total {{item.totalPlaces}}</span>
-          </div>
-          <div style="  position: absolute;bottom: 10px; width: 280px;">
-            <div class="progress" role="progressbar" style="height: 5px;" aria-label="Success example" aria-valuenow={{item.nbAvailable}} aria-valuemin="0" aria-valuemax="100">
-              <div [ngClass]="getValueClass(item.nbAvailable)" [ngStyle]="{'width' : item.nbAvailable+'%'}" ></div>
+              <div>
+                <img *ngFor="let img of item.userProfileImages.slice(0,5); let i = index"
+                  src="data:image/jpeg;base64,{{img}}" alt="foulen fouleni" [style]="{'--num-images': 5, '--index': i}"
+                  class="user">
+                <div *ngIf="item.userProfileImages.length > 1 " style=" float: right; text-align: center;"> {{
+                  item.userProfileImages.length - 5 }}</div>
+              </div>
+              <div style="  position: absolute;bottom: 20px; width: 210px;">
+                <span style="float: left;"> <b>Available {{item.totalPlaces-item.nbBooked}}</b></span>
+                <span style="float: right;">Total {{item.totalPlaces}}</span>
+              </div>
+              <div style="  position: absolute;bottom: 10px; width: 210px;">
+                <div class="progress" role="progressbar" style="height: 5px;" aria-label="Success example"
+                  aria-valuenow={{item.nbAvailable}} aria-valuemin="0" aria-valuemax="100">
+                  <div [ngClass]="getValueClass(item.nbAvailable)" [ngStyle]="{'width' : item.nbAvailable+'%'}"></div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </li>
+
+        </ul>
+
       </div>
-    </div> -->
-  <div class="row">
-    <div class="col-xl-3" style="height: 1000px;overflow-y: scroll">
-      <div *ngFor="let item of listWorkspaces">
-        <div class="divWorkspace" (click)="loadCanvas(item.name)">
-          <b>{{item.name}}</b>
-          <br>
-          <br>
-          <div>
-            <img *ngFor="let img of images; let i = index"
-            src="assets/images/avatars/male-02.jpg"
-            alt="foulen fouleni"
-            [style]="{'--num-images': 5, '--index': i}"
-                 class="user">
-                 <div class="circle" style=" float: right; text-align: center;">+9</div>
-          </div>
-          <div style="  position: absolute;bottom: 20px; width: 210px;">
-            <span style="float: left;"> <b>Available {{item.totalPlaces-item.nbBooked}}</b></span>
-            <span style="float: right;">Total {{item.totalPlaces}}</span>
-          </div>
-          <div style="  position: absolute;bottom: 10px; width: 210px;">
-            <div class="progress" role="progressbar" style="height: 5px;" aria-label="Success example"
-              aria-valuenow={{item.nbAvailable}} aria-valuemin="0" aria-valuemax="100">
-              <div [ngClass]="getValueClass(item.nbAvailable)" [ngStyle]="{'width' : item.nbAvailable+'%'}"></div>
-            </div>
-          </div>
+
+      <div class="col-9">
+        <div class="text-center">
+          <ul class="list-group list-group-horizontal-xl" style="margin-left: 4%;margin-right: 2%; ">
+            <li class="list-group-item  text-light "
+              style="text-align: center;padding-top: 1.5%;background-color: #003537ad;">
+              <b> Peek a day</b>
+            </li>
+            <li class="list-group-item" *ngFor="let day of selectedWeek.slice(0, 5); let i = index"
+              [class.disabled]="weekdays.indexOf(day.substring(0, 3)) < weekdays.indexOf(today.substring(0, 3)) && isFirstWeek"
+              [ngStyle]="{ 'background-color': 1 === 1 ? 'E0E2E8' : '' }">
+              <button mat-button color="primary" data-mdb-ripple-color="dark" class="custom-button"
+                (click)="onButtonClick(i)" style="text-align: center;padding-top: 1.5%;">
+                {{ day === today.substring(0, 3) ? day : day }}
+                <span *ngIf="day !== today.substring(0, 3)">{{ this.showedList[i] }}<sup>th</sup></span>
+              </button>
+
+            </li>
+
+
+
+
+
+
+
+            <li (click)="showNextWeekDays()" class="list-group-item bg-light "
+              style=" padding-top: 1.5%; cursor: pointer;" *ngIf="isFirstWeek">
+              <i class="fa-solid fa-angles-right"></i>
+            </li>
+
+            <li (click)="previousWeekDays()" class="list-group-item bg-light "
+              style="text-align: center; padding-top: 1.5%; cursor: pointer;" *ngIf="!isFirstWeek">
+              <i class="fa-solid fa-angles-left"></i>
+            </li>
+          </ul>
+        </div>
+        <div [ngStyle]="{'width':'93.1%', 'overflow-x': 'auto', 'height': '85%' }"
+          style="border: 2px solid #cccccc;margin-top: 5px;">
+          <app-booking-map #canvasBook></app-booking-map>
         </div>
       </div>
     </div>
 
-    <div class="canvas text-center" style=" overflow-x: auto ;width : 70% ;height : 50%">
-      <app-booking-map #canvas></app-booking-map>
-    </div>
+
   </div>
+
+
+
+</div>

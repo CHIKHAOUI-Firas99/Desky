@@ -1,8 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router, ActivatedRoute, RouteReuseStrategy } from '@angular/router';
 import { AuthService } from 'app/core/auth/auth.service';
+import { RoleService } from 'app/core/role/role.service';
 import { BookingService } from 'app/modules/booking/booking.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-reservation',
@@ -31,6 +34,11 @@ export class AddReservationComponent {
   private  dialog: MatDialog,
   private _authService : AuthService,
   private _bookingService : BookingService ,
+  private _router: Router,
+  private _roleService: RoleService,
+  private route: ActivatedRoute,
+  private routeReuseStrategy: RouteReuseStrategy,
+  private toastr: ToastrService,
 
   ) {
 
@@ -63,6 +71,15 @@ ngOnInit(): void {
   
 
   
+}
+refreshRoute() {
+  this.route.data.subscribe(() => {
+    const currentUrl = this._router.url;
+    this.routeReuseStrategy.shouldReuseRoute = () => false;
+    this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+      this._router.navigate([currentUrl]);
+    });
+  });
 }
 onCheckboxChange(event: MatCheckboxChange) {
   
@@ -158,7 +175,9 @@ onCheckboxChange(event: MatCheckboxChange) {
     console.log(reservation);
     this._bookingService.addReservation(reservation).subscribe(data =>{
       console.log(data);
-      
+      this.dialog.closeAll()
+this.toastr.success('Your reservation has been succeded','success')
+      this.refreshRoute()
     })
     
   }

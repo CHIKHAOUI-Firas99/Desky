@@ -12,15 +12,15 @@ import { AddReservationComponent } from '../add-reservation/add-reservation.comp
 
 })
 export class BookingMapComponent {
-  @ViewChild('htmlCanvas') htmlCanvas: ElementRef;
+  @ViewChild('htmlCanvasBook') htmlCanvas: ElementRef;
   private canvas: fabric.Canvas | undefined;
   public workspaceName : String = ""
   private objectsInCanvas = new Map<string,any>();
   private mapUrl : String
   public date : String
-  public size: any = {
-    width: 1000,
-    height: 1000
+  public sss: any = {
+    width: 1400,
+    height: 900
   };
 
   constructor(
@@ -37,8 +37,8 @@ export class BookingMapComponent {
       selection: false,
       selectionBorderColor: 'blue',
       isDrawingMode: false,
-      width : this.size.width,
-      height:this.size.height,
+      width : this.sss.width,
+      height:this.sss.height,
     });
 
     this.canvas.on('mouse:down',(e) => {
@@ -49,7 +49,7 @@ export class BookingMapComponent {
         let id = this.canvas.getActiveObject().toObject().id.toString();
         console.log(id);
         const dialogRef = this.dialog.open(AddReservationComponent,{
-          width: '600px',disableClose: true, 
+          width: '700px',disableClose: true, 
           data:
           {"id": id,
           "workspaceName" : this.workspaceName,
@@ -204,8 +204,8 @@ export class BookingMapComponent {
         });
         this.extend(image, this.randomId());
         this.canvas.setBackgroundImage(image, this.canvas.renderAll.bind(this.canvas), {
-          scaleX: this.size.width / image.width,
-          scaleY: this.size.height  / image.height
+          scaleX: this.sss.width / image.width,
+          scaleY: this.sss.height  / image.height
        });
        this.mapUrl = url
 

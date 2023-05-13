@@ -37,7 +37,7 @@ export class MapComponent {
   public textString: string | undefined;
   public url: string | ArrayBuffer = '';
   public size: any = {
-    width: 1100,
+    width: 1400,
     height: 900
   };
   public workspaceName : String = ""

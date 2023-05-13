@@ -20,7 +20,7 @@ import { ActivatedRoute, RouteReuseStrategy, Router } from '@angular/router';
 export class MapConceptorComponent {
   title = 'mapComponent';
 
-  @ViewChild('canvas', { static: false }) canvas: MapComponent;
+  @ViewChild('canvas', { static: true }) canvas: MapComponent;
   map:MapComponent
   clicked: boolean=false;
   file:File

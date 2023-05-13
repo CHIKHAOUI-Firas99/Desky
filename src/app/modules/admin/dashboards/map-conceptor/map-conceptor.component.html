@@ -1,114 +1,123 @@
-<div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden" 
-style="float: left;width: 100%;">
-    
+<div class="xl:col-span-2 flex flex-col flex-auto bg-card shadow rounded-2xl overflow-hidden"
+  style="float: left;width: 100%;">
 
-<mat-toolbar color="primary" >
+
+  <mat-toolbar color="primary">
     <mat-toolbar-row>
-        <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-          <div style="display: flex; align-items: center; width: 16%; font-size: 15px;">
-            <mat-form-field appearance="outline" style="margin-left: 20px;" >
-              <mat-select placeholder="Select workspace" [(ngModel)]="optionSelected" >
-                <mat-option *ngFor="let workspace of workspacesNames" [value]="workspace" #matOption 
-                (click)="loadCanvas(matOption.value)"
-                >{{workspace}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-            
-          </div>
+      <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+        <div style="display: flex; align-items: center; width: 16%; font-size: 15px;">
+          <mat-form-field appearance="outline" style="margin-left: 20px;">
+            <mat-select placeholder="Select workspace" [(ngModel)]="optionSelected">
+              <mat-option *ngFor="let workspace of workspacesNames" [value]="workspace" #matOption
+                (click)="loadCanvas(matOption.value)">{{workspace}}</mat-option>
+            </mat-select>
+          </mat-form-field>
 
-          <div style="display: flex; align-items: center; margin-left: auto;" *ngIf="canAdd || canEdit">
-            
-            <mat-form-field appearance="outline"  class="bottom-border" style="margin-right: 10px;width: 60.6%;">
-              <input placeholder="workspace name" type="text" matInput [readonly]="canvas.readonly" [(ngModel)]="canvas.workspaceName">
-            </mat-form-field>
-            <button class="btn btn-outline-success btn-md"  title="Save workspace" type="button" [disabled]="!canvas.workspaceName"
-             style="margin-right: 10px; zoom: 0.8;" (click)="submit()">
-              <i class="fa fa-regular fa-floppy-disk"></i>
-            </button>
-            <button class="btn btn-outline-info btn-md" title="Add workspace" 
-            type="button" (click)="addWorkSpace()" style="zoom: 0.8;">
-              <i class="fa-sharp fa-regular fa-square-plus"></i>
-            </button>
-          
-          </div>
         </div>
 
-      </mat-toolbar-row>
-      
+        <div style="display: flex; align-items: center; margin-left: auto;" *ngIf="canAdd || canEdit">
+
+          <mat-form-field appearance="outline" class="bottom-border" style="margin-right: 10px;width: 60.6%;">
+            <input placeholder="workspace name" type="text" matInput [readonly]="canvas.readonly"
+              [(ngModel)]="canvas.workspaceName">
+          </mat-form-field>
+          <button class="btn btn-outline-success btn-md" title="Save workspace" type="button"
+            [disabled]="!canvas.workspaceName" style="margin-right: 10px; zoom: 0.8;" (click)="submit()">
+            <i class="fa fa-regular fa-floppy-disk"></i>
+          </button>
+          <button class="btn btn-outline-info btn-md" title="Add workspace" type="button" (click)="addWorkSpace()"
+            style="zoom: 0.8;">
+            <i class="fa-sharp fa-regular fa-square-plus"></i>
+          </button>
+
+        </div>
+      </div>
+
+    </mat-toolbar-row>
+
   </mat-toolbar>
-  
 
-      <div class="row" style="margin-left: 1%;margin-right: 2%;">
-        <div class="col-custom-2 " *ngIf="canEdit || canAdd"> 
-          
-            <div class="card" style="margin-top: -2px;">
-                <div class="card-header ">Add images</div>
-                <div style="display: inline;">
-                  
-                    <img  class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'desk');" src="../assets/objects/desk.svg">
-                    <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'door')" src="../assets/objects/door.svg">
-                    <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'door')" src="../assets/objects/door.svg">
-              
-                  </div>
+
+  <div class="row" style="margin-left: 1%;margin-right: 2%;">
+    <div class="col-custom-2 " *ngIf="canEdit || canAdd">
+
+      <div class="card" style="margin-top: -2px;">
+        <div class="card-header ">Add images</div>
+        <div style="display: inline;">
+
+          <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'desk');"
+            src="../assets/objects/desk.svg">
+          <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'door')"
+            src="../assets/objects/door.svg">
+          <img class="images-item" style="display: inline;" (click)="getImgPolaroid($event,'door')"
+            src="../assets/objects/door.svg">
+
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 6%;">
+        <div class="card-header">Options</div>
+        <div class="card-body ">
+          <button data-toggle="tooltip" data-placement="bottom" title="Delete element" type="button"
+            class="btn btn-outline-danger" [disabled]="!canvas.selected" (click)="removeSelected();">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+          </button>
+          <button data-toggle="tooltip" data-placement="bottom" title="Clone" type="button"
+            class="btn btn-outline-primary" [disabled]="!canvas.selected" (click)="clone();" style="margin-left: 5px;">
+            <i class="fa fa-clone" aria-hidden="true"></i>
+          </button>
+          <button data-toggle="tooltip" data-placement="bottom" title="Unselect" type="button"
+            class="btn btn-outline-secondary" [disabled]="!canvas.selected" (click)="cleanSelect();"
+            style="margin-left: 5px;">
+            <i class="fa fa-remove" aria-hidden="true"></i>
+          </button>
+          <button (click)="getObjectInfo()" data-toggle="tooltip" type="button" data-placement="bottom" title="Unselect"
+            class="btn btn-info" *ngIf="canvas.selected " (click)="cleanSelect();" style="margin-top: 5px;">
+            Object info
+          </button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 6%;">
+        <div class="card-header">Upload image</div>
+        <div class="card-body">
+          <img id="testImage" style="text-align: center;" *ngIf="canvas.url" class="images-item-upload"
+            [src]="canvas.url" (click)="addImageOnCanvas(canvas.url);">
+          <button class="btn btn-secondary" style="font-size: 15px;" (click)="choseFile()">Click to choose</button>
+          <input style="display: none;" id="myFile" type="file" [(ngModel)]="file" (change)="readUrl($event);">
+          <span *ngIf="file"> {{file.name}} </span>
+          <br />
+          <div *ngIf="file" role="group" aria-label="...">
+            <div class="btn-group" role="group">
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(canvas.url);">
+                <i class="fa fa-times" aria-hidden="true"></i> Remove</button>
             </div>
-        
-            <div class="card" style="margin-top: 6%;">
-              <div class="card-header">Options</div>
-              <div class="card-body " >
-                  <button  data-toggle="tooltip" data-placement="bottom" title="Delete element" type="button" class="btn btn-outline-danger" [disabled]="!canvas.selected" (click)="removeSelected();">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                  </button>
-                  <button data-toggle="tooltip" data-placement="bottom" title="Clone" type="button" class="btn btn-outline-primary" [disabled]="!canvas.selected" (click)="clone();" style="margin-left: 5px;">
-                    <i class="fa fa-clone" aria-hidden="true"></i>
-                  </button>
-                  <button  data-toggle="tooltip" data-placement="bottom" title="Unselect" type="button" class="btn btn-outline-secondary" [disabled]="!canvas.selected" (click)="cleanSelect();" style="margin-left: 5px;">
-                    <i class="fa fa-remove" aria-hidden="true"></i>
-                  </button>
-                  <button  (click)="getObjectInfo()"  data-toggle="tooltip" type="button" data-placement="bottom" title="Unselect"  class="btn btn-info" *ngIf="canvas.selected " (click)="cleanSelect();" style="margin-top: 5px;">
-                    Object info
-                  </button>
-              </div>
-            </div>  
-           
-            <div class="card" style="margin-top: 6%;" >
-              <div class="card-header">Upload image</div>
-              <div class="card-body">
-                  <img id="testImage" style="text-align: center;" *ngIf="canvas.url" class="images-item-upload" [src]="canvas.url" (click)="addImageOnCanvas(canvas.url);">
-                  <button class="btn btn-secondary" style="font-size: 15px;" (click)="choseFile()">Click to choose</button>
-                  <input style="display: none;" id="myFile"  type="file"  [(ngModel)]="file"  (change)="readUrl($event);">
-                  <span *ngIf="file"> {{file.name}} </span>
-                  <br/>
-                  <div *ngIf="file"   role="group" aria-label="...">
-                      <div class="btn-group" role="group">
-                          <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(canvas.url);">
-                              <i class="fa fa-times" aria-hidden="true"></i> Remove</button>
-                      </div>
-                  </div>
-              </div>
           </div>
-          <div class="card" *ngIf="canvas.isSelected || nwTags" style="margin-top: 6%;">
-            <button (click)="open()" class="btn" style="background-color: rgb(234, 234, 229);" >Workspace tags</button>
-          
-           </div>
-          
- <div class="card" *ngIf="optionSelected && canDelete" style="margin-top: 6%;">
-  <button  class="btn " style="background-color: rgba(255, 0, 0, 0.838);color: whitesmoke;" (click)="deleteWorkspace()">Delete Workspace</button>
-
- </div>
-
-
         </div>
-        <br> <br>
-        <div class="canvas text-center"  [ngStyle]="{ 'width': (!canEdit && !canAdd) ? '100%' : '83%', 'overflow-x': 'auto', 'height': '85%' }">
+      </div>
+      <div class="card" *ngIf="canvas.isSelected || nwTags" style="margin-top: 6%;">
+        <button (click)="open()" class="btn" style="background-color: rgb(234, 234, 229);">Workspace tags</button>
 
-          <app-map #canvas class="text-center" ></app-map>
-        </div>
+      </div>
 
-           
+      <div class="card" *ngIf="optionSelected && canDelete" style="margin-top: 6%;">
+        <button class="btn " style="background-color: rgba(255, 0, 0, 0.838);color: whitesmoke;"
+          (click)="deleteWorkspace()">Delete Workspace</button>
+
+      </div>
+
+
+    </div>
+    <br> <br>
+    <div class="canvas text-center" style="margin-top: 0;"
+      [ngStyle]="{ 'width': (!canEdit && !canAdd) ? '100%' : '80%', 'overflow-x': 'auto', 'height': '85%' }">
+
+      <app-map #canvas class="text-center"></app-map>
     </div>
 
-    <br>
-    <br>
+
   </div>
 
-  
+  <br>
+  <br>
+</div>

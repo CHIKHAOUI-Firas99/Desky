@@ -13,7 +13,7 @@ import { BookingMapComponent } from '../booking-map/booking-map.component';
 })
 export class BookingComponent {
 
-  @ViewChild('canvas', { static: false }) canvas: BookingMapComponent;
+  @ViewChild('canvasBook', { static: true }) canvas: BookingMapComponent;
   dateString :string
   timeControl = new FormControl();
   weekdays: string[];
@@ -42,6 +42,9 @@ export class BookingComponent {
   public end :string = "22:00"
   public listTime
   checkedListTime: any;
+  activeIndex: any;
+  activeElement: any;
+  workspaceIndex: any;
 
 
   constructor(
@@ -50,52 +53,68 @@ export class BookingComponent {
     )
     
     {
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    console.log(today);
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      console.log(today);
+      
+      const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Get the first day of the week
+      const dates = Array.from({ length: 15 }, (_, i) => new Date(firstDayOfWeek).setDate(firstDayOfWeek.getDate() + i));
+      this.dates = dates;
+      
+      // Get the dates of the week
+      this.weekdays = dates.map(date => new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(date)); // Map the dates to weekday names
+      console.log(this.weekdays);
+      
+      // Remove Sunday and Saturday from the weekdays
+      this.weekdays = this.weekdays.filter(day => day !== 'Sun' && day !== 'Sat' );
+      
+      // Split the weekdays into two separate arrays
+      const firstWeek = this.weekdays.slice(0, 5);
+      const secondWeek = this.weekdays.slice(5, 10);
+      this.firstWeek=firstWeek
+      this.selectedWeek = firstWeek;
+      this.secondWeek=secondWeek
+      this.today = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(now); // Get the name of the current day
+      
+      this.list = [];
+      for (let index = 0; index < dates.length; index++) {
+        const timestamp = dates[index];
+        const date = new Date(timestamp);
+        const nextDate = new Date(date.setDate(date.getDate()));
+        if (nextDate.getMonth() !== date.getMonth()) {
+          // if adding 1 day resulted in a new month, use the last day of the current month
+          const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+          this.list.push(lastDayOfMonth.getDate().toString());
+        } else {
+          this.list.push(nextDate.getDate().toString());
+        }
+      }
+      this.showedList = this.list;
     
-    const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Get the first day of the week
-    const dates = Array.from({ length: 15 }, (_, i) => new Date(firstDayOfWeek).setDate(firstDayOfWeek.getDate() + i));
-    this.dates = dates
-    // Get the dates of the week
-    this.weekdays = dates.map(date => new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(date)); // Map the dates to weekday names
-    console.log(this.weekdays);
-    
-    for (let index = 0; index < (this.weekdays.length-1)/2; index++) {
-      this.firstWeek.push(this.weekdays[index].substring(0,3))
-      this.secondWeek.push(this.weekdays[index+7].substring(0,3))
+    }    
+  
+
+    showNextWeekDays() {
+      console.log(this.secondWeek);
+      this.selectedWeek = this.secondWeek;
+      this.showedList = this.list.slice(7, 14);
+      this.isFirstWeek = false;
+      
+      // Reset the active index to the current day index in the new week
+      const todayIndex = this.selectedWeek.indexOf(this.today.substring(0, 3));
+      this.activeIndex = todayIndex !== -1 ? todayIndex : -1;
     }
     
-    this.selectedWeek = this.firstWeek
-    this.today = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(now); // Get the name of the current day
-    for (let index = 0; index < dates.length; index++) {
-      const timestamp = dates[index];
-      const date = new Date(timestamp);
-      const nextDate = new Date(date.setDate(date.getDate()));
-      if (nextDate.getMonth() !== date.getMonth()) {
-        // if adding 1 day resulted in a new month, use the last day of the current month
-        const lastDayOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        this.list.push(lastDayOfMonth.getDate().toString());
-      } else {
-        this.list.push(nextDate.getDate().toString());
-      }      
+    // Update the "previousWeekDays" method in your component
+    previousWeekDays() {
+      this.selectedWeek = this.firstWeek;
       this.showedList = this.list;
-    }    
-  }
-
-  showNextWeekDays(){
-    this.selectedWeek=this.secondWeek
-    this.showedList = this.list.slice(7,14)
-    this.isFirstWeek = false
+      this.isFirstWeek = true;
     
-  }
-  previousWeekDays(){
-    this.selectedWeek = this.firstWeek
-    this.showedList = this.list
-    this.isFirstWeek = true
-
-
-  }
+      // Reset the active index to the current day index in the first week
+      const todayIndex = this.selectedWeek.indexOf(this.today.substring(0, 3));
+      this.activeIndex = todayIndex !== -1 ? todayIndex : -1;
+    }
 
 
   ngOnInit():  void{
@@ -124,28 +143,51 @@ export class BookingComponent {
     this.fullDay = !this.fullDay
 
   }
+  isToday(day: string): boolean {
+    const today = new Date();
+    const weekday = today.toLocaleDateString('en-US', { weekday: 'short' });
+  
+    return day === weekday;
+  }
+  
+  
+  
+  
   onButtonClick(i: any) {
+    this.activeIndex = i;
+    console.log(this.activeIndex);
+    
     let timestamp = 0
-    if (this.isFirstWeek){
+    if (this.isFirstWeek)
+    {
        timestamp = this.dates[i+1];
     }
     else{
        timestamp = this.dates[i+8];
     }
     const date = new Date(timestamp);
-     this.dateString = date.toISOString().substring(0,10)
+    this.dateString = date.toISOString().substring(0,10)
+    console.log(this.dateString);
+    
     this._bookingService.getWorkspacesForBooking(this.dateString).subscribe(data => {
-      this.listWorkspaces = data
-      console.log(data);
-            
+    this.listWorkspaces = data
+      console.log(this.listWorkspaces[0].userProfileImages);
+
     })
     this.canvas.loadCanvas(this.workspaceName,this.dateString)
     }
 
-    loadCanvas(name){
-      this.workspaceName = name      
-      this.canvas.loadCanvas(name,this.dateString)
+    loadCanvas(name: string, i: number) {
+      this.workspaceName = name;
+      this.workspaceIndex = i;
+      this.activeElement = name;
+      this.canvas.loadCanvas(name, this.dateString);
     }
+    
+    isActiveElement(name: string): boolean {
+      return name === this.activeElement;
+    }
+    
 
     getValueClass(value: number): string {
       if (value > 60) {                
