@@ -34,5 +34,10 @@ export class BookingService {
     return this._httpClient.get<any>('http://localhost:8080/get_available_time_slots/'+desk_id+'/'+date)
 
   }
+  // reservationsPerDeskPerDay
+  getReservationsPerDeskPerDay(desk_id,date):Observable<any>{
+    return this._httpClient.get<any>('http://localhost:8080/reservationsPerDeskPerDay/'+desk_id+'/'+date)
+
+  }
 
 }

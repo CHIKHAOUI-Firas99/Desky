@@ -16,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 export class AddReservationComponent {
   public id : String
   public color : String
+  reservations:Array<any>=null
   public workspaceName :String
   public date : String
   public start :string = "06:00"
@@ -29,6 +30,7 @@ export class AddReservationComponent {
   public fullDay : boolean = false
   public anonymous : boolean = false
   public isDisabled = false
+  materials: any;
 
   constructor(private dialogRef: MatDialogRef<AddReservationComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
   private  dialog: MatDialog,
@@ -43,9 +45,19 @@ export class AddReservationComponent {
   ) {
 
   }
+
 ngOnInit(): void {
   this.id = this.data.id
   this.workspaceName = this.data.workspaceName
+  console.log(this.data.reservations,this.data.materials);
+  
+  if (this.data.reservations) {
+    this.reservations=this.data.reservations
+    
+  }
+  if (this.data.materials){
+this.materials=this.data.materials
+  }
   this.date = this.data.date
   this.color = this.data.color
   if (this.color == "red"){
@@ -55,19 +67,19 @@ ngOnInit(): void {
     this.isDisabled = false
   }
 
-  
-  this.listTime = this.getTimeList(this.start,this.end)
-  this._bookingService.get_available_time_slots(this.id,this.date).subscribe(data =>{
-    console.log(data);
-    this.listTime = data
+  if(this.data.data){
+    console.log(this.data.data);
+    
+    this.listTime = this.data.data
     this.listStartTime = this.listTime.slice(0,this.listTime.length-1)
     console.log(this.listStartTime);
     
-    this.checkedListTime = data
-    this.TemcheckedListTime =data
-
-    
-  })
+    this.checkedListTime = this.data.data
+    this.TemcheckedListTime =this.data.data
+  }
+  this.listTime = this.getTimeList(this.start,this.end)
+  
+ 
   
 
   

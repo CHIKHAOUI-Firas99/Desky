@@ -1,87 +1,94 @@
 <button mat-icon-button mat-dialog-close class="close-icon" style="margin-left: 93%;">
-    <mat-icon>close</mat-icon>
+  <mat-icon>close</mat-icon>
+</button>
+<h3 class="h3 text-center">Desk
+  <button type="text" class="btn btn-circle btn-xl h3" [ngStyle]="{'backgroundColor':color}"
+    style="border-radius: 600px; pointer-events: none;color: aliceblue;">
+    <strong>{{id}}</strong>
   </button>
-  <h3 class="h3 text-center">Desk 
-    <button  type="text" class="btn btn-circle btn-xl h3" [ngStyle]="{'backgroundColor':color}" style="border-radius: 600px; pointer-events: none;color: aliceblue;">
-      <strong>{{id}}</strong>
-      </button>
 
-  </h3>
+</h3>
 <div>
-    <div>
-        
-      <div style="display: flex; align-items: center;">
-        
-      </div>
-             
-   <h6 class="h6" style="margin-top: 2%;color: cadetblue;">Equipments </h6>
-   
-   <ul class="list-group " style="margin-top: 2%;">
+  <div>
 
-    <div class="list-group-item">
-      <!-- <span class="d-inline-flex align-items-center justify-content-center text-white rounded m-1 me-2" style="background-color: #0082ca; width: 40px; height: 40px;">
+    <div style="display: flex; align-items: center;">
+
+    </div>
+
+    <h6 class="h6" style="margin-top: 2%;color: cadetblue;">Equipments </h6>
+
+    <ul class="list-group " style="margin-top: 2%;">
+
+      <div class="list-group-item">
+        <!-- <span class="d-inline-flex align-items-center justify-content-center text-white rounded m-1 me-2" style="background-color: #0082ca; width: 40px; height: 40px;">
         <i class="fas fa-camera fa-lg"></i>
       </span> -->
-      <i class="fas fa-tools"></i>
-     <span style="margin-left: 4%;"> Ecran-Clavier-Souris</span>
+        <i class="fas fa-tools"></i>
+        <span style="margin-left: 4%;"> {{materials}} </span>
+      </div>
+
+    </ul>
+    <h6 class="h6" style="margin-top: 2%;color: cadetblue;">Choose your period </h6>
+
+    <div style="display: flex; align-items: center;margin-top: 3%;">
+      <mat-checkbox [checked]="color != 'orange' && color != 'green'" (change)="onCheckboxChange($event)"
+        [disabled]="isDisabled || color=='orange'">Full time </mat-checkbox>
+      <mat-form-field style="margin-left: 10px;">
+        <mat-select matNativeControl [disabled]="fullDay || isDisabled" [(ngModel)]="selectedStartTime"
+          [disabled]="isDisabled">
+          <mat-option *ngFor="let item of listStartTime" value={{item}}
+            (click)="test(selectedStartTime)">{{item}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field style="margin-left: 10px;">
+        <mat-select [disabled]="fullDay || isDisabled" matNativeControl [(ngModel)]="selectedEndTime">
+          <mat-option *ngFor="let item of TemcheckedListTime" value={{item}}
+            [disabled]="item <= selectedStartTime">{{item}}</mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
-   
-  </ul>
-  <h6 class="h6" style="margin-top: 2%;color: cadetblue;">Choose your period </h6>
-      
-  <div style="display: flex; align-items: center;margin-top: 3%;">
-   <mat-checkbox [checked]="color != 'orange' && color != 'green'" (change)="onCheckboxChange($event)" [disabled]="isDisabled || color=='orange'" >Full time </mat-checkbox>
-   <mat-form-field style="margin-left: 10px;">
-     <mat-select matNativeControl [disabled]="fullDay || isDisabled" [(ngModel)]="selectedStartTime" [disabled]="isDisabled">
-       <mat-option *ngFor="let item of listStartTime" value={{item}} (click)="test(selectedStartTime)">{{item}}</mat-option>
-     </mat-select>
-   </mat-form-field>
-   <mat-form-field style="margin-left: 10px;">
-     <mat-select [disabled]="fullDay || isDisabled" matNativeControl [(ngModel)]="selectedEndTime">
-       <mat-option *ngFor="let item of TemcheckedListTime" value={{item}} [disabled]="item <= selectedStartTime">{{item}}</mat-option>
-     </mat-select>
-   </mat-form-field>
- </div>
-  <h6 class="h6" style="margin-top: 2%;color: cadetblue;">Reserved users </h6>
-  <div class="container" style="margin-top: 1%;">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Users</th>
-          <th>Reservation Period</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Ayari Oussema</td>
-          <td>11:00 - 12:00</td>
-        </tr>
-        <tr>
-          <td>Ben Amar Aziz</td>
-          <td>12:00 - 12:30</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-   <!-- <h6 class="h6 " style="margin-top: 2%;">Date: {{date}}</h6>  -->
-    
-    
-        
+    <h6 class="h6" *ngIf="reservations.length>0" style="margin-top: 2%;color: cadetblue;">
 
-  <div class="h6" style="color: cadetblue;">Reserve privatly</div>
- 
-  
+      Reserved users </h6>
+    <div class="container" style="margin-top: 1%;" *ngIf="reservations.length>0">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Users</th>
+            <th *ngIf="reservations">Reservation Period</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr *ngFor=" let r of reservations">
+            <td>{{r.name}}</td>
+            <td> {{r.start_time}} - {{r.end_time}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- <h6 class="h6 " style="margin-top: 2%;">Date: {{date}}</h6>  -->
+
+
+
+
+    <div class="h6" style="color: cadetblue;">Reserve privatly</div>
+
+
     <!-- <mat-icon style="color: #666; font-size: 24px;"></mat-icon> -->
-   <strong> <mat-checkbox color="pink"   [disabled]="isDisabled" (change)="anonymous = !anonymous" style="float: left;">Annonymous Booking</mat-checkbox>
-    
-  
-   </strong>
+    <strong> <mat-checkbox color="pink" [disabled]="isDisabled" (change)="anonymous = !anonymous"
+        style="float: left;">Annonymous Booking</mat-checkbox>
 
 
-<div style="float: left;margin-right: 100%; width: 100%;margin-top: 3%;">
+    </strong>
 
-  <button  class="btn btn-primary" [disabled]="isDisabled || selectedEndTime == null" (click)="submit()" >Submit</button>
 
-  <button class="btn" (click)="close()">Cancel</button>
-</div>
+    <div style="float: left;margin-right: 100%; width: 100%;margin-top: 3%;">
+
+      <button class="btn btn-primary" [disabled]="isDisabled || selectedEndTime == null"
+        (click)="submit()">Submit</button>
+
+      <button class="btn" (click)="close()">Cancel</button>
+    </div>

@@ -1,8 +1,9 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ApplicationRef, ChangeDetectorRef, Component, ElementRef, NgZone, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BookingService } from 'app/modules/booking/booking.service';
 import { fabric } from 'fabric';
 import { AddReservationComponent } from '../add-reservation/add-reservation.component';
+import { log } from 'fabric/fabric-impl';
 
 @Component({
   selector: 'app-booking-map',
@@ -26,46 +27,51 @@ export class BookingMapComponent {
   constructor(
     private _bookingService : BookingService ,
     private  dialog: MatDialog,
-
+    private cdr: ChangeDetectorRef,private ngZone: NgZone,private appRef: ApplicationRef
   ){}
 
   ngAfterViewInit(): void {
-    // let json = 
-    // setup front side canvas
+    // Other code...
     this.canvas = new fabric.Canvas(this.htmlCanvas.nativeElement, {
-      hoverCursor: 'pointer',
-      selection: false,
-      selectionBorderColor: 'blue',
-      isDrawingMode: false,
-      width : this.sss.width,
-      height:this.sss.height,
+        hoverCursor: 'pointer',
+        selection: false,
+        selectionBorderColor: 'blue',
+        isDrawingMode: false,
+        width: this.sss.width,
+        height: this.sss.height,
     });
+    this.canvas.on('mouse:down', async (e) => {
+        // Other code...
+        if (e.target) {
+            let color = e.target["_objects"][1]["group"]["_objects"][1]["_objects"][0]["fill"];
+            let id = this.canvas.getActiveObject().toObject().id.toString();
+            try {
+                const data = await this._bookingService.getReservationsPerDeskPerDay(id, this.date).toPromise();
+                const available_time_slots=await this._bookingService.get_available_time_slots(id,this.date).toPromise()
+                this.dialog.open(AddReservationComponent, {
+                    width: '700px',
+                    disableClose: true,
+                    data: {
+                        "id": id,
+                        "reservations": data['reservations'],
+                        "materials": data['materials'],
+                        "workspaceName": this.workspaceName,
+                        "date": this.date,
+                        "color": color,
+                        "data":available_time_slots
+                    }
+                });
 
-    this.canvas.on('mouse:down',(e) => {
-      console.log(e);
-      
-      if (e.target){
-        let color = e.target["_objects"][1]["group"]["_objects"][1]["_objects"][0]["fill"] 
-        let id = this.canvas.getActiveObject().toObject().id.toString();
-        console.log(id);
-        const dialogRef = this.dialog.open(AddReservationComponent,{
-          width: '700px',disableClose: true, 
-          data:
-          {"id": id,
-          "workspaceName" : this.workspaceName,
-          "date" : this.date,
-          "color" : color
+                this.cleanSelect();
+                this.cdr.detectChanges();
+            } catch (error) {
+                // Handle error
             }
+        }
+    });
+}
 
-        });
-        this.cleanSelect()      
-
-      }
-      
-      
-    })
-
-  }
+  
 
   loadCanvas(name,date) {
     this.date = date

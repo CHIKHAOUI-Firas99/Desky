@@ -37,7 +37,7 @@ button {
     height: 150px;
     // background-color: white; 
      margin-top: 10px;
-    // margin-left: 0px;
+    margin-left: 1%;
     border-radius: 4%;
     padding-left: 10px;
     padding-right: 10px;
@@ -48,7 +48,7 @@ button {
   
   }
   .divWorkspace:hover {
-    transform: scale(1.03);
+    transform: scale(1.02);
     cursor: pointer;
     border: 2px solid rgb(139, 139, 155);
   }
@@ -68,7 +68,28 @@ button {
     left: calc(var(--index) * 15%);
     z-index: calc(var(--num-images) - var(--index));
   }
-  
+  /* For WebKit-based browsers */
+.col-3::-webkit-scrollbar {
+  width: auto; /* Width of the scrollbar */
+}
+
+.col-3::-webkit-scrollbar-track {
+  background-color: #ffffff67; /* Color of the scrollbar track */
+}
+
+.col-3::-webkit-scrollbar-thumb {
+  background-color: #ffffff67; /* Color of the scrollbar thumb */
+}
+
+.col-3::-webkit-scrollbar-thumb:hover {
+  background-color: #ffffff67; /* Color of the scrollbar thumb on hover */
+}
+.scrollable-list {
+  max-height: 1100px; /* Set the maximum height for the list */
+  overflow-y: auto; /* Enable vertical scrollbar for overflowing content */
+}
+
+
   .circle {
     width: 50px;
     height: 50px;
