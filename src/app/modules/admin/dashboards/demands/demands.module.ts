@@ -69,6 +69,7 @@ import { NgxColorsModule } from 'ngx-colors';
 import { HammerModule } from '@angular/platform-browser';
 import { TagsUpdateComponent } from '../tags-update/tags-update.component';
 import { DemandsComponent } from './demands.component';
+import { DemandResponseComponent } from '../demand-response/demand-response.component';
 
 
 const demandsRouter: Route[] = [
@@ -82,7 +83,8 @@ const demandsRouter: Route[] = [
 @NgModule({
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [
-    DemandsComponent
+    DemandsComponent,
+    DemandResponseComponent,
   ],
   imports: [
     RouterModule.forChild(demandsRouter),

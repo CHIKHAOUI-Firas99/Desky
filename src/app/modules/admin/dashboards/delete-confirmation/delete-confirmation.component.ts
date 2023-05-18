@@ -9,6 +9,7 @@ import { UsersService } from '../users.service';
 import { MapService } from '../map/map.service';
 import { MaterialService } from '../materials/material.service';
 import { DemandsService } from '../demands/demands.service';
+import { ReservationserviceService } from 'app/modules/booking/dashboards/booking/user-reservations/reservationservice.service';
 
 @Component({
   selector: 'app-delete-confirmation',
@@ -22,6 +23,7 @@ export class DeleteConfirmationComponent {
   ;
   constructor(
    private _mapService:MapService,
+   private _ReservationserviceService:ReservationserviceService,
     @Inject(MAT_DIALOG_DATA) private data: any,private _UserService:UserService,
     private phonedialogRef: MatDialogRef<PhoneComponent>,
     private _userService:UsersService, 
@@ -36,6 +38,8 @@ export class DeleteConfirmationComponent {
     private _demandsService:DemandsService
     ) {
       if(data){
+        console.log(data);
+        
     this.message = data.message || this.message;
     if (data.buttonText) {
       this.confirmButtonText = data.buttonText.ok || this.confirmButtonText;
@@ -116,10 +120,19 @@ export class DeleteConfirmationComponent {
       this.refreshRoute()
     }
     if (this.data.object ==='demands') {
-      this._demandsService.deleteDemand(this.data.user_id,this.data.demand_id).subscribe()
-      this.toastr.warning('workspace has been removed', 'Success!');
+      this._demandsService.refuseDemand(this.data.demand_id,this.data.user_id,).subscribe()
+      this.toastr.warning('demand has been refused', 'Success!');
       this.matdialog.closeAll()
       this.refreshRoute()
+    }
+    // cancel_reservation
+    if (this.data.object ==='cancel_reservation') {
+      this._ReservationserviceService.cancel_reservation(this.data.user_id,this.data.desk_id,this.data.date,this.data.start_time,this.data.end_time).subscribe(()=>{
+        this.toastr.warning('reservation cancelled', 'Success!');
+        this.matdialog.closeAll()
+        this.refreshRoute()
+      })
+ 
     }
 
   }

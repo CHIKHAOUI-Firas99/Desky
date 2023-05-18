@@ -54,8 +54,17 @@ export const defaultNavigation: FuseNavigationItem[] = [
                 id   : 'dashboards.crypto',
                 title: 'Booking',
                 type : 'basic',
-                icon : 'heroicons_outline:currency-dollar',
+                icon : 'heroicons_outline:clock',
+
+                
                 link : '/dashboards/booking'
+            },
+            {
+                id   : 'dashboards.reservations',
+                title: 'Reservations',
+                type : 'basic',
+                icon : 'heroicons_outline:view-list',
+                link : '/dashboards/reservations'
             },
         //         {
         // id      : 'user-interface',

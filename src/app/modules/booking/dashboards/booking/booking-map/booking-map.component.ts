@@ -48,7 +48,7 @@ export class BookingMapComponent {
             try {
                 const data = await this._bookingService.getReservationsPerDeskPerDay(id, this.date).toPromise();
                 const available_time_slots=await this._bookingService.get_available_time_slots(id,this.date).toPromise()
-                this.dialog.open(AddReservationComponent, {
+               let t= this.dialog.open(AddReservationComponent, {
                     width: '700px',
                     disableClose: true,
                     data: {
@@ -61,9 +61,17 @@ export class BookingMapComponent {
                         "data":available_time_slots
                     }
                 });
-
                 this.cleanSelect();
-                this.cdr.detectChanges();
+                t.afterClosed().subscribe((res)=>{
+                  if(res){
+                    this.loadCanvas(this.workspaceName,this.date)
+                    this.cdr.detectChanges()
+                    
+                   
+                  }
+                })
+
+            
             } catch (error) {
                 // Handle error
             }

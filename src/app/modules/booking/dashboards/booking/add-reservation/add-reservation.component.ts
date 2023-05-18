@@ -30,7 +30,8 @@ export class AddReservationComponent {
   public fullDay : boolean = false
   public anonymous : boolean = false
   public isDisabled = false
-  materials: any;
+  materials: String="";
+  errMessage: any;
 
   constructor(private dialogRef: MatDialogRef<AddReservationComponent>, @Inject(MAT_DIALOG_DATA) public data: any,
   private  dialog: MatDialog,
@@ -49,14 +50,17 @@ export class AddReservationComponent {
 ngOnInit(): void {
   this.id = this.data.id
   this.workspaceName = this.data.workspaceName
-  console.log(this.data.reservations,this.data.materials);
+
+console.log(this.data.materials.length,"aaa");
   
   if (this.data.reservations) {
     this.reservations=this.data.reservations
     
   }
   if (this.data.materials){
+    
 this.materials=this.data.materials
+// console.log(this.data.materials.length);
   }
   this.date = this.data.date
   this.color = this.data.color
@@ -187,10 +191,18 @@ onCheckboxChange(event: MatCheckboxChange) {
     console.log(reservation);
     this._bookingService.addReservation(reservation).subscribe(data =>{
       console.log(data);
-      this.dialog.closeAll()
+      this.dialogRef.close('ok');
+
 this.toastr.success('Your reservation has been succeded','success')
-      this.refreshRoute()
-    })
+      // this.refreshRoute()
+    },(err)=>{
+      this.errMessage=err["error"]["detail"]
+      this.toastr.error(this.errMessage, 'Failed');
+      this.dialogRef.close();
+
+     
+  
+  })
     
   }
 

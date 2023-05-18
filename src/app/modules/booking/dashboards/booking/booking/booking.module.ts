@@ -127,6 +127,7 @@ const bookingRouter: Route[] = [
  MatTabsModule,
  MatToolbarModule,
  MatTooltipModule,
+ MatGridListModule,
  MatProgressBarModule,
  MatSortModule,
  MatTableModule,

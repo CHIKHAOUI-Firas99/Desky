@@ -24,7 +24,8 @@
         <i class="fas fa-camera fa-lg"></i>
       </span> -->
         <i class="fas fa-tools"></i>
-        <span style="margin-left: 4%;"> {{materials}} </span>
+        <span style="margin-left: 4%;" *ngIf="materials.length >0"> {{materials}} </span>
+        <span style="margin-left: 4%;" *ngIf="materials.length === 0"> No equipement on this desk</span>
       </div>
 
     </ul>
@@ -61,7 +62,8 @@
         <tbody>
 
           <tr *ngFor=" let r of reservations">
-            <td>{{r.name}}</td>
+            <td *ngIf="!r.anonymous">{{r.name}}</td>
+            <td *ngIf="r.anonymous">Anonymous Reservation</td>
             <td> {{r.start_time}} - {{r.end_time}}</td>
           </tr>
 

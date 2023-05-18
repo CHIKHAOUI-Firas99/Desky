@@ -95,6 +95,7 @@ import { Overlay, ScrollStrategyOptions } from '@angular/cdk/overlay';
 import { AnalyticsComponent } from './modules/analytics/analytics.component';
 import { GoogleChartsModule } from 'angular-google-charts';
 import { AddReservationComponent } from './modules/booking/dashboards/booking/add-reservation/add-reservation.component';
+import { DemandResponseComponent } from './modules/admin/dashboards/demand-response/demand-response.component';
 
 
 library.add(faIcons, faFontAwesome);
@@ -107,6 +108,8 @@ const routerConfig: ExtraOptions = {
     
     declarations: [
         AppComponent,
+       
+        
         // BookingComponent,
         // BookingMapComponent,
         // AddReservationComponent,
@@ -120,7 +123,8 @@ const routerConfig: ExtraOptions = {
         ToastrModule.forRoot(),
         BrowserModule,
         BrowserAnimationsModule,
-       
+        MatGridListModule,
+
         RouterModule.forRoot(appRoutes, routerConfig),
 
         // Fuse, FuseConfig & FuseMockAPI

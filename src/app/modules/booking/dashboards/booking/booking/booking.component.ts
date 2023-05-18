@@ -12,6 +12,12 @@ import { BookingMapComponent } from '../booking-map/booking-map.component';
 
 })
 export class BookingComponent {
+  tiles: any[] = [
+    {text: 'One', cols: 3, rows: 1, color: 'lightblue'},
+    {text: 'Two', cols: 1, rows: 2, color: 'lightgreen'},
+    {text: 'Three', cols: 1, rows: 1, color: 'lightpink'},
+    {text: 'Four', cols: 2, rows: 1, color: '#DDBDF1'},
+  ];
 
   @ViewChild('canvasBook', { static: true }) canvas: BookingMapComponent;
   dateString :string
@@ -92,17 +98,16 @@ export class BookingComponent {
       this.showedList = this.list;
     
     }    
-  
+
 
     showNextWeekDays() {
       console.log(this.secondWeek);
       this.selectedWeek = this.secondWeek;
       this.showedList = this.list.slice(7, 14);
       this.isFirstWeek = false;
-      
       // Reset the active index to the current day index in the new week
-      const todayIndex = this.selectedWeek.indexOf(this.today.substring(0, 3));
-      this.activeIndex = todayIndex !== -1 ? todayIndex : -1;
+      // const todayIndex = this.selectedWeek.indexOf(this.today.substring(0, 3));
+      // this.activeIndex = todayIndex !== -1 ? todayIndex : -1;
     }
     
     // Update the "previousWeekDays" method in your component
@@ -112,12 +117,14 @@ export class BookingComponent {
       this.isFirstWeek = true;
     
       // Reset the active index to the current day index in the first week
-      const todayIndex = this.selectedWeek.indexOf(this.today.substring(0, 3));
-      this.activeIndex = todayIndex !== -1 ? todayIndex : -1;
+      // const todayIndex = this.selectedWeek.indexOf(this.today.substring(0, 3));
+      // this.activeIndex = todayIndex !== -1 ? todayIndex : -1;
     }
 
 
   ngOnInit():  void{
+    console.log(this.tiles);
+    
     this.listTime = this.getTimeList(this.start,this.end)
     this.checkedListTime = this.listTime
     this.listStartTime = this.listTime
@@ -128,12 +135,16 @@ export class BookingComponent {
     let x = new Date();
     let monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 1);
     this.minDate = x
-    this.maxDate = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 13);
-    console.log(date);
+    this.maxDate = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 13)
+    
+    this.activeIndex = this.selectedWeek.slice(0,5).indexOf(this.today.substring(0,3))
+    
+    
     this._bookingService.getWorkspacesForBooking(date).subscribe(data => {
       this.listWorkspaces = data   
       this.canvas.loadCanvas(this.listWorkspaces[0].name,date)
       this.workspaceName = this.listWorkspaces[0].name
+      this.activeElement = this.listWorkspaces[0].name
     })
 
   }
@@ -155,8 +166,6 @@ export class BookingComponent {
   
   onButtonClick(i: any) {
     this.activeIndex = i;
-    console.log(this.activeIndex);
-    
     let timestamp = 0
     if (this.isFirstWeek)
     {
@@ -168,11 +177,9 @@ export class BookingComponent {
     const date = new Date(timestamp);
     this.dateString = date.toISOString().substring(0,10)
     console.log(this.dateString);
-    
     this._bookingService.getWorkspacesForBooking(this.dateString).subscribe(data => {
     this.listWorkspaces = data
       console.log(this.listWorkspaces[0].userProfileImages);
-
     })
     this.canvas.loadCanvas(this.workspaceName,this.dateString)
     }

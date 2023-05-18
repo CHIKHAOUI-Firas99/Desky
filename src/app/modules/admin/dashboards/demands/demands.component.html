@@ -1,237 +1,138 @@
+<div class="xl:col-span-2 flex flex-col flex-auto bg-card  rounded-2xl overflow-hidden">
+  <div>
+    <h2 style="color: rgb(102, 125, 148); font-size: 30px; margin-top: 2%;float: left;margin-left: 1%;">
+      Demands</h2>
+  </div>
+  <div class="card" style="margin-left: 1%;margin-right: 1%;margin-top: 1%; ">
+    <div>
+      <div style="text-align: left;float:right ;display: inline;margin-top: 2%;margin-right: 1%;">
+        <input matInput (keyup)="applyFilter($event)" style="text-align: left;" placeholder="Search" #input
+          matColumnDef="10">
+        <mat-icon>search</mat-icon>
+      </div>
+    </div>
+    <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
+      <form [formGroup]="VOForm">
+        <ng-container formArrayName="VORows">
+          <table #table mat-table [dataSource]="demands" class="table-responsive">
+            <ng-container matColumnDef="desk_id">
+              <th mat-header-cell *matHeaderCellDef> Desk_id </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <input matInput type="text" formControlName="desk_id" [readonly]="true" #iduser style="width: 20px">
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="user_id">
+              <th mat-header-cell *matHeaderCellDef> User_id </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <span>
+                  {{ VOForm.get('VORows').value[i].user_id }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="demands">
+              <th mat-header-cell *matHeaderCellDef>Demands</th>
+              <td style="text-align: left;margin-left: 150px;" mat-cell *matCellDef="let element; let i = index"
+                [formGroup]="element">
+                <div style="text-align: left;margin-left: 70px;">
+                  <ul style="list-style-type: none; padding-left: 0;">
+                    <li *ngFor="let item of VOForm.get('VORows').value[i].demands"
+                      style="display: block; margin: 0; padding: 0;">
+                      <span style="vertical-align: middle; margin-right: 5px;">
+                        <mat-icon>done</mat-icon>
+                      </span>
+                      <span style="display: inline-block; vertical-align: middle;">
+                        {{item}}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="object">
+              <th mat-header-cell *matHeaderCellDef>Subject</th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <div class="text-center">
+                  <div>
 
+                    <span>
+                      {{VOForm.get('VORows').value[i].object}}
+                    </span>
+                  </div>
+                </div>
+                <div>
+                </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="demandDate">
+              <th mat-header-cell *matHeaderCellDef> Date </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <p>
+                  {{ VOForm.get('VORows').value[i].demandDate}}
+                </p>
+              </td>
+            </ng-container>
 
-
-
-
-
-
-<div class="xl:col-span-2 flex flex-col flex-auto bg-card  rounded-2xl overflow-hidden" >
-    <strong>
-       <h2  style="color: rgb(102, 125, 148); text-decoration:underline ;text-align: center; font-size: 30px; margin-top: 2%;" >
-         Manage demands</h2>
-     </strong>
-         <div class="card" style="margin-left: 7%;margin-right: 7%;margin-top: 5%; margin-top: 5%;" >
-             <div>
-                   <div style="text-align: left;float:right ;display: inline;margin-top: 2%;margin-right: 1%;">
-                     <input  matInput  (keyup)="applyFilter($event)" style="text-align: left;" placeholder="Search" #input matColumnDef="10">
-                     <mat-icon >search</mat-icon>
-                   </div>
-                   <!-- <button  [disabled]="!canAdd" style="float:left ;display: inline; margin-left: 2%;margin-top: 1%;"  (click)="openDialog()">
-                    <i class="fa fa-circle-plus" style="
-                      zoom: 1.5;color: #6c757d;"></i>
-                       
-                      </button> -->
-             </div>
-             <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
-             
-             <form [formGroup]="VOForm">
-             
-             <!-- <button  color="primary"  style="display: inline;"><mat-icon (click)="AddNewRow()" class="add-button">add_box</mat-icon></button> -->
-                <ng-container formArrayName="VORows" >
-                 <table #table mat-table [dataSource]="demands" class="table-responsive" >
-         
-                   <!-- Position Column -->
-                   <ng-container matColumnDef="desk_id">
-                     <th mat-header-cell *matHeaderCellDef> Desk_id </th>
-                     <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-                       <input matInput type="text" formControlName="desk_id"[readonly]="true" #iduser 
-                              style="width: 20px">
-                     </td>
-                   </ng-container>
-                   
-                               
-                   <!-- Name Column -->
-                   <ng-container matColumnDef="user_id">
-                     <th mat-header-cell *matHeaderCellDef > User_id </th>
-                     <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-           
-       
-
-
- <span >
-
-                        {{ VOForm.get('VORows').value[i].user_id }}
-         </span>
-                      
-                       
-                       
-                     </td>
-                   </ng-container>
-
-                   <ng-container matColumnDef="demands">
-                    <th mat-header-cell *matHeaderCellDef>Demands</th>
-                    <td style="text-align: left;margin-left: 150px;" mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-                     <div style="text-align: left;margin-left: 70px;"  >
-                      <ul style="list-style-type: none; padding-left: 0;">
-                        <li *ngFor="let item of VOForm.get('VORows').value[i].demands"
-                            style="display: block; margin: 0; padding: 0;">
-                          <span style="vertical-align: middle; margin-right: 5px;">
-                            <mat-icon>done</mat-icon>
-                          </span>
-                          <span style="display: inline-block; vertical-align: middle;">
-                            {{item}}
-                          </span>
-                        </li>
-                      </ul>
-                      
-                    
-                    
-                     </div>
-                  
-                    
-                        <!-- <input type="file" (change)="onFileSelect(VOForm,$event,i)"  class="form-control-file" id="picture" *ngIf="!VOForm.get('VORows').value[i].isEditable"> -->
-                  
-                    </td>
-                  </ng-container>
-                  <ng-container matColumnDef="equipements">
-                    <th mat-header-cell *matHeaderCellDef>Equipements</th>
-                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-                     <div class="text-center">
-           
-                      <mat-form-field appearance="fill" style="width:100%" *ngIf="VOForm.get('VORows').value[i].equipements.length > 0 && VOForm.get('VORows').value[i].isEditable">
-  
-                        <mat-select formControlName="equipements" multiple>
-                          <ng-container *ngFor="let mat of allMat">
-                            <mat-option [disabled]="true" [value]="mat.name" *ngIf=" VOForm.get('VORows').value[i].equipements.includes(mat.name) " >
-                              <div style="display: inline;" >
-                              <img [src]="mat.picture" alt="" srcset="" style="height: 60px;width: 80px;display: inline;">
-                              <span style="display: inline;margin-left: 10px;"> {{mat.name}} </span>
-                            </div>
-                            </mat-option>
-                          </ng-container>
-                      
-                        </mat-select>
-                      </mat-form-field>     
-                      <p style="color: red;" *ngIf="VOForm.get('VORows').value[i].equipements.length <= 0 && VOForm.get('VORows').value[i].isEditable">
-                          No Equipements on that desk
-                      </p>  
-                      <mat-form-field appearance="fill" style="width:100%" *ngIf="!VOForm.get('VORows').value[i].isEditable">
-  
-                        <mat-select formControlName="equipements" multiple>
-                          <ng-container *ngFor="let mat of allMat">
-                            <mat-option  [value]="mat.name"  >
-                              <div style="display: inline;" >
-                              <img [src]="mat.picture" alt="" srcset="" style="height: 60px;width: 80px;display: inline;">
-                              <span style="display: inline;margin-left: 10px;"> {{mat.name}} </span>
-                            </div>
-                            </mat-option>
-                          </ng-container>
-                      
-                        </mat-select>
-                      </mat-form-field>    
-                     </div>
-                      <div >
-
-                        <!-- <button  class="btn btn-secondary" style="font-size: 15px; margin-left: 25%;" (click)="choseFile()">Change picture</button> -->
-
-                      </div>
-                    
-                        <!-- <input type="file" (change)="onFileSelect(VOForm,$event,i)"  class="form-control-file" id="picture" *ngIf="!VOForm.get('VORows').value[i].isEditable"> -->
-                  
-                    </td>
-                  </ng-container>
-                   <ng-container matColumnDef="demandDate">
-                    <th mat-header-cell *matHeaderCellDef > Date </th>
-                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
-                        
-               
-                          
-                          <p
-                          
-                          >
-                          {{ VOForm.get('VORows').value[i].demandDate}}
-                        </p>
-      
-                    </td>
-                  </ng-container>       
-                  
-                  <ng-container matColumnDef="id">
-                    <th mat-header-cell *matHeaderCellDef > Id </th>
-                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
-                        
-               
-                          
-                          <p
-                          
-                          >
-                          {{ VOForm.get('VORows').value[i].id}}
-                        </p>
-      
-                    </td>
-                  </ng-container>  
-                  <ng-container matColumnDef="status">
-                    <th mat-header-cell *matHeaderCellDef > Status </th>
-                    <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element" >
-                        
-               
-                          
-                      <button type="text"  mat-stroked-button [ngStyle]="{'color':'white','background-color': 
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef> Id </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <p> {{ VOForm.get('VORows').value[i].id}} </p>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Status </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <button style="width: 55%;" type="text" mat-stroked-button [ngStyle]="{'color':'white','background-color': 
                       VOForm.get('VORows').value[i].status === 'accepted' ? 'green' :
                       VOForm.get('VORows').value[i].status === 'processing' ? 'RGB(30,136,229)' :
                       VOForm.get('VORows').value[i].status === 'refused' ? 'red' : ''
                   }">
-                      {{ VOForm.get('VORows').value[i].status}}
+                  {{ VOForm.get('VORows').value[i].status}}
                 </button>
-                  
-      
-                    </td>
-                  </ng-container>  
-                   <ng-container matColumnDef="action">
-                     <th mat-header-cell *matHeaderCellDef> Action </th>
-                     <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
-                       <button mat-icon-button class="material-icons app-toolbar-menu save-button" 
-                                               matTooltip="Save Changes" (click)="SaveVO(VOForm, i, VOForm.get('VORows').value[i].id)"
-                                               *ngIf="!VOForm.get('VORows').value[i].isEditable" >
-                                               <mat-icon style="color: green;">check_circle</mat-icon>
-                                           </button>
-           
-                       <button mat-icon-button class="material-icons app-toolbar-menu cancel-button"
-                                               matTooltip="Cancel Changes" color="warn"
-                                               (click)="CancelSVO(VOForm,i)"
-                                               *ngIf="!VOForm.get('VORows').value[i].isEditable">
-                                               <mat-icon>cancel</mat-icon>
-                                           </button>
-                                           <button mat-icon-button class="material-icons app-toolbar-menu save-button"
-                                           *ngIf="VOForm.get('VORows').value[i].isEditable"
-                                           matTooltip="Edit" color="primary" (click)="EditSVO(VOForm,i)"
-                                           [disabled]="!canEdit ||inUpdate"
-                                           >
-                                           <mat-icon>edit</mat-icon>
-                                       </button>
-           
-                                       <button mat-icon-button class="material-icons app-toolbar-menu delete-button"
-                                       [disabled]="!canDelete"
-                                                               *ngIf="VOForm.get('VORows').value[i].isEditable"
-                                                               matTooltip="Delete" color="warn" (click)="delete(VOForm,i)">
-                                                               <mat-icon>delete</mat-icon>
-                                                           </button>
-                     </td>
-                   </ng-container>
-           
-                   <tr mat-header-row *matHeaderRowDef="displayedColumns" ></tr>
-                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-           
-                   <!-- Row shown when there is no matching data. -->
-                   <!-- <tr class="mat-row" *matNoDataRow>
-                     <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
-                   </tr> -->
-                 </table>
-               </ng-container>
-               <mat-card *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center">
-                 <mat-progress-spinner 
-                   color="primary" 
-                   mode="indeterminate">
-                 </mat-progress-spinner>
-               </mat-card>
-               
-           
-                   <mat-paginator  [pageSizeOptions]="[8, demands.data.length>8? demands.data.length:'10'  ]" 
-                     style="margin-top: 1%;" 
-                    showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
-                   
-             </form>
-             </div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef> Action </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <button mat-icon-button class="material-icons app-toolbar-menu save-button" matTooltip="Save Changes"
+                  (click)="SaveVO(VOForm, i, VOForm.get('VORows').value[i].id)"
+                  *ngIf="!VOForm.get('VORows').value[i].isEditable">
+                  <mat-icon style="color: green;">check_circle</mat-icon>
+                </button>
+                <button mat-icon-button class="material-icons app-toolbar-menu cancel-button"
+                  matTooltip="Cancel Changes" color="warn" (click)="CancelSVO(VOForm,i)"
+                  *ngIf="!VOForm.get('VORows').value[i].isEditable">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+                <button mat-icon-button class="material-icons app-toolbar-menu save-button"
+                  *ngIf="VOForm.get('VORows').value[i].isEditable" matTooltip="Edit" color="primary"
+                  (click)="EditSVO(VOForm,i)" [disabled]="!canEdit ||inUpdate">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button class="material-icons app-toolbar-menu delete-button" [disabled]="!canDelete"
+                  *ngIf="VOForm.get('VORows').value[i].isEditable" matTooltip="Delete" color="warn"
+                  (click)="delete(VOForm,i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row class="demandLign" *matRowDef="let row; columns: displayedColumns; index as lignindex"
+              (click)="openDialog(VOForm, lignindex)">
+            </tr>
 
-           </div>
-     </div>
-    
+          </table>
+        </ng-container>
+        <mat-card *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center">
+          <mat-progress-spinner color="primary" mode="indeterminate">
+          </mat-progress-spinner>
+        </mat-card>
+
+
+        <mat-paginator [pageSizeOptions]="[8, demands.data.length>8? demands.data.length:'10'  ]"
+          style="margin-top: 1%;" showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
+
+      </form>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,220 @@
+<div class="xl:col-span-2 flex flex-col flex-auto bg-card  rounded-2xl overflow-hidden">
+  <div>
+    <h2 style="color: rgb(102, 125, 148); font-size: 30px; margin-top: 2%;float: left;margin-left: 1%;">
+      Reservations</h2>
+  </div>
+  <div class="card" style="margin-left: 1%;margin-right: 1%;margin-top: 1%; ">
+    <div>
+      <div style="text-align: left;float:right ;display: inline;margin-top: 2%;margin-right: 1%;">
+        <input matInput (keyup)="applyFilter($event)" style="text-align: left;" placeholder="Search" #input
+          matColumnDef="10">
+        <mat-icon>search</mat-icon>
+      </div>
+      <!-- <button  [disabled]="!canAdd" style="float:left ;display: inline; margin-left: 2%;margin-top: 1%;"  (click)="openDialog()">
+                      <i class="fa fa-circle-plus" style="
+                        zoom: 1.5;color: #6c757d;"></i>
+                         
+                        </button> -->
+    </div>
+    <div class="overflow-x-auto mx-6" style="margin-top: 1%;">
+
+      <form [formGroup]="VOForm">
+
+        <!-- <button  color="primary"  style="display: inline;"><mat-icon (click)="AddNewRow()" class="add-button">add_box</mat-icon></button> -->
+        <ng-container formArrayName="VORows">
+          <table #table mat-table [dataSource]="reservations" class="table-responsive">
+
+            <!-- Position Column -->
+            <ng-container matColumnDef="desk_id">
+              <th mat-header-cell *matHeaderCellDef> Desk </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <input matInput type="text" formControlName="desk_id" [readonly]="true" #iduser style="width: 20px">
+              </td>
+            </ng-container>
+
+
+            <!-- Name Column -->
+            <ng-container matColumnDef="start_time">
+              <th mat-header-cell *matHeaderCellDef> From </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+
+
+
+
+                <span>
+
+                  {{ VOForm.get('VORows').value[i].start_time }}
+                </span>
+
+
+
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="end_time">
+              <th mat-header-cell *matHeaderCellDef>To</th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <div>
+
+
+                  <span>
+
+                    {{ VOForm.get('VORows').value[i].end_time }}
+                  </span>
+
+
+                </div>
+
+
+                <!-- <input type="file" (change)="onFileSelect(VOForm,$event,i)"  class="form-control-file" id="picture" *ngIf="!VOForm.get('VORows').value[i].isEditable"> -->
+
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="materialdemand">
+              <th mat-header-cell *matHeaderCellDef>Tools and materials request</th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <div>
+
+
+                  <button class="btn" style="background-color: rgb(232, 229, 224);margin-top: 2%;margin-bottom: 2%;"
+                    [disabled]="VOForm.get('VORows').value[i].status !='Active'"
+                    (click)="openDialog(VOForm,i)">Equipement request</button>
+
+
+                </div>
+
+
+                <!-- <input type="file" (change)="onFileSelect(VOForm,$event,i)"  class="form-control-file" id="picture" *ngIf="!VOForm.get('VORows').value[i].isEditable"> -->
+
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+              <th mat-header-cell *matHeaderCellDef>Day</th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+                <div class="text-center" style="cursor: pointer;">
+
+
+
+                  <div>
+                    <!-- <span class="d-inline-flex align-items-center justify-content-center text-white rounded m-1 me-2" style="background-color: #0082ca; width: 40px; height: 40px;">
+                      <i class="fas fa-camera fa-lg"></i>
+                    </span> -->
+
+                    <span>
+                      {{VOForm.get('VORows').value[i].date}}
+                    </span>
+
+                  </div>
+                  <div>
+                    <!-- <span class="d-inline-flex align-items-center justify-content-center text-white rounded m-1 me-2" style="background-color: #0082ca; width: 40px; height: 40px;">
+                      <i class="fas fa-camera fa-lg"></i>
+                    </span> -->
+
+
+
+                  </div>
+
+
+
+                </div>
+                <div>
+
+                  <!-- <button  class="btn btn-secondary" style="font-size: 15px; margin-left: 25%;" (click)="choseFile()">Change picture</button> -->
+
+                </div>
+
+                <!-- <input type="file" (change)="onFileSelect(VOForm,$event,i)"  class="form-control-file" id="picture" *ngIf="!VOForm.get('VORows').value[i].isEditable"> -->
+
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="workspace">
+              <th mat-header-cell *matHeaderCellDef> Workspace </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+
+
+
+                <p>
+                  {{ VOForm.get('VORows').value[i].workspace}}
+                </p>
+
+              </td>
+            </ng-container>
+
+
+
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> Type </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+
+
+
+
+                <span>
+                  {{VOForm.get('VORows').value[i].anonymous}}
+                </span>
+
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Status </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+
+                <!-- RGB(30,136,229) -->
+
+                <button type="text" mat-stroked-button [ngStyle]="{
+  'color': 'white',
+  'background-color': VOForm.get('VORows').value[i].status === 'Active' ? 'green' :
+                      VOForm.get('VORows').value[i].status === 'Canceled' ? 'red' :
+                      VOForm.get('VORows').value[i].status === 'Passed' ? '#C07F00' :
+                      VOForm.get('VORows').value[i].status === 'Occurring' ? 'RGB(30,136,229)' : ''
+}" style="width: 70%;">
+                  {{ VOForm.get('VORows').value[i].status }}
+                </button>
+
+
+
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef> Action </th>
+              <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+
+
+
+
+
+                <button mat-icon-button (click)="cancel_reservation()"
+                  class="material-icons app-toolbar-menu delete-button"
+                  [disabled]="VOForm.get('VORows').value[i].status =='Canceled' ||VOForm.get('VORows').value[i].status =='Passed'"
+                  matTooltip="Cancel reservation" color="warn" (click)="delete(VOForm,i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <!-- Row shown when there is no matching data. -->
+            <!-- <tr class="mat-row" *matNoDataRow>
+                       <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+                     </tr> -->
+          </table>
+        </ng-container>
+        <mat-card *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center">
+          <mat-progress-spinner color="primary" mode="indeterminate">
+          </mat-progress-spinner>
+        </mat-card>
+
+
+        <mat-paginator [pageSizeOptions]="[6, reservations.data.length>8? reservations.data.length:'10'  ]"
+          style="margin-top: 1%;" showFirstLastButtons (page)="onPageChange($event)"></mat-paginator>
+
+      </form>
+    </div>
+
+  </div>
+</div>

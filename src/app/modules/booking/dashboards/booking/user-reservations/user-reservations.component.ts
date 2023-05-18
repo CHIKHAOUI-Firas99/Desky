@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, Renderer2, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder, FormControl, FormArray, AbstractControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,28 +9,29 @@ import { AuthService } from 'app/core/auth/auth.service';
 import { ClaimsService } from 'app/core/claimsManagement/claims.service';
 import { RoleService } from 'app/core/role/role.service';
 import { Role } from 'app/core/role/role.types';
+import { DeleteConfirmationComponent } from 'app/modules/admin/dashboards/delete-confirmation/delete-confirmation.component';
+import { DemandResponseComponent } from 'app/modules/admin/dashboards/demand-response/demand-response.component';
+import { DemandsService } from 'app/modules/admin/dashboards/demands/demands.service';
+import { MaterialService } from 'app/modules/admin/dashboards/materials/material.service';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { AddMaterialComponent } from '../add-material/add-material.component';
-import { DeleteConfirmationComponent } from '../delete-confirmation/delete-confirmation.component';
-import { MaterialService } from '../materials/material.service';
-import { DemandsService } from './demands.service';
-import { DemandResponseComponent } from '../demand-response/demand-response.component';
+import { ReservationserviceService } from './reservationservice.service';
+import { AddMaterialDemandComponent } from '../add-material-demand/add-material-demand.component';
 
 @Component({
-  selector: 'app-demands',
-  templateUrl: './demands.component.html',
-  styleUrls: ['./demands.component.scss']
+  selector: 'app-user-reservations',
+  templateUrl: './user-reservations.component.html',
+  styleUrls: ['./user-reservations.component.scss']
 })
-export class DemandsComponent {
+export class UserReservationsComponent {
   groups: any[] = [];
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  TabDemands: any;
+  tabUserReservations: any;
   idsUser: any;
   data: any;
   tabRoleNames: Array<Role>;
   userRole: String;
-  demands = new MatTableDataSource<any>();
+  reservations = new MatTableDataSource<any>();
   isLoading = true;
   pageNumber: number = 1;
   displayPassword = false;
@@ -38,7 +39,7 @@ export class DemandsComponent {
     VORows: this._formBuilder.array([]),
   });
   isEditableNew: boolean = true;
-  displayedColumns: string[] = ["id","desk_id", "user_id", "object","demandDate","status"];
+  displayedColumns: string[] = ["date", "start_time", "end_time","desk_id","workspace","type","status","materialdemand","action"];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   paginatorList: HTMLCollectionOf<Element>;
   currentIndex: any;
@@ -71,7 +72,8 @@ export class DemandsComponent {
     private dialog: MatDialog,
     private _claimsService: ClaimsService,
     private toastr: ToastrService,
-    private _DemandsService:DemandsService
+    private _DemandsService:DemandsService,
+    private _reservationserviceService:ReservationserviceService
 
   ) {}
   writeValue(obj: any): void {
@@ -103,21 +105,37 @@ export class DemandsComponent {
   
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.demands.filter = filterValue.trim().toLowerCase();
-    console.log(this.TabDemands);
+    this.reservations.filter = filterValue.trim().toLowerCase();
     
-    if (this.demands.filter.length > 0) {
-      let u = this.TabDemands.filter(
+    if (this.reservations.filter.length > 0) {
+      let u = this.tabUserReservations.filter(
         (n) =>
-          n.user_id.toString().toLowerCase().includes(this.demands.filter) ||
-          n.desk_id.toString().toLowerCase().includes(this.demands.filter)||
-          n.status.toString().toLowerCase().includes(this.demands.filter)||
-          n.demandDate.toString().toLowerCase().includes(this.demands.filter)||
-          n.object.toString().toLowerCase().includes(this.demands.filter)
-      );
+          n.date.toString().toLowerCase().includes(this.reservations.filter) ||
+          n.desk_id.toString().toLowerCase().includes(this.reservations.filter)||
+          n.start_time.toString().toLowerCase().includes(this.reservations.filter)||
+          n.end_time.toString().toLowerCase().includes(this.reservations.filter)||
+          n.status.toString().toLowerCase().includes(this.reservations.filter)||
+          n.workspace.toString().toLowerCase().includes(this.reservations.filter)||
+          n.anonymous.toString().toLowerCase().includes(this.reservations.filter)
+
+
+     
+          );
       this.fillFormTab(u);
-    } else this.fillFormTab(this.TabDemands);
+    } else this.fillFormTab(this.tabUserReservations);
   }
+
+  isCurrentDateAndTimeGreaterThan(date: string, time: string): boolean {
+    const providedDateTime = new Date(`${date}T${time}`);
+    const currentDateTime = new Date();
+  
+    if (currentDateTime.getTime() > providedDateTime.getTime()) {
+      return true;
+    }
+  
+    return false;
+  }
+  
   choseFile()
   {
     const elementToClick = document.getElementById('myFile');
@@ -130,7 +148,7 @@ this.renderer.selectRootElement(elementToClick).click();
   onPageChange(event: PageEvent) {
     const startIndex = event.pageIndex * event.pageSize;
     const endIndex = startIndex + event.pageSize;
-    const data = this.TabDemands.slice(startIndex, endIndex);
+    const data = this.tabUserReservations.slice(startIndex, endIndex);
     this.fillFormTab(data);
   }
   
@@ -172,18 +190,11 @@ this.renderer.selectRootElement(elementToClick).click();
       id:'value-'+key 
     }));
   }
-  async ngOnInit(): Promise<void> {
-    try {
-      this.getDemands()
-      this._authService.dispalyAdminDashboard().subscribe((data) => {
-        let obj = this._claimsService.manageObject(data["details"], "materials");
-        this.canAdd = obj["create"];
-        this.canEdit = obj["update"];
-        this.canDelete = obj["delete"];
-      });
-    } catch (err) {
-      console.log(err);
-    }
+   async ngOnInit() {
+    
+    await  this.getDemands()
+
+ 
   }
 
 
@@ -203,12 +214,16 @@ tags:Array<any>=[]
             //--------------CLAIMS----------------//
           
             return  this.fb.group({
-              id:new FormControl(val.id),
+              // id:new FormControl(val.id),
               desk_id: new FormControl(val.desk_id),
-              user_id: new FormControl(val.user_id),
-              object: new FormControl(val.object),
+              start_time: new FormControl(val.start_time),
+              end_time: new FormControl(val.end_time),
+
+              workspace: new FormControl(val.workspace),
+              // object: new FormControl(val.object),
               // equipements: new FormControl(val.equipements),
-              demandDate:new FormControl(val.demandDate),
+              anonymous:new FormControl(val.anonymous),
+              date:new FormControl(val.date),
               status:new FormControl(val.status),
               action: new FormControl("existingRecord"),
               isEditable: new FormControl(true),
@@ -219,7 +234,7 @@ tags:Array<any>=[]
     });
     
     this.isLoading = false;
-    this.demands = new MatTableDataSource(
+    this.reservations = new MatTableDataSource(
       (this.VOForm.get("VORows") as FormArray).controls
     );
     
@@ -279,27 +294,20 @@ getPictureUrl(picture) {
 
   async getDemands() {
     try {
-      const data = await this._DemandsService.getAllDemands().toPromise();
+      let id =this._authService.getCurrentUser().id
+      const data = await this._reservationserviceService.get_user_reservations(id).toPromise();
+      console.log(data);
       
-      this.TabDemands = data;
-      console.log(this.TabDemands);
+      this.tabUserReservations = data;
+      console.log(this.tabUserReservations);
       
-      this.fillFormTab(this.TabDemands);
-      this.demands.paginator = this.paginator;
-      const filterPredicate = this.demands.filterPredicate;
-      this.demands.filterPredicate = (data: AbstractControl, filter) => {
-        return filterPredicate.call(this.demands, data.value, filter);
+      this.fillFormTab(this.tabUserReservations);
+      this.reservations.paginator = this.paginator;
+      const filterPredicate = this.reservations.filterPredicate;
+      this.reservations.filterPredicate = (data: AbstractControl, filter) => {
+        return filterPredicate.call(this.reservations, data.value, filter);
       };
-      const allMat=await this._materialService.getAllMaterials().toPromise()
-      this.allMat=allMat
-      console.log(this.allMat);
-      
-      this.allMat.forEach(element => {
-        const pictureUrl = this.getPictureUrl(element.picture);
-        this.pic=pictureUrl
-        element['picture']=this.pic
-      });
-      console.log(this.allMat);
+
       
     } catch (err) {
       console.log(err);
@@ -323,7 +331,7 @@ getPictureUrl(picture) {
     this.displayPassword = true;
     const control = this.VOForm.get("VORows") as FormArray;
     control.insert(0, this.initiateVOForm());
-    this.demands = new MatTableDataSource(control.controls);
+    this.reservations = new MatTableDataSource(control.controls);
   }
   EditSVO(VOFormElement, i) {
     VOFormElement.get("VORows").at(i).get("isEditable").patchValue(false);
@@ -331,17 +339,21 @@ getPictureUrl(picture) {
   }
   delete(VOFormElement, index: number) {
     const row = VOFormElement.get("VORows")?.at(index);
-    const id = row?.get("desk_id")?.value ?? null;
-    const user_id = row?.get("user_id")?.value ?? null;
+    const desk_id = row?.get("desk_id")?.value ?? null;
+    const user_id = this._authService.getCurrentUser().id;
+    const date = row?.get("date")?.value ?? null;
+    const start_time=row?.get("start_time")?.value ?? null;
+    const end_time=row?.get("end_time")?.value ?? null;
+
+
 
     this.dialog.open(DeleteConfirmationComponent, {
       width: "640px",
       disableClose: true,
       data: {
-        demand_id: id,
-        user_id:user_id,
-        object:'demands',
-        message: "Refuse demand?",
+user_id,desk_id,date,start_time,end_time,
+        object:'cancel_reservation',
+        message: "Cancel reservation !",
         buttonText: {
           ok: "Save",
           cancel: "No",
@@ -435,30 +447,22 @@ showToast(message:string,title:string): void {
 
 
 
-  async openDialog(VOFormElement,index): Promise<void> {
+   openDialog(VOFormElement,index) {
     try {
-      console.log(index);
-      
       const row = VOFormElement.get("VORows").at(index);
 
-      let id = row.get("id").value;
+     
       const desk_id = row.get("desk_id").value;
-      const user_id = row.get("user_id").value;
-      const data = await this._DemandsService.getDemand(id).toPromise();
-      console.log(data);
+      const user_id = this._authService.getCurrentUser().id;
+      
       
       // Handle the data here
-      const dialogRef = this.dialog.open(DemandResponseComponent, {
+      const dialogRef = this.dialog.open(AddMaterialDemandComponent, {
         width: '600px',
         data: {
-        description: data['description'], 
-        object: data['object'], 
-        equipements: data['equipements'],
-        user_id:user_id,
-        demand_id:id,
-        desk_id:desk_id,
-        allMat:this.allMat
-      }
+          desk_id,
+          user_id
+        }
       });
     
       dialogRef.afterClosed().subscribe(result => {
@@ -479,13 +483,13 @@ showToast(message:string,title:string): void {
 
     let id = row.get("desk_id").value;
     if (!id) {
-      this.fillFormTab(this.TabDemands);
+      this.fillFormTab(this.tabUserReservations);
     }
 
       row
       .get("equipements")
       .patchValue(
-      this.TabDemands[i].equipements 
+      this.tabUserReservations[i].equipements 
       );
 
     row.get("isEditable").patchValue(true);
@@ -554,4 +558,5 @@ showToast(message:string,title:string): void {
       isNewRow: new FormControl(true),
     });
   }
+
 }

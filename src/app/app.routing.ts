@@ -210,6 +210,15 @@ export const appRoutes: Route[] = [
       canActivate: [UsersAuthGuard],
     },
     {
+      path: "dashboards/reservations",
+      loadChildren: () =>
+        import("app/modules/booking/dashboards/booking/user-reservations/user-reservations.module").then(
+          (m) => m.UserReservationsModule
+        ),
+  
+      canActivate: [UsersAuthGuard],
+    },
+    {
       path : "settings",pathMatch: "full",
       loadChildren: () =>
         import("app/modules/settings/settings.module").then(

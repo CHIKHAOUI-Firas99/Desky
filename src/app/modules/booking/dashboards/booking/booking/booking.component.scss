@@ -31,27 +31,73 @@ button {
   li.isactive {
     border: 2px solid rgb(65, 65, 147);
   }
+  .col-9{
+    margin-left: 0;
+  }
   
   .divWorkspace{
-    width: 90%;
+    width: 80%;
     height: 150px;
-    // background-color: white; 
      margin-top: 10px;
-    margin-left: 1%;
+    margin-left: 4%;
     border-radius: 4%;
     padding-left: 10px;
     padding-right: 10px;
-    // float: left;
     border: 1px solid rgb(207, 204, 204);
     position: relative;
     transition: transform 0.5s ease-out;
   
   }
+  .list-container {
+    max-height: 910px;
+    overflow-y: auto;
+  }
+  
+  @media screen and (max-width: 576px) {
+    .list-container {
+      max-height: none;
+      overflow-y: visible;
+    }
+  }
+  
+  @media screen and (min-width: 576px) and (max-width: 992px) {
+    .list-container {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  }
+  
+  /* Add more media queries for other screen sizes as needed */
+  
   .divWorkspace:hover {
     transform: scale(1.02);
+    margin-bottom: 1%;
     cursor: pointer;
     border: 2px solid rgb(139, 139, 155);
   }
+  
+  .container {
+    width: 90%;
+
+    margin-left: 0;
+    /* Remove any default left margin */
+     /* Reset the right margin to center the container horizontally */
+  }
+
+
+  @media (max-width: 768px) {
+    div {
+      height: 80%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    div {
+      height: 70%;
+    }
+  }
+  
+  
   
 
   .user {
@@ -72,6 +118,10 @@ button {
 .col-3::-webkit-scrollbar {
   width: auto; /* Width of the scrollbar */
 }
+// .col-9{
+//   width: 70%;
+//   margin-right: 0;
+// }
 
 .col-3::-webkit-scrollbar-track {
   background-color: #ffffff67; /* Color of the scrollbar track */
@@ -80,6 +130,28 @@ button {
 .col-3::-webkit-scrollbar-thumb {
   background-color: #ffffff67; /* Color of the scrollbar thumb */
 }
+// .responsive-div {
+// //   width: 100%;
+// //   overflow-x: auto;
+// //   margin-top: 5px;
+// //   margin-right: 0;
+// // }
+
+// // @media (max-width: 576px) {
+// //   .responsive-div {
+// //     width: 100%;
+// //   }
+// // }
+
+
+.canvas {
+  
+  height: 910px;
+  overflow-y: scroll;
+  border: 2px solid #cccccc;
+}
+
+
 
 .col-3::-webkit-scrollbar-thumb:hover {
   background-color: #ffffff67; /* Color of the scrollbar thumb on hover */
@@ -97,6 +169,4 @@ button {
     background-color: #ccc; /* optional, add your desired background color */
   }
 
-// .col-custom-2 {
-//     width: 16.6666667%;
-// }
+
