@@ -30,6 +30,7 @@
         "@fortawesome/free-brands-svg-icons": "^6.3.0",
         "@fortawesome/free-solid-svg-icons": "^6.3.0",
         "@ngneat/transloco": "4.2.2",
+        "@swimlane/ngx-charts": "^20.1.2",
         "@types/fabric": "^3.6.2",
         "angular-google-charts": "^2.2.3",
         "apexcharts": "3.36.3",

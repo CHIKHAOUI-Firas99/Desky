@@ -37,14 +37,36 @@ export class RoleService {
    }
 
   transformObject(tab) {
+    console.log(tab,'tabbbbbbbbbbbbb');
+    
     let m = [];
     let grp = [];
     let groups=[]
     tab.forEach(element => {
+      console.log(element);
+      
       let obj = element['object'];
       let rights = element['rights'];
+      
       let claim = { "name": obj, "items": [] };
-  
+  if (obj =="broadcasting") {
+    if (rights.includes('c')){
+      claim['items'].push({
+        "test": "true",
+        "label": "Email broadcasting",
+        "value": "can_create_" + obj
+      });
+    }else{
+      claim['items'].push({
+        "test": "false",
+        "label": "Email broadcasting",
+        "value": "can_create_" + obj
+      });
+    }
+
+    ;
+  }
+    else if (obj !="broadcasting"){  
       if (rights.includes('c')) {
         claim['items'].push({
           "test": "true",
@@ -99,7 +121,7 @@ export class RoleService {
           "label": "can delete",
           "value": "can_delete_" + obj
         });
-      }
+      }}
   groups.push(claim)
       grp.push(claim);
     });
@@ -136,6 +158,8 @@ export class RoleService {
         }
       }
     }
+  
+  
   
     return [m, grp,groups];
   }

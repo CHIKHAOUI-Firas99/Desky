@@ -178,7 +178,14 @@ export const defaultNavigation: FuseNavigationItem[] = [
                         title: 'Demands ',
                         type : 'basic',
                         link : '/dashboards/demands'
+                    },
+                    {
+                        id   : 'reservations',
+                        title: 'Users reservations ',
+                        type : 'basic',
+                        link : '/dashboards/usersReservations'
                     }
+                    // usersReservations
                 ]
             },
         ]

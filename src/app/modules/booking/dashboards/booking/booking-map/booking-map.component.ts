@@ -4,6 +4,9 @@ import { BookingService } from 'app/modules/booking/booking.service';
 import { fabric } from 'fabric';
 import { AddReservationComponent } from '../add-reservation/add-reservation.component';
 import { log } from 'fabric/fabric-impl';
+import { Router, ActivatedRoute, RouteReuseStrategy } from '@angular/router';
+import { RoleService } from 'app/core/role/role.service';
+import { BookingComponent } from '../booking/booking.component';
 
 @Component({
   selector: 'app-booking-map',
@@ -17,6 +20,7 @@ export class BookingMapComponent {
   private canvas: fabric.Canvas | undefined;
   public workspaceName : String = ""
   private objectsInCanvas = new Map<string,any>();
+  private desksWithoutPermission : any
   private mapUrl : String
   public date : String
   public sss: any = {
@@ -25,9 +29,14 @@ export class BookingMapComponent {
   };
 
   constructor(
+    public _BookingComponent:BookingComponent,
     private _bookingService : BookingService ,
     private  dialog: MatDialog,
-    private cdr: ChangeDetectorRef,private ngZone: NgZone,private appRef: ApplicationRef
+    private cdr: ChangeDetectorRef,private ngZone: NgZone,private appRef: ApplicationRef,
+    private _router: Router,
+    private _roleService: RoleService,
+    private route: ActivatedRoute,
+    private routeReuseStrategy: RouteReuseStrategy,
   ){}
 
   ngAfterViewInit(): void {
@@ -45,10 +54,15 @@ export class BookingMapComponent {
         if (e.target) {
             let color = e.target["_objects"][1]["group"]["_objects"][1]["_objects"][0]["fill"];
             let id = this.canvas.getActiveObject().toObject().id.toString();
+            let hasPermission = true
             try {
+                if(this.desksWithoutPermission.indexOf(Number(id))!= -1){
+                  hasPermission = false
+                  
+                }
                 const data = await this._bookingService.getReservationsPerDeskPerDay(id, this.date).toPromise();
-                const available_time_slots=await this._bookingService.get_available_time_slots(id,this.date).toPromise()
-               let t= this.dialog.open(AddReservationComponent, {
+                const available_time_slots=await this._bookingService.get_available_time_slots(id,this.date).toPromise()                
+                this.dialog.open(AddReservationComponent, {
                     width: '700px',
                     disableClose: true,
                     data: {
@@ -58,20 +72,20 @@ export class BookingMapComponent {
                         "workspaceName": this.workspaceName,
                         "date": this.date,
                         "color": color,
-                        "data":available_time_slots
+                        "data":available_time_slots,
+                        "hasPermission" : hasPermission
                     }
-                });
-                this.cleanSelect();
-                t.afterClosed().subscribe((res)=>{
-                  if(res){
-                    this.loadCanvas(this.workspaceName,this.date)
-                    this.cdr.detectChanges()
-                    
-                   
-                  }
-                })
+                }).afterClosed().subscribe((res)=>{
+if (res) {
+  this._bookingService.getWorkspacesForBooking(this.date).subscribe((data) => {
+    this._BookingComponent.listWorkspaces=data
+    this.loadCanvas(this.workspaceName,this.date)
+  
+  });
+}                });
 
-            
+                this.cleanSelect();
+                this.cdr.detectChanges();
             } catch (error) {
                 // Handle error
             }
@@ -79,7 +93,15 @@ export class BookingMapComponent {
     });
 }
 
-  
+  refreshRoute() {
+  this.route.data.subscribe(() => {
+    const currentUrl = this._router.url;
+    this.routeReuseStrategy.shouldReuseRoute = () => false;
+    this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+      this._router.navigate([currentUrl]);
+    });
+  });
+}
 
   loadCanvas(name,date) {
     this.date = date
@@ -87,10 +109,8 @@ export class BookingMapComponent {
       this.workspaceName = workspace.name
       this.canvas.clear()
       this.objectsInCanvas.clear()
-      this.addImageOnCanvas(workspace.mapUrl)
-      console.log(workspace.bookedDesks);
-      
-      workspace.objects.forEach(obj =>{        
+      this.addImageOnCanvas(workspace.mapUrl)      
+      workspace.objects.forEach(obj =>{                
         this.objectsInCanvas.set(obj.id.toString(),{
           id:obj.id.toString(),
           x: obj.x,
@@ -132,9 +152,16 @@ export class BookingMapComponent {
           const scaledRadius = 15 * obj.scaleX;          
           let totallyBooked = workspace.bookedDesks.indexOf(Number(key)) !=-1
           let partiallyBooked = workspace.availableBookedDesks.indexOf(Number(key)) !=-1
-          let color = "green"
-          if (totallyBooked) color = "red"
-          if (partiallyBooked) color = "orange"
+          let color = "green" 
+          this.desksWithoutPermission = workspace.deskWithoutPermission                   
+          if((workspace.deskWithoutPermission.indexOf(Number(obj.id))!= -1)){
+            color = "red"
+          }
+          else{
+            if (totallyBooked) color = "red"
+            if (partiallyBooked) color = "orange"
+          }
+
           console.log(color);
 
           if(obj.type == "desk")
@@ -144,7 +171,7 @@ export class BookingMapComponent {
               top:image.getCenterPoint().y-scaledRadius,
               radius: 15,
               fill: color,
-              stroke: '#666',
+              stroke: 'white',
               strokeWidth : 2,
               selectable: true,
               centeredScaling:true,
@@ -159,11 +186,14 @@ export class BookingMapComponent {
           c.getCenterPoint()
           const text = new fabric.Text(obj.id, {
             fontFamily: 'Calibri',
+            fontWeight :"bold",
             left: c.getCenterPoint().x,
             top: c.getCenterPoint().y,
             fontSize: 20*obj.scaleX,
             originX: 'center',
             originY: 'center',
+            fill : "white"
+
           });
           var t = new fabric.Group([c,text])
           var g = new fabric.Group([image,t])
@@ -203,6 +233,7 @@ export class BookingMapComponent {
     })
 
   }
+  
   addImageOnCanvas(url) {
     if (url) {      
       fabric.Image.fromURL(url, (image) => {

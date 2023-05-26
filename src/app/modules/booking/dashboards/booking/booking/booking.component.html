@@ -2,10 +2,10 @@
   <h1 class="h4 text-center" style="margin-top: 2%;"> Desk Reservations</h1>
 
   <div class="row">
-    <div class="col-3">
+    <div class="col-2" style="margin-top: 1%;">
       <div>
         <h6 class="h5 list-group-item text-dark d-flex align-items-center justify-content-center"
-          style="width: 80%; border-radius: 4px; background-color: #f0f0f0; height: 60px; margin-top: 12%; margin-left: 4%;">
+          style="width: 100%; border-radius: 4px; background-color: #f0f0f0; height: 60px; margin-top: 12%; margin-left: 4%;">
           List of workspaces
         </h6>
         <div class="list-container">
@@ -14,7 +14,6 @@
               (click)="loadCanvas(item.name, i)" [ngClass]="{ 'isactive': isActiveElement(item.name)}">
               <div>
                 <b>{{item.name}}</b>
-
                 <div style="margin-top: 5%;">
                   <ng-container *ngFor="let img of item.userProfileImages.slice(0,5); let i = index">
                     <ng-container *ngIf="img['img'] !== ''">
@@ -29,11 +28,11 @@
                   <div *ngIf="item.userProfileImages.length > 5 " style=" float: right; text-align: center;"> +{{
                     item.userProfileImages.length - 5 }}</div>
                 </div>
-                <div style=" position: absolute; bottom: 20px; width: 210px;">
+                <div style=" position: absolute; bottom: 20px; width: 90%;">
                   <span style="float: left;"> <b>Available {{item.totalPlaces-item.nbBooked}}</b></span>
                   <span style="float: right;">Total {{item.totalPlaces}}</span>
                 </div>
-                <div style=" position: absolute;  bottom: 10px; width: 210px;">
+                <div style=" position: absolute;  bottom: 10px; width: 90%;">
                   <div class="progress" role="progressbar" style="height: 5px;" aria-label="Success example"
                     aria-valuenow={{item.nbAvailable}} aria-valuemin="0" aria-valuemax="100">
                     <div [ngClass]="getValueClass(item.nbAvailable)" [ngStyle]="{'width' : item.nbAvailable+'%'}"></div>
@@ -46,7 +45,7 @@
         </div>
       </div>
     </div>
-    <div class="col-9" style=" margin-top: 3%;">
+    <div class="col-10" style=" margin-top: 3%;">
 
       <div class="container" style=" width: 100%;">
         <div class="row">
@@ -61,14 +60,13 @@
             </li>
             <li class="list-group-item" *ngFor="let day of selectedWeek.slice(0, 5); let i = index"
               [class.disabled]="weekdays.indexOf(day.substring(0, 3)) < weekdays.indexOf(today.substring(0, 3)) && isFirstWeek"
-              [ngClass]="{ 'activ': i === activeIndex && isFirstWeek}"
+              [ngClass]="{ 'activ': (selectedDate === this.showedList[i])}"
               [ngStyle]="{ 'background-color': 1 === 1 ? 'E0E2E8' : '' }">
               <button mat-button color="primary" data-mdb-ripple-color="dark" class="custom-button"
                 (click)="onButtonClick(i)" style="text-align: center;padding-top: 1.5%;">
                 {{ day === today.substring(0, 3) ? day : day }}
                 <span>{{ this.showedList[i] }}<sup>th</sup></span>
               </button>
-
             </li>
 
             <li (click)="showNextWeekDays()" class="list-group-item bg-light "

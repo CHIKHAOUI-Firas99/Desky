@@ -12,6 +12,10 @@ export class ReservationserviceService {
   {
     return this._httpClient.get(mapServiceUrl+'/service2/getUserReservations/'+id)
   }
+  public get_all_reservations(){
+    return this._httpClient.get(mapServiceUrl+'/service2/getAllReservations/')
+
+  }
   cancel_reservation(userId: string, deskId: string, date: string, startTime: string, endTime: string) {
     const queryParams = new URLSearchParams({
         userId: userId,

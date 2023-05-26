@@ -1,3 +1,59 @@
-<google-chart #chart [title]="title" [type]="type" [data]="data" [columnNames]="columnNames" [options]="options"
-    [width]="width" [height]="height">
-</google-chart>
+<div style=" width: 100%;display: flex;justify-content: center;">
+    <div class="container">
+        <h1 class="h3 text-center" style="margin-top: 1.5%;">Last Week Reservation Insights</h1>
+        <div class="row">
+            <div class="col-4">
+                <h5 class="card-title" style="float: left;padding-top: 1%;font-size: 12px;font-weight: bold;">
+                    Most Active Hours</h5>
+                <ngx-charts-number-card [results]="tabPeakHours" [view]="view" [scheme]="colorScheme"
+                    [cardColor]="cardColor" (select)="onSelect($event)">
+                </ngx-charts-number-card>
+            </div>
+            <div class="col-6" style="margin-left: 15.5%;">
+                <h5 class="card-title" style="float: left;padding-top: 0.5%;font-size: 12px;font-weight: bold;">
+                    Most Active Days</h5>
+                <ngx-charts-bar-vertical [results]="tabReservationsByDate" [view]="view" [scheme]="colorScheme"
+                    [schemeType]="schemeType" [gradient]="gradient" [xAxis]="xAxis" [yAxis]="yAxis" [legend]="legend"
+                    [legendTitle]="false" [legendPosition]="legendPosition" [animations]="animations"
+                    [showGridLines]="showGridLines" [trimXAxisTicks]="trimXAxisTicks" [trimYAxisTicks]="trimYAxisTicks"
+                    [rotateXAxisTicks]="rotateXAxisTicks" [maxXAxisTickLength]="maxXAxisTickLength"
+                    [maxYAxisTickLength]="maxYAxisTickLength" [xAxisTickFormatting]="formatString"
+                    [yAxisTickFormatting]="formatNumber" [yAxisTicks]="yAxisTicks" [barPadding]="barPadding"
+                    [tooltipDisabled]="tooltipDisabled" [roundEdges]="roundEdges">
+                </ngx-charts-bar-vertical>
+            </div>
+        </div>
+        <div class="row c1">
+            <div class="col-3 card ">
+                <h5 class="card-title" style="float: left;padding-top: 2.2%;font-size: 12px;font-weight: bold;">Most
+                    utilized desks</h5>
+                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
+                    [responsive]="chartOptions.responsive" [colors]="chartOptions.colors"></apx-chart>
+            </div>
+            <div class="col-3 card ">
+                <h5 class="card-title" style="float: left;padding-top: 2.2%;font-size: 12px;font-weight: bold;">
+                    Work Arrangement Analysis</h5>
+                <apx-chart [series]="office_remote_chart_options.series" [chart]="common_equipement_chart_option.chart"
+                    [labels]="office_remote_chart_options.labels"
+                    [responsive]="common_equipement_chart_option.responsive"
+                    [colors]="common_equipement_chart_option.colors"></apx-chart>
+            </div>
+            <div class="col-3 card ">
+                <h5 class="card-title" style="float: left;padding-top: 2.2%;font-size: 12px;font-weight: bold;">
+                    Reservation Outcome Breakdown</h5>
+                <apx-chart [series]="reservation_status_chart_options.series"
+                    [chart]="common_equipement_chart_option.chart" [labels]="reservation_status_chart_options.labels"
+                    [responsive]="common_equipement_chart_option.responsive"
+                    [colors]="common_equipement_chart_option.colors"></apx-chart>
+            </div>
+            <div class="col-3 card ">
+                <h5 class="card-title" style="float: left;padding-top: 2.2%;font-size: 12px;font-weight: bold;">
+                    Equipment Usage Patterns</h5>
+                <apx-chart [series]="common_equipement_chart_option.series"
+                    [chart]="common_equipement_chart_option.chart" [labels]="common_equipement_chart_option.labels"
+                    [responsive]="common_equipement_chart_option.responsive"
+                    [colors]="common_equipement_chart_option.colors"></apx-chart>
+            </div>
+        </div>
+    </div>
+</div>

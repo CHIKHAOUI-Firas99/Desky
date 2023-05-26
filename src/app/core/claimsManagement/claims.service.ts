@@ -12,7 +12,7 @@ export class ClaimsService {
     let canEdit=false;
     let canAdd=false;
     let canDelete=false;
-
+let cansend=false
       if (obj['rights'].includes('u')) {
         canEdit = true;
       }
@@ -22,9 +22,12 @@ export class ClaimsService {
       if (obj['rights'].includes('c')) {
         canAdd = true;
       }
-
-    return {"create":canAdd,"update":canEdit,"delete":canDelete}
+      if(obj['object']=='broadcasting' && obj['rights'].includes('c') ){
+        cansend=true
+      }
+    return {"create":canAdd,"update":canEdit,"delete":canDelete,"send":cansend}
   };
+
   
   }
 

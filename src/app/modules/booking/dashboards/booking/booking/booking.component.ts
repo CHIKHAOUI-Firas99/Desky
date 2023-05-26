@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { FormControl } from '@angular/forms';
 import { BookingService } from 'app/modules/booking/booking.service';
 import { BookingMapComponent } from '../booking-map/booking-map.component';
+import { Observable, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-booking',
@@ -12,12 +13,6 @@ import { BookingMapComponent } from '../booking-map/booking-map.component';
 
 })
 export class BookingComponent {
-  tiles: any[] = [
-    {text: 'One', cols: 3, rows: 1, color: 'lightblue'},
-    {text: 'Two', cols: 1, rows: 2, color: 'lightgreen'},
-    {text: 'Three', cols: 1, rows: 1, color: 'lightpink'},
-    {text: 'Four', cols: 2, rows: 1, color: '#DDBDF1'},
-  ];
 
   @ViewChild('canvasBook', { static: true }) canvas: BookingMapComponent;
   dateString :string
@@ -30,7 +25,7 @@ export class BookingComponent {
   today: string;
   list :string[] =[];
   showedList :string[] =[];
-  listWorkspaces :any =[]
+  public listWorkspaces :any =[]
   showCanvas : Boolean = false
   dates : any[] =[]
   workspaceName : string
@@ -51,6 +46,7 @@ export class BookingComponent {
   activeIndex: any;
   activeElement: any;
   workspaceIndex: any;
+  selectedDate: string;
 
 
   constructor(
@@ -98,7 +94,7 @@ export class BookingComponent {
       this.showedList = this.list;
     
     }    
-
+  
 
     showNextWeekDays() {
       console.log(this.secondWeek);
@@ -123,8 +119,6 @@ export class BookingComponent {
 
 
   ngOnInit():  void{
-    console.log(this.tiles);
-    
     this.listTime = this.getTimeList(this.start,this.end)
     this.checkedListTime = this.listTime
     this.listStartTime = this.listTime
@@ -138,14 +132,16 @@ export class BookingComponent {
     this.maxDate = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 13)
     
     this.activeIndex = this.selectedWeek.slice(0,5).indexOf(this.today.substring(0,3))
+    this.selectedDate = this.showedList[this.activeIndex]
+    this._bookingService.getWorkspacesForBooking(date).subscribe((data) => {
+      this.listWorkspaces = data;
+      console.log(this.listWorkspaces);
+      this.canvas.loadCanvas(this.listWorkspaces[0].name, date);
+      this.workspaceName = this.listWorkspaces[0].name;
+      this.activeElement = this.listWorkspaces[0].name;
     
+    });
     
-    this._bookingService.getWorkspacesForBooking(date).subscribe(data => {
-      this.listWorkspaces = data   
-      this.canvas.loadCanvas(this.listWorkspaces[0].name,date)
-      this.workspaceName = this.listWorkspaces[0].name
-      this.activeElement = this.listWorkspaces[0].name
-    })
 
   }
   setFullDay() {
@@ -157,16 +153,13 @@ export class BookingComponent {
   isToday(day: string): boolean {
     const today = new Date();
     const weekday = today.toLocaleDateString('en-US', { weekday: 'short' });
-  
     return day === weekday;
   }
-  
-  
-  
   
   onButtonClick(i: any) {
     this.activeIndex = i;
     let timestamp = 0
+    this.selectedDate = this.showedList[i]
     if (this.isFirstWeek)
     {
        timestamp = this.dates[i+1];

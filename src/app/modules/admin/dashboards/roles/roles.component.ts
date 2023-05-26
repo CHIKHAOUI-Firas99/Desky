@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -39,6 +40,7 @@ import { TagsUpdateComponent } from "../tags-update/tags-update.component";
 import { log } from "fabric/fabric-impl";
 import { ActivatedRoute, RouteReuseStrategy, Router } from "@angular/router";
 import { MatSelectChange } from "@angular/material/select";
+import { MessagesService } from "app/layout/common/messages/messages.service";
 
 @Component({
   selector: "app-Roles",
@@ -80,6 +82,9 @@ export class RolesComponent implements ControlValueAccessor {
    * Constructor
    */
   constructor(
+    // public msg:MessagesService,
+    private _changeDetectorRef: ChangeDetectorRef,
+
     private _router: Router,
     private route: ActivatedRoute,
     private routeReuseStrategy: RouteReuseStrategy,
@@ -203,7 +208,11 @@ export class RolesComponent implements ControlValueAccessor {
       this.tabRoleNames = data;
     });
     this._roleService.getAllClaims().subscribe((data) => {
+      console.log(data,'wa33333333');
+      
       this.allclaims = this._roleService.transformObject(data)[2];
+      console.log(this.allclaims);
+      
     });
     this._roleService.getAllTags().subscribe((data)=>{
       this.allTags=data
@@ -427,7 +436,7 @@ transformArray(arr: { key: string; value: string[] }[]): any {
     if (elm) {
       let test = elm["value"] == element;
       let rights = "";
-      if (elm.label.includes("create") && test == true) {
+      if ((elm.label.includes("create") ||elm.label.includes("Email broadcasting")) && test == true) {
         rights += "c";
       }
       if (elm.label.includes("update") && test == true) {
@@ -488,7 +497,9 @@ transformArray(arr: { key: string; value: string[] }[]): any {
         this.showToast('role updated','success')
         localStorage.removeItem('ckeckedids')
         localStorage.removeItem('tagsArr')
+        
         this.refreshRoute()
+        // this.msg.detect()
       },(err)=>{
         console.log(err);
         this.errMessage=err["error"]["detail"]
@@ -506,14 +517,17 @@ transformArray(arr: { key: string; value: string[] }[]): any {
 this.inUpdate=false
   }
   refreshRoute() {
+    // location.reload()
     this.route.data.subscribe(() => {
       const currentUrl = this._router.url;
       this.routeReuseStrategy.shouldReuseRoute = () => false;
-      this._router.navigateByUrl("/", { skipLocationChange: true }).then(() => {
+      this._router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
         this._router.navigate([currentUrl]);
       });
+       // Set canSend to false after refreshing the route
     });
   }
+  
 getYourTags(arr) {
     const transformedArr = [];
     for (let obj of arr) {

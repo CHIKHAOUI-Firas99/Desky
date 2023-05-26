@@ -1,76 +1,75 @@
-<button  class="close-icon" style="float: right;zoom: 0.9;padding-top: 0;margin-top: 0;" (click)="closeDialog()">
+<button class="close-icon" style="float: right;zoom: 0.9;padding-top: 0;margin-top: 0;" (click)="closeDialog()">
   <mat-icon>close</mat-icon>
 </button>
 
-  <div  class="text-center" >
-  
-<div *ngIf="objectType==='desk'">
+<div class="text-center">
+  <div class="alert alert-danger" *ngIf="data.allMat && !data.canAddmat">
+    Desks cannot be modified without saving the workspace!
+    <br>
+    Please save the workspace first.
+  </div>
+  <div *ngIf="objectType==='desk'">
 
     <mat-label class="text-center" style="margin-top: 20%;">Equipements</mat-label>
 
-<mat-form-field appearance="fill" style="width:100%">
-  
-  <mat-select [(ngModel)]="materials" multiple>
-    <ng-container *ngFor="let mat of allMaterials">
-      <mat-option  [value]="mat.name" [disabled]="mat.quantity <=0 && !data.CurrentMaterials.includes(mat.name)" >
-        <div style="display: inline;" >
-        <img [src]="mat.picture" alt="" srcset="" style="height: 60px;width: 80px;display: inline;">
-        <span style="display: inline;margin-left: 20px;"> {{mat.name}} </span>
-      </div>
-      </mat-option>
-    </ng-container>
+    <mat-form-field appearance="fill" style="width:100%">
 
-  </mat-select>
-</mat-form-field>
-</div>
+      <mat-select [(ngModel)]="materials" multiple placeholder="Select an equipement">
+        <ng-container *ngFor="let mat of allMaterials">
+          <mat-option [value]="mat.name" *ngIf="mat.quantity >0 || data.CurrentMaterials.includes(mat.name)">
+            <div style="display: inline;">
+              <img [src]="mat.picture" alt="" srcset="" style="height: 60px;width: 80px;display: inline;">
+              <span style="display: inline;margin-left: 20px;"> {{mat.name}} </span>
+            </div>
+          </mat-option>
+        </ng-container>
 
-<h5  class="h5" style="margin-top: 5%;" *ngIf="!data.allMat || objectType==='door'">TAGS</h5>
-  <form [formGroup]="form" >
-    
-   
-  <mat-label *ngIf=" objectType && objectType!=='door'">Object tags</mat-label>
-  <br>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <h5 class="h5" style="margin-top: 5%;" *ngIf="!data.allMat || objectType==='door'">TAGS</h5>
+  <form [formGroup]="form">
+
+
+    <mat-label *ngIf=" objectType && objectType!=='door'">Object tags</mat-label>
+    <br>
     <div formArrayName="extraTags" style="width: 100%;">
       <div *ngFor="let tag of tags.controls; let i=index" [formGroupName]="i">
         <div style="display: inline-block;">
           <label for="tag-key">Key:</label>
           <mat-form-field style="margin-left: 10px;">
-            <input matInput type="text" id="tag-key" formControlName="key" 
-            name="key"
-              (keyup)="checkFormControlChanges($event, i)" >
+            <input matInput type="text" id="tag-key" formControlName="key" name="key"
+              (keyup)="checkFormControlChanges($event, i)">
           </mat-form-field>
         </div>
         <div style="display: inline-block;margin-left: 10px;">
           <label for="tag-value">Value:</label>
           <mat-form-field style="margin-left: 10px;">
-            <input matInput type="text" id="tag-value" formControlName="value"  style="margin-left: 10px" 
+            <input matInput type="text" id="tag-value" formControlName="value" style="margin-left: 10px"
               (keyup)="checkFormControlChanges($event, i);">
           </mat-form-field>
         </div>
 
-        <button mat-icon-button 
-          [disabled]="disabled[i]"
-          (click)="addTag()" 
+        <button mat-icon-button [disabled]="disabled[i]" (click)="addTag()"
           class="material-icons app-toolbar-menu add-button">
           <mat-icon style="color: green;">add_circle</mat-icon>
         </button>
 
-        <button mat-icon-button class="material-icons app-toolbar-menu delete-button"
-          matTooltip="remove tag" color="warn" (click)="removeTag(i)"
-          [disabled]="!cancel()">
+        <button mat-icon-button class="material-icons app-toolbar-menu delete-button" matTooltip="remove tag"
+          color="warn" (click)="removeTag(i)" [disabled]="!cancel()">
           <mat-icon>cancel</mat-icon>
         </button>
-       
+
       </div>
-      <div class="alert alert-danger" style="width:50%;margin-left: 25%;text-align: center;"
-      *ngIf="tagMessage"
-       >
-    key already exist
-    </div>
+      <div class="alert alert-danger" style="width:50%;margin-left: 25%;text-align: center;" *ngIf="tagMessage">
+        key already exist
+      </div>
     </div>
 
     <div class="mat-dialog-actions" style="float: left;margin-top: 3%;">
-      <button class="btn btn-primary" [disabled]="tagMessage || send" (click)="submit()">OK</button>
+      <button class="btn btn-primary" [disabled]="tagMessage || send || (data.allMat && !data.canAddmat)"
+        (click)="submit()">OK</button>
       <button mat-flat-button (click)="closeDialog()" style="margin-left: 2px;">Close</button>
     </div>
   </form>

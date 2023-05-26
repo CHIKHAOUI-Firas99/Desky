@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { log } from 'fabric/fabric-impl';
 import { MaterialService } from '../materials/material.service';
 import { ToastrService } from 'ngx-toastr';
+import { MapService } from '../map/map.service';
 
 @Component({
   selector: 'app-tags-update',
@@ -25,11 +26,14 @@ export class TagsUpdateComponent {
   errMessage: any;
   allMat2: any;
   objectType: any;
+  _myObject: any;
+  workspaceExist: boolean;
   constructor(private _fb:FormBuilder, 
     public dialogRef: MatDialogRef<TagsUpdateComponent>,
     public matdialog:MatDialog,
     private toastr:ToastrService,
     private _matService:MaterialService,
+    private _MapService:MapService,
     @Inject(MAT_DIALOG_DATA) public data: any) {}
  alltags:any=[]
   transformObject(inputObject) {
@@ -243,6 +247,9 @@ ngOnInit() {
     this.notags=this.alltags.length == 0
   }
   else if( this.data.allMat){
+    console.log(this.data.workspaceName);
+    
+    this.workspaceExist= this.data.workspacesNames.includes(this.data.workspaceName)
 this.alltags=this.data.ObjectTags?this.data.ObjectTags:[]
 this.notags=this.alltags.length == 0
 this.data.allMat.forEach(element => {
@@ -379,7 +386,8 @@ let listmat=[]
     .filter((n)=>{
       // delete n['picture'];
       // listmat.push
-     return  this.materials.includes(n.name)}
+     return  this.materials.includes(n.name)
+    }
       )
 console.log(materials);
 
@@ -393,17 +401,65 @@ console.log(materials);
  
   obj['tags']=tagsarray
   console.log(obj);
- console.log(obj);
-  
-
+  console.log(obj);
+  this._myObject=this.data._object
+this._myObject['material']=obj['material']
+this._myObject['tags']=     this.getYourTags(obj['tags'])
     let id=this.data.objectId
-    console.log(obj);
-    this.dialogRef.close(obj)
+if(!this.data.workspaceName){
+  this.data.workspaceName=""
+}
+console.log(this._myObject,);
+let action=""
+if (id > 0) {
+  action="update"
+  
+}
+if (id <0) {
+  action="create"
+}
+if (this.data.new_id!=0) {
+this._myObject['id']=this.data.new_id
+  
+}
+this._MapService.updatedeskDetails(this._myObject,this.data.workspaceName,this.data.action).subscribe((data)=>{
+  console.log(data);
+  console.log(this._myObject);
+  
+  if (Number(this._myObject['id'])<0) {
+    console.log("nik omk");
+    
+    obj['id']=data
+  }
+ else {obj['id']=this._myObject['id']}
+  console.log(obj);
+  
+  this.dialogRef.close(obj)
+},(err)=>{
+  this.errMessage=err["error"]["detail"]
+  if (!this.errMessage) {
+     this.errMessage='Data too long ! please try other image'
+  }
+  this.toastr.error(this.errMessage, 'Failed');
+  this.dialogRef.close()
+})
 
     
   }
 
   
+}
+getYourTags(arr) {
+  const transformedArr = [];
+  for (let obj of arr) {
+    console.log(obj);
+    
+    if (obj.key.length > 0 && obj.value.length > 0)
+    {
+      transformedArr.push({ key: obj.key, value: obj.value });
+    }
+  }
+  return transformedArr;
 }
 getPictureUrl(picture) {
   let base64Picture;

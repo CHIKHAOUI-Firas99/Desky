@@ -16,13 +16,15 @@ import { BookingComponent } from "./modules/booking/dashboards/booking/booking/b
 import { SettingsAccountComponent } from "./modules/settings/settings-account/settings-account.component";
 import { DemandsAuthGuard } from "./core/auth/guards/demands.guards";
 import { AnalyticsComponent } from "./modules/analytics/analytics.component";
+import { UsersReservationsAuthGuard } from "./core/auth/guards/users-reservations.guards";
+import { MessagesComponent } from "./layout/common/messages/messages.component";
 
 // @formatter:off
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const appRoutes: Route[] = [
   // Redirect empty path to '/example'
-  { path: "", pathMatch: "full", redirectTo: "dashboards/users" },
+  { path: "", pathMatch: "full", redirectTo: "dashboards/reservations" },
 
   // Redirect signed-in user to the '/dashboards/project'
   //
@@ -153,6 +155,7 @@ export const appRoutes: Route[] = [
               import("app/modules/admin/dashboards/roles/roles.module").then(
                 (m) => m.RolesModule
               ),
+           
             canActivate: [RolesAuthGuard],
           },
           {
@@ -179,6 +182,12 @@ export const appRoutes: Route[] = [
             loadChildren: () => import("app/modules/admin/dashboards/demands/demands.module")
               .then((m) => m.DemandsModule),
               canActivate: [DemandsAuthGuard],
+          },
+          {
+            path:'usersReservations',
+            loadChildren: () => import("app/modules/admin/dashboards/users-reservations/users-reservations.module")
+              .then((m) => m.UsersReservationsModule),
+              canActivate: [UsersReservationsAuthGuard],
           },
           
          
@@ -207,7 +216,7 @@ export const appRoutes: Route[] = [
           (m) => m.AnalyticsModule
         ),
   
-      canActivate: [UsersAuthGuard],
+      // canActivate: [UsersAuthGuard],
     },
     {
       path: "dashboards/reservations",
@@ -216,7 +225,7 @@ export const appRoutes: Route[] = [
           (m) => m.UserReservationsModule
         ),
   
-      canActivate: [UsersAuthGuard],
+      // canActivate: [UsersAuthGuard],
     },
     {
       path : "settings",pathMatch: "full",
@@ -234,6 +243,6 @@ export const appRoutes: Route[] = [
       import("app/modules/admin/error/error-404/error-404.module").then(
         (m) => m.Error404Module
       ),
-  },
+  },  
   { path: "**", redirectTo: "404-not-found"},
 ];

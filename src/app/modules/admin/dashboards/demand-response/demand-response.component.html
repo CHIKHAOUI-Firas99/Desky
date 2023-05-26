@@ -34,7 +34,7 @@
         <mat-label>Update desk equipement:*</mat-label>
         <mat-select formControlName="deskEquipement" multiple>
             <ng-container *ngFor="let mat of allMaterials">
-                <mat-option [value]="mat.name" [disabled]="mat.quantity <=0 && !equipementsList.includes(mat.name)">
+                <mat-option [value]="mat.name" *ngIf="mat.quantity >0 || equipementsList.includes(mat.name)">
                     <div style="display: inline;">
                         <img [src]="mat.picture" alt="" srcset="" style="height: 60px;width: 80px;display: inline;">
                         <span style="display: inline;margin-left: 20px;"> {{mat.name}} </span>

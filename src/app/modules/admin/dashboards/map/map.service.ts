@@ -22,6 +22,11 @@ export class MapService {
   deleteworkspace(id:number){
     return this._httpClient.delete<any>(mapServiceUrl+'/workspace/'+id)
   }
+  updatedeskDetails(desk: any, name: string, action: string) {
+    const params = new HttpParams().set('action', action);
+    return this._httpClient.put<any>(`${mapServiceUrl}/update_desk/${name}`, desk, { params });
+  }
+  
 
   getWorkspace(name:any):Observable<any>{
     return this._httpClient.get<any>(mapServiceUrl+'/workspace',{

@@ -40,6 +40,8 @@ export class MapConceptorComponent {
  public objects: any=[];
   nObjectsTab: any;
   tab: any;
+  m: any;
+  new_created_objects_ids: any=[];
   constructor(private _mapConceptorService : MapService,
     private materialService:MaterialService,
     private renderer: Renderer2,
@@ -94,21 +96,27 @@ export class MapConceptorComponent {
        
      });
    }
-getObjectInfo(){
+  async getObjectInfo(){
   console.log(this.tab);
   
   let l = this.canvas.objectsInCanvas.size    
+  console.log(this.canvas.objectsInCanvas);
+  console.log(this.objects);
+  
   this.canvas.objectsInCanvas.forEach((value, key) => {
     console.log("value -->" +value);
           
     this.objects[(l-1).toString()] = value;
     l--
   });
+  console.log(this.objects);
+  
   console.log(this.canvas.getTypeofselectedObject());
   
   let id=this.canvas.getId()
 console.log(this.objects);
 var listnames=[]
+let _object=[]
   let names:any
    let objectsmat=this.canvas.objectsMat
    if (objectsmat) {
@@ -121,7 +129,7 @@ var listnames=[]
       this.objects.forEach(element => {
         if (element.id==id) {
 console.log(element);
-
+_object=element
       
           if(element.material){
             console.log(element.material);
@@ -166,12 +174,45 @@ console.log(element);
   }
       }
     });
+    let workspaceName=this.canvas.workspaceName
+    const data = await this.materialService.getAllMaterials().toPromise();
+    this.m=[]
+this.m=data
+    this.m.forEach((element) => {
+      element.picture = this.getPictureUrl(element.picture);
+    });
+    let action="create"
+    let new_id=0
+    if (id<0) {
+      this.new_created_objects_ids.forEach(element => {
+        console.log(element['last_id']);
+        console.log(id);
+        
+        
+        if (element['last_id']==id) {
+          action="update"
+          new_id=element['new_id']
+        }
+      });
+    }
+    else{
+      action="update"
+    }
+
+    console.log(action);
     
       this.dialog.open(TagsUpdateComponent, {
+
         data: { 
+          new_id,
+          action,
+          canAddmat:this.optionSelected,
+          workspacesNames:this.workspacesNames,
+          workspaceName,
+          _object,
           objectId:id,
           type:this.canvas.currentType ,
-          allMat:this.allMaterials,
+          allMat:this.m,
           CurrentMaterials:listnames,
           ObjectTags:tags
         }
@@ -181,33 +222,55 @@ console.log(element);
        if (result) {
         console.log(result);
    
+// this.loadCanvas(this.canvas.workspaceName)
+this.toastr.success('desk updated')
 
           this.objects.forEach(element => {
             if (element.id==id) {
-          
+              element['id']=result['id'].toString()
               element['tags']=result['tags']
               element['material']=result['material']
               
             }
           });
           this.tab=this.objects
-          console.log(this.objects);
-        
-        
+          console.log(this.canvas.objectsInCanvas);
+          this.canvas.initialObjects.push()
+          console.log('aaaaaaaaa',id,this.canvas.objectsInCanvas.get(id.toString()));
+          const isDuplicate = this.new_created_objects_ids.some(obj => obj.last_id === id);
 
-     
+          if (id < 0 && !isDuplicate) {
+            this.new_created_objects_ids.push({ last_id: id, new_id: result['id'].toString() });
+          }
+          
+          console.log(this.canvas.objectsInCanvas);
+
+          console.log(this.objects);
+// this.loadCanvas(this.canvas.workspaceName)
 
        }
 
       });
-    
 
-    
-  
-  
- 
-  
 }
+
+updateElementID(objectsInCanvas, currentID, newID) {
+  // Get the element from the set using its current ID
+  const element = objectsInCanvas.get(currentID);
+
+  // Check if the element exists
+  if (element) {
+    // Modify the ID value of the element
+    element.id = newID;
+
+    // Delete the element from the set
+    objectsInCanvas.delete(currentID);
+
+    // Add the element back to the set with the updated ID
+    objectsInCanvas.set(newID, element);
+  }
+}
+
 refreshRoute() {
   this.route.data.subscribe(() => {
     const currentUrl = this._router.url;
@@ -379,7 +442,13 @@ refreshRoute() {
       });
       console.log(this.objects);
       
-      console.log(this.updatedTag);
+      this.objects.forEach(element => {
+        if (element.tags) {
+          element.tags=this.getYourTags(element.tags)
+          
+        }
+      });
+      console.log(this.objects);
       
       this.canvas.submit(this.updatedTag?this.updatedTag:this.canvas.workSpaceTags,this.objects);
     }

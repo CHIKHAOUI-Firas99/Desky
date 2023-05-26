@@ -1,8 +1,4 @@
-<button 
-    mat-icon-button
-    (click)="open()"
-    >
-
+<!-- YourComponent.component.html -->
+<button mat-icon-button (click)="open()" *ngIf="(send$ | async)">
     <mat-icon [svgIcon]="'heroicons_outline:inbox'"></mat-icon>
 </button>
-
