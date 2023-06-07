@@ -3,6 +3,7 @@ export interface Material {
     name: string;
     picture?: any; // Optional property for the base64-encoded picture
     quantity: number;
+    description:string;
     desk_id: number;
   }
   

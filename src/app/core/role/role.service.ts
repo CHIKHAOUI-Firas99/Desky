@@ -13,27 +13,27 @@ export class RoleService {
 
   getAllRoles(): Observable<Array<String>>
   {
-      return this._httpClient.get<Array<String>>(userManagementUrl+"/role/getAllRolesNames")
+      return this._httpClient.get<Array<String>>(userManagementUrl+"/userManagementService/role/getAllRolesNames")
   }
   getAll(): Observable<Array<Role>>
   {
-      return this._httpClient.get<Array<Role>>(userManagementUrl+"/roles")
+      return this._httpClient.get<Array<Role>>(userManagementUrl+"/userManagementService/roles")
   }
   getAllClaims(): Observable<Array<any>>
   {
-      return this._httpClient.get<Array<any>>(userManagementUrl+"/claims/")
+      return this._httpClient.get<Array<any>>(userManagementUrl+"/userManagementService/claims/")
   }
   getAllTags():Observable<Array<any>>{
-    return this._httpClient.get<Array<any>>(userManagementUrl+"/alltags/")
+    return this._httpClient.get<Array<any>>(userManagementUrl+"/userManagementService/alltags/")
   }
   updateRole(id,role):Observable<Role>{
-   return  this._httpClient.put<Role>(userManagementUrl+"/updateRole/"+id,role)
+   return  this._httpClient.put<Role>(userManagementUrl+"/userManagementService/updateRole/"+id,role)
   }
   addRole(role){
-    return this._httpClient.post<Role>(userManagementUrl+'/addRole',role)
+    return this._httpClient.post<Role>(userManagementUrl+'/userManagementService/addRole',role)
   }
   deleteRole(id){
-    return  this._httpClient.delete(userManagementUrl+"/deleteRole/"+id)
+    return  this._httpClient.delete(userManagementUrl+"/userManagementService/deleteRole/"+id)
    }
 
   transformObject(tab) {

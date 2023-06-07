@@ -415,18 +415,20 @@ if (id > 0) {
   action="update"
   
 }
-if (id <0) {
+if (id <=0) {
   action="create"
 }
 if (this.data.new_id!=0) {
 this._myObject['id']=this.data.new_id
   
 }
+console.log(this._myObject);
+
 this._MapService.updatedeskDetails(this._myObject,this.data.workspaceName,this.data.action).subscribe((data)=>{
   console.log(data);
   console.log(this._myObject);
   
-  if (Number(this._myObject['id'])<0) {
+  if (Number(this._myObject['id'])<=0) {
     console.log("nik omk");
     
     obj['id']=data

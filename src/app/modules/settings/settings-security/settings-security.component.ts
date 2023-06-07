@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnIni
 import { MatDrawer } from '@angular/material/sidenav';
 import { Subject, takeUntil } from 'rxjs';
 import { FuseMediaWatcherService } from '@fuse/services/media-watcher';
-import { UntypedFormGroup, UntypedFormBuilder } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators, FormControl } from '@angular/forms';
 import { UserService } from 'app/core/user/user.service';
 import { AuthService } from 'app/core/auth/auth.service';
 import { ActivatedRoute, RouteReuseStrategy, Router } from '@angular/router';
@@ -44,11 +44,18 @@ export class SettingsSecurityComponent {
   {
       // Create the form
       this.securityForm = this._formBuilder.group({
-          currentPassword  : [''],
-          newPassword      : [''],
+          currentPassword  : ['',Validators.required],
+          newPassword      : ['',[Validators.required, this.validatePasswordLength]],
           twoStep          : [true],
           askPasswordChange: [false]
       });
+  }
+  validatePasswordLength(control: FormControl): { [key: string]: any } | null {
+    const password = control.value;
+    if (password && password.length < 6) {
+      return { 'passwordLength': true };
+    }
+    return null;
   }
   refreshRoute() {
     this.route.data.subscribe(() => {

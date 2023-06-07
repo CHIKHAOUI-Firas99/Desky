@@ -58,14 +58,14 @@ export class UserService
         );
     }
 deletePhone(id:number){
-    return this._httpClient.delete(userManagementUrl+'/deleteUserPhone/'+id)
+    return this._httpClient.delete(userManagementUrl+'/userManagementService/deleteUserPhone/'+id)
 }
 
     getAllUsers(): Observable<User[]>
     
     {
         // const url = `${Url+'/getAllUsers/'}?limit=${limit}&page=${page}`;
-        const url = `${userManagementUrl+'/getAll/'}`;
+        const url = `${userManagementUrl+'/userManagementService/getAll/'}`;
 
         return this._httpClient.get<Array<User>>(url)
     
@@ -90,7 +90,7 @@ deletePhone(id:number){
     changePassword(id:number,obj){
         console.log('waaa');
         
-        return this._httpClient.put<any>(userManagementUrl+'/users/'+id+'/change_password',obj)
+        return this._httpClient.put<any>(userManagementUrl+'/userManagementService/users/'+id+'/change_password',obj)
 }
 isStringOrFile(input: any): boolean {
     if (input instanceof File) {
@@ -107,6 +107,6 @@ updateAvatar(id:number,picture?: File): Observable<any> {
     }
 // console.log(formData.get('picture'));
 
-    return this._httpClient.put(`${userManagementUrl}/updateavatar/${id}`, formData);
+    return this._httpClient.put(`${userManagementUrl}/userManagementService/updateavatar/${id}`, formData);
   }
 }

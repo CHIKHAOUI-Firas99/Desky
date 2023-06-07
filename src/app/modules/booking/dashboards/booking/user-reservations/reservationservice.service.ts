@@ -10,10 +10,10 @@ export class ReservationserviceService {
   constructor(private _httpClient: HttpClient) { }
   public get_user_reservations(id)
   {
-    return this._httpClient.get(mapServiceUrl+'/service2/getUserReservations/'+id)
+    return this._httpClient.get(mapServiceUrl+'/mapService/getUserReservations/'+id)
   }
   public get_all_reservations(){
-    return this._httpClient.get(mapServiceUrl+'/service2/getAllReservations/')
+    return this._httpClient.get(mapServiceUrl+'/mapService/getAllReservations/')
 
   }
   cancel_reservation(userId: string, deskId: string, date: string, startTime: string, endTime: string) {
@@ -25,7 +25,7 @@ export class ReservationserviceService {
         endTime: endTime
     });
 
-    const url = `${mapServiceUrl}/service2/cancel-reservation/`;
+    const url = `${mapServiceUrl}/mapService/cancel-reservation/`;
 
     // Make your HTTP request with the constructed URL
   return   this._httpClient.put(url, {

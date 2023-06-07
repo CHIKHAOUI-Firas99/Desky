@@ -136,9 +136,12 @@ export class BookingComponent {
     this._bookingService.getWorkspacesForBooking(date).subscribe((data) => {
       this.listWorkspaces = data;
       console.log(this.listWorkspaces);
-      this.canvas.loadCanvas(this.listWorkspaces[0].name, date);
-      this.workspaceName = this.listWorkspaces[0].name;
-      this.activeElement = this.listWorkspaces[0].name;
+      if(this.listWorkspaces.length>0){
+        this.canvas.loadCanvas(this.listWorkspaces[0].name, date);
+        this.workspaceName = this.listWorkspaces[0].name;
+        this.activeElement = this.listWorkspaces[0].name;
+      }
+
     
     });
     
@@ -172,7 +175,6 @@ export class BookingComponent {
     console.log(this.dateString);
     this._bookingService.getWorkspacesForBooking(this.dateString).subscribe(data => {
     this.listWorkspaces = data
-      console.log(this.listWorkspaces[0].userProfileImages);
     })
     this.canvas.loadCanvas(this.workspaceName,this.dateString)
     }

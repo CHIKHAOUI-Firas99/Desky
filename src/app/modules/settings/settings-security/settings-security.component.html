@@ -11,37 +11,23 @@
         <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
             <!-- Current password -->
             <div class="sm:col-span-4">
-                <mat-form-field
-                    class="w-full"
-                    [subscriptSizing]="'dynamic'">
+                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>Current password</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:key'"
-                        matPrefix></mat-icon>
-                    <input
-                        [formControlName]="'currentPassword'"
-                        type="password"
-                        matInput>
+                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:key'" matPrefix></mat-icon>
+                    <input [formControlName]="'currentPassword'" type="password" matInput>
                 </mat-form-field>
             </div>
             <!-- New password -->
             <div class="sm:col-span-4">
-                <mat-form-field
-                    class="w-full"
-                    [subscriptSizing]="'dynamic'">
+                <mat-form-field class="w-full" [subscriptSizing]="'dynamic'">
                     <mat-label>New password</mat-label>
-                    <mat-icon
-                        class="icon-size-5"
-                        [svgIcon]="'heroicons_solid:key'"
-                        matPrefix></mat-icon>
-                    <input
-                        [formControlName]="'newPassword'"
-                        type="password"
-                        matInput>
+                    <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:key'" matPrefix></mat-icon>
+                    <input formControlName="newPassword" type="password" matInput>
+                    <mat-error *ngIf="securityForm.get('newPassword').hasError('passwordLength')">Password must be at
+                        least 6 characters long.</mat-error>
                 </mat-form-field>
-                <!-- <div class="mt-1 text-md text-hint">Minimum 8 characters. Must include numbers, letters and special characters.</div> -->
             </div>
+
         </div>
 
         <!-- Divider -->
@@ -88,17 +74,10 @@
 
         <!-- Actions -->
         <div class="flex items-center justify-end">
-            <button
-                mat-stroked-button
-                type="button">
+            <button mat-stroked-button type="button">
                 Cancel
             </button>
-            <button
-            (click)="onSubmit()"
-                class="ml-4"
-                mat-flat-button
-                type="button"
-                [color]="'primary'" >Save
+            <button (click)="onSubmit()" class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
             </button>
         </div>
     </form>

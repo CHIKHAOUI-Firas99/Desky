@@ -28,6 +28,7 @@ export class AddMaterialComponent implements OnInit {
     this.materialForm = this.formBuilder.group({
       name: ['', Validators.required],
       picture: [null, Validators.required],
+      description:[null],
       quantity: [0, Validators.required],
       desk_id: [0]
     });
@@ -83,6 +84,7 @@ showToast(message:string,title:string): void {
     formData.append('name', this.materialForm.get('name')?.value);
     formData.append('picture', this.materialForm.get('picture')?.value);
     formData.append('quantity', this.materialForm.get('quantity')?.value);
+    formData.append('description', this.materialForm.get('description')?.value);
     // formData.append('desk_id', this.materialForm.get('desk_id')?.value);
     console.log(formData.getAll('picture'));
     

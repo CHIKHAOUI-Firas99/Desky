@@ -13,23 +13,26 @@ export class MapService {
 
 
   addWorkspace(w:any):Observable<any>{    
-    return this._httpClient.post<any>(mapServiceUrl+'/workspace', w);
+    return this._httpClient.post<any>(mapServiceUrl+'/mapService/workspace', w);
   }
 
   getWorkspacesNames():Observable<any>{
-    return this._httpClient.get<any>(mapServiceUrl+'/workspaces_names')
+    return this._httpClient.get<any>(mapServiceUrl+'/mapService/workspaces_names')
   }
   deleteworkspace(id:number){
-    return this._httpClient.delete<any>(mapServiceUrl+'/workspace/'+id)
+    return this._httpClient.delete<any>(mapServiceUrl+'/mapService/workspace/'+id)
   }
   updatedeskDetails(desk: any, name: string, action: string) {
     const params = new HttpParams().set('action', action);
-    return this._httpClient.put<any>(`${mapServiceUrl}/update_desk/${name}`, desk, { params });
+    return this._httpClient.put<any>(`${mapServiceUrl}/mapService/update_desk/${name}`, desk, { params });
+  }
+  getDeskMatTags(desk_id){
+    return this._httpClient.get<any>(mapServiceUrl+'/mapService/getDeskMatTags/'+desk_id)
   }
   
 
   getWorkspace(name:any):Observable<any>{
-    return this._httpClient.get<any>(mapServiceUrl+'/workspace',{
+    return this._httpClient.get<any>(mapServiceUrl+'/mapService/workspace',{
       params: new HttpParams().set('name', name)
     })
   
@@ -38,10 +41,10 @@ export class MapService {
   updateWorkspace(id:number,w):Observable<any>{
     
     
-    return this._httpClient.put<any>(mapServiceUrl+'/workspace/'+id,w)
+    return this._httpClient.put<any>(mapServiceUrl+'/mapService/workspace/'+id,w)
   }
   getSelectedObjectInfo(id:number){
-    return this._httpClient.get(mapServiceUrl+'/object/'+id)
+    return this._httpClient.get(mapServiceUrl+'/mapService/object/'+id)
       
   }
 

@@ -41,6 +41,7 @@ import { ActivatedRoute, RouteReuseStrategy, Router } from "@angular/router";
 import { MaterialService } from './material.service';
 import { Material } from './material';
 import { AddMaterialComponent } from '../add-material/add-material.component';
+import { MaterialDescriptionComponent } from '../material-description/material-description.component';
 
 @Component({
   selector: 'app-materials',
@@ -63,7 +64,7 @@ export class MaterialsComponent {
     VORows: this._formBuilder.array([]),
   });
   isEditableNew: boolean = true;
-  displayedColumns: string[] = ["Material_id", "picture", "name","quantity", "action"];
+  displayedColumns: string[] = ["Material_id", "picture", "name","quantity","description", "action"];
   private _unsubscribeAll: Subject<any> = new Subject<any>();
   paginatorList: HTMLCollectionOf<Element>;
   currentIndex: any;
@@ -133,7 +134,8 @@ export class MaterialsComponent {
         (n) =>
           n.id.toString().toLowerCase().includes(this.materials.filter) ||
           n.name.toLowerCase().includes(this.materials.filter)||
-          n.quantity.toString().toLowerCase().includes(this.materials.filter)
+          n.quantity.toString().toLowerCase().includes(this.materials.filter)||
+          n.description.toString().toLowerCase().includes(this.materials.filter)
       );
       this.fillFormTab(u);
     } else this.fillFormTab(this.TabMaterials);
@@ -210,6 +212,13 @@ this.renderer.selectRootElement(elementToClick).click();
 
 tags:Array<any>=[]
 
+// Assuming you want to update the description for a specific index 'indexToUpdate'
+changeDescription(indexToUpdate, newDescription) {
+  const VORows = this.VOForm.get('VORows') as FormArray;
+  const row = VORows.at(indexToUpdate) as FormGroup;
+  const descriptionControl = row.get('description') as FormControl;
+  descriptionControl.setValue(newDescription);
+}
 
 
  fillFormTab(tab: Array<any>) {
@@ -227,6 +236,7 @@ tags:Array<any>=[]
               name: new FormControl(val.name),
               picture: new FormControl(pictureUrl),
               quantity: new FormControl(val.quantity),
+              description: new FormControl(val.description),
               action: new FormControl("existingRecord"),
               isEditable: new FormControl(true),
               isNewRow: new FormControl(false),
@@ -352,7 +362,8 @@ getPictureUrl(picture) {
           name: row.get("name").value,
           picture: row.get("picture").value,
           quantity: row.get("quantity").value,
-          desk_id: 1
+          desk_id: 1,
+          description:row.get("description").value
         };
         // const pictureFile = this.base64ToFile(material.picture, 'material-picture', 'image/jpg');
 
@@ -423,7 +434,21 @@ showToast(message:string,title:string): void {
     });
     
   }
-
+openMatDiscription(action,description,i){
+  const dialogRef = this.dialog.open(MaterialDescriptionComponent, {
+    width: "640px",
+    disableClose: true,
+    data:{
+      action,
+      description
+    }
+  }).afterClosed().subscribe((res)=>{
+    if (res) {
+      console.log(res)
+      this.changeDescription(i,res)
+    }
+  });
+}
   // On click of cancel button in the table (after click on edit) this method will call and reset the previous data
   CancelSVO(VOFormElement, i) {
     const row = VOFormElement.get("VORows").at(i);
@@ -445,6 +470,11 @@ showToast(message:string,title:string): void {
       .get("quantity")
       .patchValue(
         this.TabMaterials[i].quantity
+      );
+      row
+      .get("description")
+      .patchValue(
+        this.TabMaterials[i].description
       );
       row
       .get("picture")

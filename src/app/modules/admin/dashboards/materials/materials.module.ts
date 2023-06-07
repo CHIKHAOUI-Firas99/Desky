@@ -70,6 +70,7 @@ import { HammerModule } from '@angular/platform-browser';
 import { TagsUpdateComponent } from '../tags-update/tags-update.component';
 import { MaterialsComponent } from './materials.component';
 import { AddMaterialComponent } from '../add-material/add-material.component';
+import { MaterialDescriptionComponent } from '../material-description/material-description.component';
 
 const materialsRouter: Route[] = [
   {
@@ -82,7 +83,8 @@ const materialsRouter: Route[] = [
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
   declarations: [
     MaterialsComponent,
-    AddMaterialComponent
+    AddMaterialComponent,
+    MaterialDescriptionComponent
   ],
   imports: [
     RouterModule.forChild(materialsRouter),

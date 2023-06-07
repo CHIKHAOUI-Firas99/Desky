@@ -716,9 +716,10 @@ clone() {
  let flipX = activeObject['flipX']
  let flipY = activeObject['flipY']
  let id = this.canvas.getActiveObject().toObject().id.toString();
- console.log("id --->",id);
  this.selectedObjectId=id
  let path = this.objectsInCanvas.get(id).path
+ console.log("path --->",path);
+
  let type = this.objectsInCanvas.get(id).type
  console.log(type);
  this.currentType=type
@@ -820,18 +821,18 @@ return type
  submit(tags,objects){ 
  if (this.workspaceName != null){
 console.log(objects);
-for (let index = 0; index < objects.length; index++) {
-    const element = objects[index];
-    let elmTags=element.tags
-    if (elmTags) {
-        if (elmTags.key==""||elmTags.value=="") {
+// for (let index = 0; index < objects.length; index++) {
+//     const element = objects[index];
+//     let elmTags=element.tags
+//     if (elmTags) {
+//         if (elmTags.key==""||elmTags.value=="") {
 
-            elmTags=[]
-            objects[index].tags=elmTags
-        }
-    }
+//             elmTags=[]
+//             objects[index].tags=elmTags
+//         }
+//     }
     
-}
+// }
 console.log(objects);
 
 
@@ -841,6 +842,8 @@ console.log(objects);
  'objects':objects,
  "tags":this.getYourTags(tags)
  } 
+ console.log(objects);
+ 
  const json = JSON.stringify(this.canvas);
  const test = JSON.parse(json)
  for (let index = 0; index < test.objects.length; index++) {
@@ -858,7 +861,7 @@ console.log(objects);
  console.log(data);
  this.showToast('workspace added','success')
 
- this.refreshRoute()
+//  this.refreshRoute()
  
  },(err)=>{
  console.log(err);

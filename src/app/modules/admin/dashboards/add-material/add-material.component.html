@@ -3,38 +3,43 @@
 </button>
 <p class="h4 text-center">Add Equipement</p>
 <div class="text-center" style="margin-top: 3%;">
-  
-<form [formGroup]="materialForm" >
-  <div>
-    <label for="name">Name :</label><br>
-    
-    <input type="text" matInput formControlName="name" class="form-control" id="name">
-  
-    </div>
-<br>
+
+  <form [formGroup]="materialForm">
     <div>
-    <label for="quantity" matLabel>Quantity :</label><br>
-    
-    <input type="number" matInput formControlName="quantity" class="form-control" id="quantity">
+      <label for="name">Name :</label><br>
+
+      <input type="text" matInput formControlName="name" class="form-control" id="name">
+
+    </div>
+    <div style="margin-top: 2%;">
+      <label for="quantity" matLabel>Quantity :</label><br>
+
+      <input type="number" matInput formControlName="quantity" class="form-control" id="quantity">
+
+    </div>
+    <div style="margin-top: 2%;">
+      <label for="description" matLabel>Description :</label><br>
+      <mat-form-field style="width: 60%;height: 200px;">
+
+        <textarea matInput formControlName="description" style="height: 150px"></textarea>
+      </mat-form-field>
+    </div>
+
+
+    <div style="margin-top: 2%;">
+      <label for="formFile" matLabel>Equipement picture :</label>
+      <input style="width: 50%;" class="form-control" id="myFile" type="file" (change)="onFileSelect($event)">
+    </div>
+
+    <!-- <button  class="btn btn-secondary" style="font-size: 15px; margin-left: 25%;" (click)="choseFile()">Choose a picture</button> -->
+    <!-- <input style="" id="myFile"  type="file" (change)="onFileSelect($event)"> -->
+
+
+    <button (click)="onSubmit()" style="float: left;margin-top: 3%;" class="btn btn-primary"
+      [disabled]="!materialForm.valid">Submit</button>
+
+    <button style="float: left;margin-top: 3%;" class="btn btn-light" (click)="close()">Cancel</button>
+
+  </form>
 
 </div>
-
-
-<br>
-  <div  >
-    <label for="formFile" matLabel >Equipement picture :</label>
-    <input style="width: 50%;" class="form-control" id="myFile"  type="file" (change)="onFileSelect($event)">
-  </div>
-  
-  <!-- <button  class="btn btn-secondary" style="font-size: 15px; margin-left: 25%;" (click)="choseFile()">Choose a picture</button> -->
-  <!-- <input style="" id="myFile"  type="file" (change)="onFileSelect($event)"> -->
-
-  <br>
-  <button (click)="onSubmit()" style="float: left;" class="btn btn-primary" [disabled]="!materialForm.valid">Submit</button>
-
-  <button  style="float: left;" class="btn btn-light" (click)="close()">Cancel</button>
-
-</form>
-
-</div>
-

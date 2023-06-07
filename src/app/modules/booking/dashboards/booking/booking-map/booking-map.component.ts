@@ -106,6 +106,7 @@ if (res) {
   loadCanvas(name,date) {
     this.date = date
     this._bookingService.getWorkspaceForBook(name,date).subscribe((workspace) =>{
+     if(workspace['name']){
       this.workspaceName = workspace.name
       this.canvas.clear()
       this.objectsInCanvas.clear()
@@ -230,6 +231,9 @@ if (res) {
           // this.canvas.add(new fabric.Circle({radius: 25*obj.scaleX, left: obj.x+((image.width*obj.scaleX)/2)-(25*obj.scaleX), top: obj.y, fill: '#ff5722'}));
         });
       }
+     }
+     
+      
     })
 
   }

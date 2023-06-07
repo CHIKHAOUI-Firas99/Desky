@@ -176,6 +176,9 @@ _object=element
     });
     let workspaceName=this.canvas.workspaceName
     const data = await this.materialService.getAllMaterials().toPromise();
+    const deskDetails=await this._mapConceptorService.getDeskMatTags(id).toPromise();
+    let matNames=deskDetails['material']
+    let desktags=deskDetails['tags']
     this.m=[]
 this.m=data
     this.m.forEach((element) => {
@@ -213,8 +216,8 @@ this.m=data
           objectId:id,
           type:this.canvas.currentType ,
           allMat:this.m,
-          CurrentMaterials:listnames,
-          ObjectTags:tags
+          CurrentMaterials:matNames,
+          ObjectTags:desktags
         }
       }).afterClosed().subscribe(result => {
   
@@ -223,18 +226,18 @@ this.m=data
         console.log(result);
    
 // this.loadCanvas(this.canvas.workspaceName)
-this.toastr.success('desk updated')
+        this.toastr.success('desk updated')
 
-          this.objects.forEach(element => {
-            if (element.id==id) {
-              element['id']=result['id'].toString()
-              element['tags']=result['tags']
-              element['material']=result['material']
+          // this.objects.forEach(element => {
+          //   if (element.id==id) {
+          //     element['id']=result['id'].toString()
+          //     element['tags']=result['tags']
+          //     element['material']=result['material']
               
-            }
-          });
-          this.tab=this.objects
-          console.log(this.canvas.objectsInCanvas);
+          //   }
+          // });
+          // this.tab=this.objects
+          // console.log(this.canvas.objectsInCanvas);
           this.canvas.initialObjects.push()
           console.log('aaaaaaaaa',id,this.canvas.objectsInCanvas.get(id.toString()));
           const isDuplicate = this.new_created_objects_ids.some(obj => obj.last_id === id);
@@ -442,13 +445,13 @@ refreshRoute() {
       });
       console.log(this.objects);
       
-      this.objects.forEach(element => {
-        if (element.tags) {
-          element.tags=this.getYourTags(element.tags)
+      // this.objects.forEach(element => {
+      //   if (element.tags) {
+      //     element.tags=this.getYourTags(element.tags)
           
-        }
-      });
-      console.log(this.objects);
+      //   }
+      // });
+      // console.log(this.objects);
       
       this.canvas.submit(this.updatedTag?this.updatedTag:this.canvas.workSpaceTags,this.objects);
     }

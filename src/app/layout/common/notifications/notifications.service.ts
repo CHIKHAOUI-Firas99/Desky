@@ -30,7 +30,7 @@ export class NotificationsService
      */
     get notifications$(): Observable<Notification[]>
     {this.userId = this.authService.getCurrentUser().id;
-        return this._httpClient.get<any[]>(`${mapServiceUrl}/notification/${this.userId}`).pipe(
+        return this._httpClient.get<any[]>(`${notificationServiceUrl}/analyseNotificationService/notification/${this.userId}`).pipe(
             map((result: any[]) => {
               return result.map((notification: any) => {
                 console.log(notification);
@@ -99,7 +99,7 @@ export class NotificationsService
      */
     update(id: string, notification: Notification)
     {
-        return this._httpClient.put(notificationServiceUrl+'/read_notification/'+id,notification)
+        return this._httpClient.put(notificationServiceUrl+'/analyseNotificationService/read_notification/'+id,notification)
     }
 
     /**
@@ -109,7 +109,7 @@ export class NotificationsService
      */
     delete(id)
     {
-        return   this._httpClient.delete(`${notificationServiceUrl}/notification/${id}`)
+        return   this._httpClient.delete(`${notificationServiceUrl}/analyseNotificationService/notification/${id}`)
     }
 
     /**
@@ -117,6 +117,6 @@ export class NotificationsService
      */
     markAllAsRead()
     {
-        return this._httpClient.get(notificationServiceUrl+'/read_notifications/')
+        return this._httpClient.get(notificationServiceUrl+'/analyseNotificationService/read_notifications/')
     }
 }

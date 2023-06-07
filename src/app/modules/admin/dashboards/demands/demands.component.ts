@@ -113,7 +113,8 @@ export class DemandsComponent {
           n.desk_id.toString().toLowerCase().includes(this.demands.filter)||
           n.status.toString().toLowerCase().includes(this.demands.filter)||
           n.demandDate.toString().toLowerCase().includes(this.demands.filter)||
-          n.object.toString().toLowerCase().includes(this.demands.filter)
+          n.object.toString().toLowerCase().includes(this.demands.filter)||
+          n.id.toString().toLowerCase().includes(this.demands.filter)
       );
       this.fillFormTab(u);
     } else this.fillFormTab(this.TabDemands);

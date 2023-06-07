@@ -1,0 +1,25 @@
+<div style="display: flex; flex-direction: column; align-items: center;margin-top: 0px;">
+    <button mat-icon-button mat-dialog-close class="close-icon" style="margin-left: 93%; margin-top: -10px;">
+        <mat-icon>close</mat-icon>
+    </button>
+    <h2 style="margin-top: 0px;" class="h6">Material Details</h2>
+
+
+
+
+
+
+
+    <mat-form-field style="width: 80%;height: 200px;">
+        <mat-label>Description:</mat-label>
+        <textarea [readonly]="this.data.action=='view'" matInput [(ngModel)]="materialdescription"
+            style="height: 130px"></textarea>
+    </mat-form-field>
+
+</div>
+
+<div>
+    <button *ngIf="this.data.action== 'edit'" class="btn btn-primary" (click)="onSubmit()">OK</button>
+    <button class="btn btn-light" (click)="closeEmailDialog()" style="margin-left: 2%;">Close</button>
+
+</div>

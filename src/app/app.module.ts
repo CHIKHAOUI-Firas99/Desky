@@ -97,6 +97,7 @@ import { GoogleChartsModule } from 'angular-google-charts';
 import { AddReservationComponent } from './modules/booking/dashboards/booking/add-reservation/add-reservation.component';
 import { DemandResponseComponent } from './modules/admin/dashboards/demand-response/demand-response.component';
 import { UsersReservationsComponent } from './modules/admin/dashboards/users-reservations/users-reservations.component';
+import { MaterialDescriptionComponent } from './modules/admin/dashboards/material-description/material-description.component';
 
 
 library.add(faIcons, faFontAwesome);
@@ -108,7 +109,8 @@ const routerConfig: ExtraOptions = {
 @NgModule({
     
     declarations: [
-        AppComponent
+        AppComponent,
+       
        
         
         // BookingComponent,

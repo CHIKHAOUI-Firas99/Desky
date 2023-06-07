@@ -55,7 +55,7 @@ export class UsersService {
   }
   updateUser(id:number,u:any):Observable<any>{
       const headers = new HttpHeaders().set('token', ` ${this._authService.accessToken}`);
-     return this._httpClient.patch<any>(userManagementUrl+'/admin/update/'+id,u,{
+     return this._httpClient.patch<any>(userManagementUrl+'/userManagementService/admin/update/'+id,u,{
       headers
      })
   }
@@ -63,7 +63,7 @@ export class UsersService {
   deleteUser(id:number):Observable<any>{
     const headers = new HttpHeaders().set('token', ` ${this._authService.accessToken}`);
    
-     return this._httpClient.delete<any>(userManagementUrl+'/deleteUser/'+id,{headers})
+     return this._httpClient.delete<any>(userManagementUrl+'/userManagementService/deleteUser/'+id,{headers})
   }
 
 
@@ -71,10 +71,10 @@ export class UsersService {
 
   getRoleByIdUser(id:number):Observable<any>{
 
-     return this._httpClient.get<any>(userManagementUrl+'/userRole/'+id)
+     return this._httpClient.get<any>(userManagementUrl+'/userManagementService/userRole/'+id)
   }
   sendEmails(object):Observable<any>{
 
-    return this._httpClient.post(userManagementUrl+'/sendEmails',object)
+    return this._httpClient.post(userManagementUrl+'/userManagementService/sendEmails',object)
  }
 }
