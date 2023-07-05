@@ -69,7 +69,7 @@ export const appConfig: AppConfig = {
         }
     ]
 };
-export const userManagementUrl="http://localhost:8000"
-export const mapServiceUrl="http://localhost:8080"
-export const notificationServiceUrl="http://localhost:8001"
+export const userManagementUrl="http://192.168.162.104:31066"
+export const mapServiceUrl="http://192.168.162.104:31066"
+export const notificationServiceUrl="http://192.168.162.104:31066"
 
