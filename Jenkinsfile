@@ -1,38 +1,40 @@
 pipeline {
   agent any
 environment {
-    KUBECONFIG = "/home/sbm/.kube/kubeconfig"
+    KUBECONFIG = "/home/sbm/.kube/config"
     DOCKER_HUB_USERNAME= "firaschikhaoui"
-    DOCKER_IMAGE_NAME = "test-front"
-    DOCKER_IMAGE_TAG = "v7"
+    DOCKER_IMAGE_NAME = "frontservice"
+    DOCKER_IMAGE_TAG = "5"
     //KUBERNETES_CA_CERTIFICATE = credentials('kube-certif')
   }
    stages {
     stage('Build Docker Image') {
       steps {
         script {
-          docker.build("${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}")
+          docker.build("${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:v${DOCKER_IMAGE_TAG}")
         }
       }
-    }  
+    }
    stage('Push Docker Image') {
       steps {
         script {
             withDockerRegistry([credentialsId: "docker-credentials", url: ""]) {
-            sh "docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
+            sh "docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:v${DOCKER_IMAGE_TAG}"
             }
         }
       }
-    }   
-    stage('Deploy to Kubernetes') {
-                    steps {
-                    withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]){
-                    //sh "cp $KUBERNETES_CA_CERTIFICATE /usr/local/share/ca-certificates/kube-ca.crt && update-ca-certificates"
-                    sh "kubectl delete deployment front --kubeconfig=$KUBECONFIG"    
-                    sh "kubectl apply -f deployment-service.yml --kubeconfig=$KUBECONFIG"  
-        }     
-        }
-    }
+   }
 
-  }
+   stage('Helm Update') {
+      steps {
+        script {
+            withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]){
+//              sh "helm upgrade usermanagement usermanagement/back1 --set image.tag:v${DOCKER_IMAGE_TAG} -n helm-test"
+            sh "helm upgrade mapservice https://chikhaoui-firas99.github.io/helm-front/front-0.1.0.tgz --set image.tag=v${DOCKER_IMAGE_TAG} -n app-istio"
+        }
+       }
+      }
+   }
+
  }
+}
